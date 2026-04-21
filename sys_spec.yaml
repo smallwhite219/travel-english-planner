@@ -1,0 +1,34 @@
+---
+project: travel-english-planner
+desc: ICLEA 2026 Journey & TTS Practice App
+---
+tech_stack:
+  framework: "React 18 + Vite"
+  styling: "Vanilla CSS"
+  animations: "Framer Motion"
+  icons: "Lucide React"
+  utils: ["html2pdf.js", "Web Speech API"]
+ui_ux:
+  theme: "Glassmorphism"
+  transitions: "Framer Motion fade/slide"
+  responsive: true
+domain_models:
+  TimelineNode:
+    fields: [id, title, bgImage, scriptData]
+    data: ["嘉義", "高鐵", "機場", "飛航", "海關", "ICLEA2026"]
+  ScriptLine:
+    fields: [speaker, text, translation]
+features:
+  dynamic_timeline:
+    trigger: "onClick(Node)"
+    action: "Switch global background & load ScriptData"
+  tts_engine:
+    api: "window.speechSynthesis"
+    controls: ["Play/Pause", "Rate Slider"]
+    logic: "Assign specific OS Voice based on Speaker (NPC/User)"
+  pdf_export:
+    api: "html2pdf.js"
+    layout: "A4"
+    hooks: 
+      pre: "Hide Play/Export buttons via CSS/State"
+      post: "Restore UI elements"
