@@ -1,4 +1,8 @@
 export const prefixes = {
+  "ad": { mean: "to, toward", type: "prefix" },
+  "co": { mean: "with, together", type: "prefix" },
+  "syn": { mean: "together, with", type: "prefix" },
+  "en": { mean: "cause to be, put into", type: "prefix" },
   "un": { mean: "not, opposite of", type: "prefix" },
   "pre": { mean: "before, in advance", type: "prefix" },
   "re": { mean: "again, back", type: "prefix" },
@@ -31,6 +35,16 @@ export const prefixes = {
 };
 
 export const suffixes = {
+  "ation": { mean: "action or process", type: "suffix" },
+  "ion": { mean: "action or process", type: "suffix" },
+  "itive": { mean: "tending to, relating to", type: "suffix" },
+  "ative": { mean: "tending to", type: "suffix" },
+  "ory": { mean: "relating to", type: "suffix" },
+  "tory": { mean: "relating to", type: "suffix" },
+  "ual": { mean: "relating to", type: "suffix" },
+  "ure": { mean: "act, process, or condition", type: "suffix" },
+  "ed": { mean: "past tense or state", type: "suffix" },
+  "ing": { mean: "action or process", type: "suffix" },
   "able": { mean: "capable of, fit for", type: "suffix" },
   "ible": { mean: "capable of, fit for", type: "suffix" },
   "tion": { mean: "action, process, state", type: "suffix" },
@@ -60,6 +74,107 @@ export const suffixes = {
 };
 
 export const roots = {
+  "cogn": {
+    mean: "to know",
+    words: [
+      { word: "cognitive", breakdown: ["cogn", "itive"], meaning: "relating to cognition", translation: "認知的" },
+      { word: "recognize", breakdown: ["re", "cogn", "ize"], meaning: "identify from having encountered them before", translation: "認出" }
+    ]
+  },
+  "cept": {
+    mean: "to take, seize",
+    words: [
+      { word: "concept", breakdown: ["con", "cept"], meaning: "an abstract idea", translation: "概念" },
+      { word: "conceptual", breakdown: ["con", "cept", "ual"], meaning: "relating to or based on mental concepts", translation: "概念的" },
+      { word: "misconception", breakdown: ["mis", "con", "cept", "ion"], meaning: "a view or opinion that is incorrect", translation: "迷思概念" }
+    ]
+  },
+  "solid": {
+    mean: "firm, whole",
+    words: [
+      { word: "consolidation", breakdown: ["con", "solid", "ation"], meaning: "the action or process of making something stronger or more solid", translation: "鞏固" },
+      { word: "solidify", breakdown: ["solid", "ify"], meaning: "make or become hard or solid", translation: "凝固" }
+    ]
+  },
+  "occur": {
+    mean: "run, meet",
+    words: [
+      { word: "cooccurrence", breakdown: ["co", "occur", "ence"], meaning: "occurring together", translation: "共現" }
+    ]
+  },
+  "direct": {
+    mean: "straight",
+    words: [
+      { word: "multidirectional", breakdown: ["multi", "direct", "ion", "al"], meaning: "operating in several directions", translation: "多向的" }
+    ]
+  },
+  "frag": {
+    mean: "break",
+    words: [
+      { word: "fragmented", breakdown: ["frag", "ment", "ed"], meaning: "broken or separated into distinct parts", translation: "碎片的" }
+    ]
+  },
+  "ced": {
+    mean: "go, yield",
+    words: [
+      { word: "procedural", breakdown: ["pro", "ced", "ure", "al"], meaning: "relating to an established or official way of doing something", translation: "程序的" },
+      { word: "procedure", breakdown: ["pro", "ced", "ure"], meaning: "an established or official way of doing something", translation: "程序" }
+    ]
+  },
+  "plor": {
+    mean: "cry out",
+    words: [
+      { word: "exploration", breakdown: ["ex", "plor", "ation"], meaning: "traveling in or through an unfamiliar area", translation: "探索" }
+    ]
+  },
+  "thes": {
+    mean: "place, put",
+    words: [
+      { word: "synthesis", breakdown: ["syn", "thes", "is"], meaning: "the combination of ideas to form a theory or system", translation: "綜合 / 合成" }
+    ]
+  },
+  "gage": {
+    mean: "pledge",
+    words: [
+      { word: "engagement", breakdown: ["en", "gage", "ment"], meaning: "the action of engaging or being engaged", translation: "參與" }
+    ]
+  },
+  "reg": {
+    mean: "rule, guide",
+    words: [
+      { word: "regulatory", breakdown: ["reg", "ula", "tory"], meaning: "serving or intended to regulate something", translation: "調節的 / 監管的" }
+    ]
+  },
+  "iter": {
+    mean: "again",
+    words: [
+      { word: "iterative", breakdown: ["iter", "ative"], meaning: "relating to or involving iteration", translation: "迭代的 / 反覆的" }
+    ]
+  },
+  "it": {
+    mean: "go",
+    words: [
+      { word: "transition", breakdown: ["trans", "it", "ion"], meaning: "process of changing from one state to another", translation: "過渡 / 轉換" }
+    ]
+  },
+  "vari": {
+    mean: "change",
+    words: [
+      { word: "covariate", breakdown: ["co", "vari", "ate"], meaning: "a continuous independent variable", translation: "共變數" }
+    ]
+  },
+  "just": {
+    mean: "law, right",
+    words: [
+      { word: "adjustment", breakdown: ["ad", "just", "ment"], meaning: "a small alteration or movement made to achieve a desired fit", translation: "調整" }
+    ]
+  },
+  "test": {
+    mean: "to examine or prove",
+    words: [
+      { word: "pretest", breakdown: ["pre", "test"], meaning: "a test given before a course of instruction", translation: "前測" }
+    ]
+  },
   "believe": { 
     mean: "to accept as true", 
     words: [
