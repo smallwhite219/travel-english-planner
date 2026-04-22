@@ -5,9 +5,8 @@
 // 預設的使用者 ID，若未來加上登入系統可替換
 const USER_ID = 'user_traveler_001';
 
-// 注意：請將部署後的 GAS Web App URL 填入這裡，或透過 .env 注入
-// 如果沒有 GAS 網址，會自動 fallback 回 localStorage 模式
-const GAS_URL = import.meta.env.VITE_GAS_URL || 'https://script.google.com/macros/s/AKfycbxa_sKeiaDV00IJm-gKruKaRmw7OsBWQo--d39N7Iz0U4wRnWwtazj9jHR_EbTRPQKp/exec'; 
+// 注意：請務必在專案根目錄建立 .env.local 檔案，並設定 VITE_GAS_URL=您的新網址
+const GAS_URL = import.meta.env.VITE_GAS_URL;
 
 export class SRSService {
   static getLocalProgress() {

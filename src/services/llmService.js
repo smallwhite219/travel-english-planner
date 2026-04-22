@@ -1,6 +1,6 @@
 export const fetchMorphologyFromLLM = async (word) => {
   // 改為直接讀取您的 GAS 網址 (與 SRS 使用相同的 GAS_URL)
-  const GAS_URL = import.meta.env.VITE_GAS_URL || 'https://script.google.com/macros/s/AKfycbxa_sKeiaDV00IJm-gKruKaRmw7OsBWQo--d39N7Iz0U4wRnWwtazj9jHR_EbTRPQKp/exec'; 
+  const GAS_URL = import.meta.env.VITE_GAS_URL; 
 
   if (!GAS_URL) {
     console.warn("Missing VITE_GAS_URL in environment variables.");

@@ -107,8 +107,7 @@ If a prefix or suffix does not exist, omit it.
           "Content-Type": "application/json"
         },
         payload: JSON.stringify({
-          model: "qwen/qwen-2.5-72b-instruct:free",
-          response_format: { type: "json_object" },
+          model: "google/gemma-4-26b-a4b-it:free",
           messages: [{ role: "user", content: prompt }]
         }),
         muteHttpExceptions: true
