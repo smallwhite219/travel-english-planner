@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { wordDictionary, prefixes, suffixes, roots } from '../data/morphology-data';
 import { speakText } from '../utils/tts';
+import { fetchMorphologyFromLLM } from '../services/llmService';
 
 // Helper to shuffle an array
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
@@ -14,24 +15,22 @@ const MorphologyGame = () => {
   const [message, setMessage] = useState('Drag the blocks to the correct slots!');
   const [isSuccess, setIsSuccess] = useState(false);
   
+  const [dynamicWords, setDynamicWords] = useState({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [customWordInput, setCustomWordInput] = useState('');
+  
   const slotRefs = useRef([]);
 
-  // Generate a new level
-  const generateLevel = () => {
+  const playWord = (wordObj) => {
     setIsSuccess(false);
     setMessage('Build the word based on the meaning!');
-    
-    // Pick a random word from the dictionary that has at least 2 parts
-    const words = Object.values(wordDictionary).filter(w => w.breakdown.length >= 2);
-    const randomWord = words[Math.floor(Math.random() * words.length)];
-    
-    setTargetWordObj(randomWord);
+    setTargetWordObj(wordObj);
     
     // Create initial assembly array filled with nulls
-    setAssembly(new Array(randomWord.breakdown.length).fill(null));
+    setAssembly(new Array(wordObj.breakdown.length).fill(null));
     
     // Get the correct parts
-    const correctParts = randomWord.breakdown.map((partStr, index) => {
+    const correctParts = wordObj.breakdown.map((partStr, index) => {
       // Determine type for coloring
       let type = 'other';
       if (prefixes[partStr]) type = 'prefix';
@@ -46,7 +45,7 @@ const MorphologyGame = () => {
       { text: 'pre', type: 'prefix' }, { text: 'un', type: 'prefix' }, { text: 're', type: 'prefix' },
       { text: 'dict', type: 'root' }, { text: 'vis', type: 'root' }, { text: 'cred', type: 'root' },
       { text: 'able', type: 'suffix' }, { text: 'tion', type: 'suffix' }, { text: 'ly', type: 'suffix' }
-    ].filter(d => !randomWord.breakdown.includes(d.text));
+    ].filter(d => !wordObj.breakdown.includes(d.text));
     
     const distractors = shuffleArray(allDistractors).slice(0, 3).map((d, index) => ({
       id: `distractor-${index}`,
@@ -56,6 +55,52 @@ const MorphologyGame = () => {
     }));
     
     setPool(shuffleArray([...correctParts, ...distractors]));
+  };
+
+  // Generate a new level
+  const generateLevel = () => {
+    const allWords = [...Object.values(wordDictionary), ...Object.values(dynamicWords)];
+    const words = allWords.filter(w => w.breakdown.length >= 2);
+    if (words.length === 0) return;
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    playWord(randomWord);
+  };
+
+  const handleAddNewWord = async (e) => {
+    e.preventDefault();
+    if (!customWordInput.trim()) return;
+    
+    const wordLower = customWordInput.trim().toLowerCase();
+    setCustomWordInput('');
+    
+    if (wordDictionary[wordLower] || dynamicWords[wordLower]) {
+      setMessage("單字已存在於字庫中！");
+      const wordObj = wordDictionary[wordLower] || dynamicWords[wordLower];
+      if (wordObj.breakdown && wordObj.breakdown.length >= 2) {
+         playWord(wordObj);
+      } else {
+         setMessage("單字無法拆分為多個部分進行遊戲。");
+      }
+      return;
+    }
+
+    setIsGenerating(true);
+    setMessage(`正在呼叫 LLM 拆解單字: ${wordLower}...`);
+
+    const newWordData = await fetchMorphologyFromLLM(wordLower);
+
+    if (newWordData && newWordData.breakdown && newWordData.breakdown.length >= 2) {
+      setDynamicWords(prev => ({
+        ...prev,
+        [wordLower]: newWordData
+      }));
+      
+      setMessage(`成功建立新單字：${newWordData.translation}`);
+      playWord(newWordData);
+    } else {
+      setMessage(newWordData ? "單字拆解結果不足以進行積木遊戲。" : "字根拆解失敗，請確認 API Key 或稍後再試。");
+    }
+    setIsGenerating(false);
   };
 
   useEffect(() => {
@@ -127,6 +172,24 @@ const MorphologyGame = () => {
             Morphology Builder Game
           </h1>
           <p className="text-gray-400">Level {level} - Construct the word</p>
+          
+          <form onSubmit={handleAddNewWord} className="mt-4 flex justify-center max-w-md mx-auto">
+            <input 
+              type="text" 
+              value={customWordInput}
+              onChange={(e) => setCustomWordInput(e.target.value)}
+              placeholder="Search or dynamically generate word..." 
+              className="bg-gray-800 border border-gray-600 text-white rounded-l-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-500"
+              disabled={isGenerating}
+            />
+            <button 
+              type="submit" 
+              className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-6 py-2 rounded-r-lg disabled:opacity-50 transition-colors"
+              disabled={isGenerating}
+            >
+              {isGenerating ? "..." : "Load"}
+            </button>
+          </form>
         </div>
 
         {/* Target Meaning */}

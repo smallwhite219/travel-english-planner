@@ -2,38 +2,69 @@ import React, { useState } from 'react';
 import WordDeconstructionVisualizer from '../components/WordDeconstructionVisualizer';
 import WordFamilyGraph from '../components/WordFamilyGraph';
 import { MorphologyEngine } from '../utils/morphologyEngine';
+import { fetchMorphologyFromLLM } from '../services/llmService';
+import { prefixes, suffixes } from '../data/morphology-data';
 
 const MorphologyPage = () => {
   const [query, setQuery] = useState('');
   const [parsedParts, setParsedParts] = useState(null);
   const [familyData, setFamilyData] = useState(null);
   const [error, setError] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
 
     setError('');
-    const parts = MorphologyEngine.parseWord(query);
+    let parts = MorphologyEngine.parseWord(query);
+    let rootText = '';
     
     if (parts.length === 1 && parts[0].type === 'unknown') {
-      setParsedParts(null);
-      setFamilyData(null);
-      setError(`Sorry, "${query}" is not in our morphology database yet. Try "unbelievable", "predict", "invisible", or "autograph".`);
-      return;
+      setIsGenerating(true);
+      setError('Dynamically parsing word using AI...');
+      
+      const wordLower = query.trim().toLowerCase();
+      const llmResult = await fetchMorphologyFromLLM(wordLower);
+      setIsGenerating(false);
+
+      if (llmResult && llmResult.breakdown && llmResult.breakdown.length > 0) {
+        parts = llmResult.breakdown.map(partStr => {
+          let type = 'root';
+          let meaning = '';
+          if (prefixes[partStr]) {
+            type = 'prefix';
+            meaning = prefixes[partStr].meaning;
+          } else if (suffixes[partStr]) {
+            type = 'suffix';
+            meaning = suffixes[partStr].meaning;
+          } else {
+            type = 'root';
+            meaning = llmResult.rootMeaning || 'Root part';
+            rootText = partStr;
+          }
+          return { text: partStr, type, meaning };
+        });
+        setError('');
+      } else {
+        setParsedParts(null);
+        setFamilyData(null);
+        setError(`Sorry, "${query}" is not in our morphology database yet, and AI parsing failed. Try "predict" or "invisible".`);
+        return;
+      }
+    } else {
+      const rootPart = parts.find(p => p.type === 'root');
+      if (rootPart) rootText = rootPart.text;
     }
 
     setParsedParts(parts);
     
-    // Find the root from the parsed parts to get the family
-    const rootPart = parts.find(p => p.type === 'root');
-    if (rootPart) {
-      const family = MorphologyEngine.getWordFamily(rootPart.text);
-      setFamilyData(family);
+    if (rootText) {
+      const family = MorphologyEngine.getWordFamily(rootText);
+      setFamilyData(family && family.words && family.words.length > 0 ? family : null);
     } else {
-      // Maybe the user searched directly for a root
       const directFamily = MorphologyEngine.getWordFamily(query);
-      setFamilyData(directFamily);
+      setFamilyData(directFamily && directFamily.words && directFamily.words.length > 0 ? directFamily : null);
     }
   };
 
@@ -66,12 +97,13 @@ const MorphologyPage = () => {
             />
             <button 
               type="submit"
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-full mr-1 transition-colors duration-300"
+              disabled={isGenerating}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-full mr-1 transition-colors duration-300 disabled:opacity-50"
             >
-              Analyze
+              {isGenerating ? 'Analyzing...' : 'Analyze'}
             </button>
           </div>
-          {error && <p className="text-red-400 text-center mt-3 text-sm">{error}</p>}
+          {error && <p className={`text-center mt-3 text-sm ${isGenerating ? 'text-blue-400' : 'text-red-400'}`}>{error}</p>}
         </form>
 
         {/* Results Area */}

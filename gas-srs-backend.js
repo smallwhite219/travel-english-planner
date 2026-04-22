@@ -78,15 +78,61 @@ function doGet(e) {
   }
 }
 
-// 處理 POST 請求 (更新或新增 SRS 進度)
+// 處理 POST 請求 (支援「更新 SRS 進度」與「LLM 單字拆解」兩種 Action)
 function doPost(e) {
   try {
     const postData = JSON.parse(e.postData.contents);
+    
+    // ==========================================
+    // Action 1: LLM 代理呼叫 (安全隱藏 API Key)
+    // ==========================================
+    if (postData.action === 'generateWord') {
+      const word = postData.word;
+      
+      // 從專案設定的「指令碼屬性」取得 API Key
+      const apiKey = PropertiesService.getScriptProperties().getProperty("OPENROUTER_API_KEY");
+      if (!apiKey) throw new Error("OPENROUTER_API_KEY not found in Script Properties.");
+      
+      const prompt = `
+You are an expert in English morphology. Break down the word "${word}" into its prefixes, root, and suffixes.
+Return ONLY a valid JSON object in this exact format, with no markdown formatting:
+{ "word": "${word}", "root": "root_part", "rootMeaning": "meaning of the root", "breakdown": ["prefix", "root", "suffix"], "meaning": "English definition", "translation": "繁體中文翻譯" }
+If a prefix or suffix does not exist, omit it.
+      `;
+      
+      const options = {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        payload: JSON.stringify({
+          model: "qwen/qwen-2.5-72b-instruct:free",
+          response_format: { type: "json_object" },
+          messages: [{ role: "user", content: prompt }]
+        }),
+        muteHttpExceptions: true
+      };
+      
+      const response = UrlFetchApp.fetch("https://openrouter.ai/api/v1/chat/completions", options);
+      const data = JSON.parse(response.getContentText());
+      
+      if (data.error) throw new Error(data.error.message || "OpenRouter API Error");
+      
+      let resultText = data.choices[0].message.content;
+      resultText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+      
+      return handleResponse({ status: 'success', data: JSON.parse(resultText) });
+    }
+
+    // ==========================================
+    // Action 2: 原本的 SRS 進度更新邏輯
+    // ==========================================
     const userId = postData.userId || 'default_user';
     const updates = postData.updates; // 預期為陣列 [{ wordId: '...', progress: { repetition, interval, efactor, nextReviewDate } }]
     
     if (!updates || !Array.isArray(updates)) {
-      throw new Error("Invalid payload. 'updates' array is required.");
+      throw new Error("Invalid payload. 'updates' array is required for SRS update.");
     }
     
     const docId = PropertiesService.getScriptProperties().getProperty('SRS_DOC_ID');
