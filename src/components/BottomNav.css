@@ -5,7 +5,7 @@
   right: 0;
   height: 80px;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
   padding-bottom: env(safe-area-inset-bottom, 20px);
@@ -13,6 +13,19 @@
   border-bottom: none;
   z-index: 50;
   background: rgba(24, 24, 27, 0.85);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .bottom-nav {
+    justify-content: center;
+  }
 }
 
 .nav-btn {
@@ -27,7 +40,8 @@
   padding: 8px 12px;
   border-radius: 12px;
   transition: all 0.2s ease;
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 72px;
 }
 
 .nav-btn:hover {
