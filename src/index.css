@@ -213,6 +213,23 @@ body {
   border-radius: 12px;
 }
 
+.vocab-cell {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+  align-items: start;
+  min-width: 0;
+}
+
+.vocab-play {
+  color: #9ed0ff;
+  margin-top: 2px;
+}
+
+.vocab-play:hover {
+  color: #d7e5ff;
+}
+
 .bg-white\/5,
 .bg-white\/10,
 .bg-black\/30,

@@ -53,6 +53,24 @@ function PhraseList({ title, icon: Icon, phrases, lang }) {
   );
 }
 
+function VocabCell({ text, label, lang, strong = true }) {
+  return (
+    <div className="vocab-cell">
+      <button
+        onClick={() => speakText(text, { lang, rate: lang === 'ja-JP' ? 0.82 : 0.88 })}
+        className="vocab-play"
+        aria-label={`Play ${label}: ${text}`}
+      >
+        <PlayCircle size={16} />
+      </button>
+      <div className="min-w-0">
+        <p className={strong ? 'text-white font-semibold' : 'text-slate-200'}>{text}</p>
+        <p className="text-slate-400 text-xs">{label}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function TravelRoleplay() {
   const [selectedScenarioId, setSelectedScenarioId] = useState(null);
 
@@ -135,18 +153,9 @@ export default function TravelRoleplay() {
             <div className="vocab-list">
               {scenario.key_vocabulary.map((word, idx) => (
                 <div key={idx} className="vocab-row">
-                  <div>
-                    <p className="text-white font-semibold">{word.en}</p>
-                    <p className="text-slate-400 text-xs">English</p>
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">{word.jp}</p>
-                    <p className="text-slate-400 text-xs">日本語</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-200">{word.zh}</p>
-                    <p className="text-slate-400 text-xs">中文</p>
-                  </div>
+                  <VocabCell text={word.en} label="English" lang="en-US" />
+                  <VocabCell text={word.jp} label="日本語" lang="ja-JP" />
+                  <VocabCell text={word.zh} label="中文" lang="zh-TW" strong={false} />
                 </div>
               ))}
             </div>
