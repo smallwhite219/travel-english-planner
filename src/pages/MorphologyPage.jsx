@@ -74,7 +74,7 @@ const MorphologyPage = () => {
         
         {/* Header Area */}
         <div className="text-center space-y-3">
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-blue-100">
             Word Morphology
           </h1>
           <p className="text-gray-400 text-sm md:text-base max-w-lg mx-auto">
@@ -84,7 +84,7 @@ const MorphologyPage = () => {
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="relative w-full max-w-xl mx-auto">
-          <div className="relative flex items-center bg-gray-800/80 rounded-full border-2 border-gray-700/80 focus-within:border-blue-500/50 shadow-lg overflow-hidden transition-colors duration-300 backdrop-blur-md">
+          <div className="relative flex items-center bg-gray-800 rounded-full border-2 border-gray-700 focus-within:border-blue-500 shadow-lg overflow-hidden transition-colors duration-300">
             <svg className="w-6 h-6 text-gray-400 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -93,7 +93,7 @@ const MorphologyPage = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Try 'unbelievable', 'predict', or 'vision'..."
-              className="w-full bg-transparent border-none py-4 px-4 text-gray-200 focus:outline-none placeholder-gray-500 text-lg"
+              className="w-full bg-gray-800 border-none py-4 px-4 text-gray-200 focus:outline-none placeholder-gray-500 text-lg"
             />
             <button 
               type="submit"

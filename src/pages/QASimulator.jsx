@@ -17,9 +17,9 @@ export default function QASimulator() {
   };
 
   const getDifficultyColor = (diff) => {
-    if (diff === 'common') return 'text-green-400 bg-green-400/10 border-green-400/20';
-    if (diff === 'moderate') return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
-    return 'text-red-400 bg-red-400/10 border-red-400/20';
+    if (diff === 'common') return 'text-green-300 bg-green-950 border-green-700';
+    if (diff === 'moderate') return 'text-yellow-300 bg-yellow-950 border-yellow-700';
+    return 'text-red-300 bg-red-950 border-red-700';
   };
 
   return (
@@ -45,12 +45,12 @@ export default function QASimulator() {
 
       <div className="glass-panel p-6 mb-6 border-t-4 border-orange-500">
         <div className="flex justify-between items-start mb-4">
-          <span className="text-xs text-orange-300 font-mono uppercase bg-orange-500/10 px-2 py-1 rounded">
+          <span className="text-xs text-orange-300 font-mono uppercase bg-orange-950 px-2 py-1 rounded">
             Audience asks:
           </span>
           <button 
             onClick={() => speakText(currentQ.question)}
-            className="text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
+            className="text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
           >
             <PlayCircle size={20} />
           </button>
@@ -78,7 +78,7 @@ export default function QASimulator() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="glass-panel p-6 border border-white/5 bg-black/40 mb-6">
+            <div className="glass-panel p-6 border border-gray-700 bg-gray-900 mb-6">
               <h3 className="text-sm text-blue-400 font-semibold mb-3 flex items-center gap-2">
                 <CheckCircle2 size={16} /> 
                 Recommended Response
@@ -87,11 +87,11 @@ export default function QASimulator() {
                 {currentQ.model_answer}
               </p>
               
-              <div className="border-t border-white/10 pt-4">
+              <div className="border-t border-gray-700 pt-4">
                 <h4 className="text-xs text-gray-500 uppercase tracking-widest mb-3">Key Phrases to Hit:</h4>
                 <div className="flex flex-wrap gap-2">
                   {currentQ.key_phrases.map((phrase, idx) => (
-                    <span key={idx} className="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-xs">
+                    <span key={idx} className="bg-blue-950 text-blue-300 border border-blue-700 px-3 py-1 rounded-full text-xs">
                       {phrase}
                     </span>
                   ))}

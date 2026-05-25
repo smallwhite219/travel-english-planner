@@ -28,7 +28,7 @@ const WordCard = ({ wordObj, root }) => {
       >
         {/* FRONT SIDE (English) */}
         <div 
-          className="absolute inset-0 w-full h-full bg-gray-900/80 border border-gray-600 group-hover:border-blue-400/50 rounded-xl p-4 shadow-lg flex flex-col items-center justify-center backface-hidden"
+          className="absolute inset-0 w-full h-full bg-gray-900 border border-gray-600 group-hover:border-blue-400 rounded-xl p-4 shadow-lg flex flex-col items-center justify-center backface-hidden"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <span className="text-xl font-bold text-gray-100 text-center mb-3 drop-shadow-sm">{wordObj.word}</span>
@@ -48,7 +48,7 @@ const WordCard = ({ wordObj, root }) => {
 
         {/* BACK SIDE (Traditional Chinese) */}
         <div 
-          className="absolute inset-0 w-full h-full bg-blue-900/90 border border-blue-400/50 rounded-xl p-4 shadow-lg flex flex-col items-center justify-center backface-hidden"
+          className="absolute inset-0 w-full h-full bg-blue-950 border border-blue-400 rounded-xl p-4 shadow-lg flex flex-col items-center justify-center backface-hidden"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <span className="text-xl font-bold text-white text-center mb-2">{wordObj.translation || "無翻譯"}</span>
@@ -67,13 +67,13 @@ const WordFamilyGraph = ({ familyData }) => {
   const { root, mean, family } = familyData;
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-800/50 rounded-2xl border border-gray-700/50 shadow-lg backdrop-blur-sm mt-6 overflow-hidden">
+    <div className="flex flex-col items-center p-6 bg-gray-800 rounded-2xl border border-gray-700 shadow-lg mt-6 overflow-hidden">
       <h3 className="text-xl font-semibold text-gray-200 mb-6 tracking-wide">Word Family Tree</h3>
       
       {/* Root Node */}
       <div 
         onClick={() => speakText(root)}
-        className="relative z-10 flex flex-col items-center justify-center px-8 py-4 bg-blue-600/30 border-2 border-blue-500 rounded-2xl shadow-[0_0_15px_rgba(59,130,246,0.3)] mb-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+        className="relative z-10 flex flex-col items-center justify-center px-8 py-4 bg-blue-900 border-2 border-blue-500 rounded-2xl shadow-lg mb-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform"
         title="Click to hear pronunciation"
       >
         <span className="text-sm text-blue-300 uppercase tracking-wider font-bold mb-1">Root</span>

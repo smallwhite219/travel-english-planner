@@ -31,7 +31,7 @@ export default function StatsCard() {
         ))}
       </div>
 
-      <div className="glass-panel p-6 bg-pink-500/5 border border-pink-500/20 text-center">
+      <div className="glass-panel p-6 bg-pink-950 border border-pink-700 text-center">
         <p className="text-sm text-gray-300 mb-4 leading-relaxed">
           Need to hear how all these numbers sound in a continuous presentation flow?
         </p>

@@ -46,7 +46,7 @@ export default function TermsDrill() {
             className="w-full relative preserve-3d cursor-pointer"
             onClick={() => setShowDetails(!showDetails)}
           >
-            {/* The Glass Card */}
+            {/* Study card */}
             <div className={`glass-panel p-8 w-full min-h-[300px] flex flex-col justify-center items-center text-center transition-all duration-300 ${showDetails ? 'ring-2 ring-blue-500/50' : ''}`}>
               <h2 className="text-4xl font-bold mb-4 text-white tracking-wide">
                 {currentTerm.term}
@@ -60,7 +60,7 @@ export default function TermsDrill() {
                   animate={{ opacity: 1 }}
                   className="w-full flex justify-center flex-col items-center gap-4"
                 >
-                  <div className="bg-white/10 rounded-lg px-6 py-2 border border-white/20">
+                  <div className="bg-gray-800 rounded-lg px-6 py-2 border border-gray-600">
                     <span className="text-xl font-mono text-blue-300 tracking-wider">
                       {currentTerm.pronunciation}
                     </span>
@@ -73,14 +73,14 @@ export default function TermsDrill() {
                   )}
                   
                   {currentTerm.practice_sentence && (
-                    <div className="text-left w-full mt-4 bg-black/30 p-4 rounded-xl border-l-4 border-l-purple-500">
+                    <div className="text-left w-full mt-4 bg-gray-900 p-4 rounded-xl border-l-4 border-l-purple-500">
                       <p className="text-sm text-gray-400 mb-1 flex items-center gap-1"><BookOpen size={14}/> Practice Sentence</p>
                       <p className="text-md text-gray-200 leading-relaxed">
                         "{currentTerm.practice_sentence}"
                       </p>
                       <button 
                         onClick={(e) => { e.stopPropagation(); handleTTS(currentTerm.practice_sentence); }}
-                        className="mt-3 text-purple-400 flex items-center gap-1 text-sm hover:text-purple-300 bg-purple-500/10 px-3 py-1.5 rounded-full w-fit"
+                        className="mt-3 text-purple-300 flex items-center gap-1 text-sm hover:text-purple-200 bg-purple-950 px-3 py-1.5 rounded-full w-fit"
                       >
                         <PlayCircle size={16} /> Play Sentence
                       </button>

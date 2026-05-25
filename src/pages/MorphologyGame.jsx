@@ -168,7 +168,7 @@ const MorphologyGame = () => {
         
         {/* Header */}
         <div className="text-center space-y-3">
-          <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500">
+          <h1 className="text-4xl font-extrabold text-amber-100">
             Morphology Builder Game
           </h1>
           <p className="text-gray-400">Level {level} - Construct the word</p>
@@ -193,7 +193,7 @@ const MorphologyGame = () => {
         </div>
 
         {/* Target Meaning */}
-        <div className="bg-gray-800/80 border border-gray-700 p-6 rounded-2xl shadow-xl text-center">
+        <div className="bg-gray-800 border border-gray-700 p-6 rounded-2xl shadow-xl text-center">
           <h2 className="text-xl text-gray-400 mb-2">Meaning:</h2>
           <p className="text-2xl font-bold text-white tracking-wide">"{targetWordObj.meaning}"</p>
           <p className={`mt-4 text-sm font-semibold transition-colors duration-300 ${isSuccess ? 'text-green-400' : 'text-amber-400'}`}>
@@ -202,13 +202,13 @@ const MorphologyGame = () => {
         </div>
 
         {/* Assembly Area (Drop Zones) */}
-        <div className="flex flex-wrap justify-center gap-4 py-8 bg-gray-800/40 rounded-3xl border-2 border-dashed border-gray-600 min-h-[150px] items-center">
+        <div className="flex flex-wrap justify-center gap-4 py-8 bg-gray-800 rounded-3xl border-2 border-dashed border-gray-600 min-h-[150px] items-center">
           {assembly.map((placedPiece, index) => (
             <div 
               key={index}
               ref={el => slotRefs.current[index] = el}
               className={`relative flex items-center justify-center w-32 h-20 rounded-xl border-4 transition-all duration-300
-                ${placedPiece ? 'border-transparent' : 'border-gray-700 bg-gray-900/50'}`}
+                ${placedPiece ? 'border-slate-700' : 'border-gray-700 bg-gray-900'}`}
             >
               {!placedPiece && (
                 <span className="text-gray-600 font-bold opacity-50">Slot {index + 1}</span>

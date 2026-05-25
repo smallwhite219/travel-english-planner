@@ -9,15 +9,26 @@ tech_stack:
   icons: "Lucide React"
   utils: ["html2pdf.js", "Web Speech API"]
 ui_ux:
-  theme: "Glassmorphism"
+  theme: "Opaque dark study UI"
   transitions: "Framer Motion fade/slide"
   responsive: true
+  accessibility:
+    - "No translucent glass panels"
+    - "Solid backgrounds for long reading sessions"
+    - "Avoid high-glow overlays behind text"
 domain_models:
+  ItineraryNode:
+    fields: [id, date, time, title, location, city, attention, relatedScenarioIds]
   TimelineNode:
     fields: [id, title, bgImage, scriptData]
-    data: ["嘉義", "高鐵", "機場", "飛航", "海關", "ICLEA2026"]
+    data: ["桃園機場前泊", "TPE/KMJ 航班", "熊本接機", "市區飯店", "ICLEA2026", "機場飯店", "回程航班"]
   ScriptLine:
     fields: [speaker, text, translation]
+  PhrasePair:
+    fields: [speaker, text, zh]
+    languages: ["en-US", "ja-JP"]
+  VocabularyItem:
+    fields: [en, jp, zh]
 features:
   dynamic_timeline:
     trigger: "onClick(Node)"
@@ -25,7 +36,7 @@ features:
   tts_engine:
     api: "window.speechSynthesis"
     controls: ["Play/Pause", "Rate Slider"]
-    logic: "Assign specific OS Voice based on Speaker (NPC/User)"
+    logic: "Select matching voice by language, fallback to browser default"
   pdf_export:
     api: "html2pdf.js"
     layout: "A4"

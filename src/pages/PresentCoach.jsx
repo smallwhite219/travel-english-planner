@@ -23,14 +23,14 @@ export default function PresentCoach() {
         <p className="page-subtitle">Rehearse your conference talk</p>
       </header>
 
-      <div className="glass-panel p-5 mb-6 border-l-4 border-l-purple-500 bg-purple-500/5">
+      <div className="glass-panel p-5 mb-6 border-l-4 border-l-purple-500 bg-purple-950">
         <h3 className="text-sm font-semibold text-purple-300 mb-2">Model Opening Script</h3>
         <p className="text-sm text-gray-300 leading-relaxed italic">
           "{openingScript}"
         </p>
         <button 
           onClick={() => speakText(openingScript, 0.9)}
-          className="mt-3 flex items-center gap-2 text-xs font-semibold text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full"
+          className="mt-3 flex items-center gap-2 text-xs font-semibold text-purple-300 bg-purple-950 px-3 py-1.5 rounded-full"
         >
           <PlayCircle size={14} /> Listen to Flow
         </button>
@@ -40,7 +40,7 @@ export default function PresentCoach() {
         <h3 className="text-sm text-gray-400 font-medium tracking-wider uppercase mb-4">Self-Recording Practice</h3>
         <button 
           onClick={() => setIsRecording(!isRecording)}
-          className={`mx-auto flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 transition-all duration-300 ${isRecording ? 'border-red-500 bg-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.4)]' : 'border-gray-500 bg-white/5 hover:bg-white/10'}`}
+          className={`mx-auto flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 transition-all duration-300 ${isRecording ? 'border-red-500 bg-red-950 shadow-xl' : 'border-gray-500 bg-gray-800 hover:bg-gray-700'}`}
         >
           {isRecording ? <StopCircle size={32} className="text-red-500 mb-1" /> : <Mic size={32} className="text-gray-400 mb-1" />}
           <span className={`text-xs font-bold ${isRecording ? 'text-red-400' : 'text-gray-400'}`}>
@@ -61,7 +61,7 @@ export default function PresentCoach() {
                 <h4 className="text-white font-medium text-sm">{sec.title}</h4>
                 <p className="text-gray-400 text-xs mt-1">{sec.hint}</p>
               </div>
-              <span className="text-xs font-mono font-bold text-purple-400 bg-purple-500/20 px-2 py-1 rounded">
+              <span className="text-xs font-mono font-bold text-purple-300 bg-purple-950 px-2 py-1 rounded">
                 ~{sec.duration}
               </span>
             </div>

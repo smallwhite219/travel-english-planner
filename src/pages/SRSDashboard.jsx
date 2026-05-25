@@ -58,7 +58,7 @@ const SRSDashboard = ({ onNavigate }) => {
       <div className="max-w-4xl w-full mx-auto space-y-8 mt-6">
         
         <div className="text-center space-y-3">
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-purple-100">
             SRS Mastery
           </h1>
           <p className="text-gray-400 text-sm md:text-base">
@@ -67,7 +67,7 @@ const SRSDashboard = ({ onNavigate }) => {
         </div>
 
         {/* Task Board */}
-        <div className="bg-gray-800/80 border border-gray-700 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex gap-8 text-center">
             <div>
               <p className="text-3xl font-bold text-blue-400">{stats.newCards}</p>
@@ -116,7 +116,7 @@ const SRSDashboard = ({ onNavigate }) => {
               const pct = total === 0 ? 0 : Math.round((learned / total) * 100);
 
               return (
-                <div key={idx} className="bg-gray-800/50 border border-gray-700 p-5 rounded-xl hover:bg-gray-800 transition-colors">
+                <div key={idx} className="bg-gray-800 border border-gray-700 p-5 rounded-xl hover:bg-gray-700 transition-colors">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-bold text-lg text-blue-300">{week.title}</h3>
                     <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">

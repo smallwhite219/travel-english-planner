@@ -6,10 +6,10 @@ const WordDeconstructionVisualizer = ({ parts }) => {
 
   const getColorClass = (type) => {
     switch (type) {
-      case 'prefix': return 'bg-red-500/20 text-red-400 border-red-500/50';
-      case 'root': return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
-      case 'suffix': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/50';
+      case 'prefix': return 'bg-red-950 text-red-300 border-red-700';
+      case 'root': return 'bg-blue-950 text-blue-300 border-blue-700';
+      case 'suffix': return 'bg-emerald-950 text-emerald-300 border-emerald-700';
+      default: return 'bg-gray-800 text-gray-300 border-gray-600';
     }
   };
 
@@ -23,7 +23,7 @@ const WordDeconstructionVisualizer = ({ parts }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-gray-800/50 rounded-2xl border border-gray-700/50 shadow-lg backdrop-blur-sm">
+    <div className="flex flex-col items-center justify-center p-6 bg-gray-800 rounded-2xl border border-gray-700 shadow-lg">
       <h3 className="text-xl font-semibold text-gray-200 mb-6 tracking-wide">Deconstruction</h3>
       <div className="flex flex-wrap gap-4 justify-center items-center">
         {parts.map((part, index) => (
