@@ -17,7 +17,14 @@ import {
   talperPresentationSlides,
 } from '../data/talper-presentation';
 import talperDeckPdf from '../assets/talper-presentation/TALPer_SRL_4L_20min.pdf';
-import { cancelSpeech, pauseSpeech, resumeSpeech, speakText } from '../utils/tts';
+import {
+  cancelSpeech,
+  getEnglishVoices,
+  pauseSpeech,
+  resumeSpeech,
+  speakText,
+  subscribeToVoiceChanges,
+} from '../utils/tts';
 
 const clampSlideIndex = (index) =>
   Math.min(Math.max(index, 0), talperPresentationSlides.length - 1);
@@ -28,6 +35,8 @@ export default function PresentCoach() {
   const [isPaused, setIsPaused] = useState(false);
   const [speechError, setSpeechError] = useState('');
   const [rate, setRate] = useState(0.9);
+  const [englishVoices, setEnglishVoices] = useState([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
   const playbackSessionRef = useRef(0);
   const isMountedRef = useRef(true);
 
@@ -38,11 +47,27 @@ export default function PresentCoach() {
 
   useEffect(() => {
     isMountedRef.current = true;
+    const syncVoices = () => {
+      const nextVoices = getEnglishVoices();
+      setEnglishVoices(nextVoices);
+      setSelectedVoiceURI((currentVoiceURI) => {
+        if (currentVoiceURI && nextVoices.some((voice) => voice.voiceURI === currentVoiceURI)) {
+          return currentVoiceURI;
+        }
+
+        const defaultVoice = nextVoices.find((voice) => voice.default) ?? nextVoices[0];
+        return defaultVoice?.voiceURI ?? '';
+      });
+    };
+
+    syncVoices();
+    const unsubscribe = subscribeToVoiceChanges(syncVoices);
 
     return () => {
       isMountedRef.current = false;
       playbackSessionRef.current += 1;
       cancelSpeech();
+      unsubscribe();
     };
   }, []);
 
@@ -81,7 +106,7 @@ export default function PresentCoach() {
     const sessionId = beginPlaybackSession('single');
 
     try {
-      await speakText(activeSlide.script, { rate, lang: 'en-US' });
+      await speakText(activeSlide.script, { rate, lang: 'en-US', voiceURI: selectedVoiceURI });
     } catch {
       setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
     } finally {
@@ -108,7 +133,11 @@ export default function PresentCoach() {
           return;
         }
 
-        await speakText(talperPresentationSlides[index].script, { rate, lang: 'en-US' });
+        await speakText(talperPresentationSlides[index].script, {
+          rate,
+          lang: 'en-US',
+          voiceURI: selectedVoiceURI,
+        });
       }
     } catch {
       setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
@@ -258,6 +287,24 @@ export default function PresentCoach() {
               onChange={(event) => setRate(Number(event.target.value))}
             />
             <span>{rate.toFixed(2)}x</span>
+          </div>
+
+          <div className="voice-control">
+            <Volume2 size={16} />
+            <label htmlFor="english-voice">English TTS voice</label>
+            <select
+              id="english-voice"
+              value={selectedVoiceURI}
+              onChange={(event) => setSelectedVoiceURI(event.target.value)}
+              disabled={isSpeaking || englishVoices.length === 0}
+            >
+              {englishVoices.length === 0 && <option value="">No English voices detected</option>}
+              {englishVoices.map((voice) => (
+                <option key={voice.voiceURI} value={voice.voiceURI}>
+                  {voice.name} ({voice.lang}){voice.default ? ' - default' : ''}
+                </option>
+              ))}
+            </select>
           </div>
 
           {speechError && <p className="speech-error">{speechError}</p>}
