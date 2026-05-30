@@ -44,7 +44,7 @@ function App() {
       <div className="map-background"></div>
       <div className="map-overlay"></div>
       
-      <main className="content-container pb-24">
+      <main className={`content-container pb-24 ${currentTab === 'present' ? 'presentation-container' : ''}`}>
         {renderContent()}
       </main>
 

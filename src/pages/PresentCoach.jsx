@@ -1,73 +1,227 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, PlayCircle, StopCircle, Mic, AlertTriangle } from 'lucide-react';
-import { speakText } from '../utils/tts';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  FileText,
+  PauseCircle,
+  PlayCircle,
+  RotateCcw,
+  StopCircle,
+  Volume2,
+} from 'lucide-react';
+import {
+  talperPresentationMeta,
+  talperPresentationSlides,
+} from '../data/talper-presentation';
+import talperDeckPdf from '../assets/talper-presentation/TALPer_SRL_4L_20min.pdf';
+import { cancelSpeech, pauseSpeech, resumeSpeech, speakText } from '../utils/tts';
+
+const clampSlideIndex = (index) =>
+  Math.min(Math.max(index, 0), talperPresentationSlides.length - 1);
 
 export default function PresentCoach() {
-  const [isRecording, setIsRecording] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [speechError, setSpeechError] = useState('');
+  const [rate, setRate] = useState(0.9);
 
-  const sections = [
-    { title: '1. Opening', duration: '2 min', hint: 'Introduce yourself and the paper' },
-    { title: '2. Introduction', duration: '4 min', hint: 'Research background, paradox of GenAI and SRL' },
-    { title: '3. Method', duration: '4 min', hint: 'Participants, design, coding framework' },
-    { title: '4. Results', duration: '4 min', hint: 'ANCOVA, ENA findings' },
-    { title: '5. Discussion & Conclusion', duration: '4 min', hint: 'Key findings, implications, limitations' }
-  ];
+  const activeSlide = talperPresentationSlides[activeIndex];
+  const pdfPageUrl = `${talperDeckPdf}#page=${activeSlide.pdfPage}&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+  const progress = ((activeIndex + 1) / talperPresentationSlides.length) * 100;
 
-  const openingScript = "Good morning. My name is Zong-En Bai, and I'm a researcher from National Taichung University of Education in Taiwan. Today I'll present our study on how integrating an AI learning companion — called TALPer — into a structured self-regulated learning framework affects elementary students' mathematics learning.";
+  useEffect(() => {
+    cancelSpeech();
+    setIsSpeaking(false);
+    setIsPaused(false);
+    setSpeechError('');
+
+    return () => {
+      cancelSpeech();
+    };
+  }, [activeIndex]);
+
+  const goToSlide = (index) => {
+    setActiveIndex(clampSlideIndex(index));
+  };
+
+  const speakCurrentSlide = async () => {
+    setSpeechError('');
+    setIsSpeaking(true);
+    setIsPaused(false);
+
+    try {
+      await speakText(activeSlide.script, { rate, lang: 'en-US' });
+    } catch {
+      setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
+    } finally {
+      setIsSpeaking(false);
+      setIsPaused(false);
+    }
+  };
+
+  const pauseCurrentSpeech = () => {
+    pauseSpeech();
+    setIsPaused(true);
+  };
+
+  const resumeCurrentSpeech = () => {
+    resumeSpeech();
+    setIsPaused(false);
+  };
+
+  const stopCurrentSpeech = () => {
+    cancelSpeech();
+    setIsSpeaking(false);
+    setIsPaused(false);
+  };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pb-8">
-      <header className="page-header mb-6">
-        <h1 className="page-title text-purple-400">Presentation Coach</h1>
-        <p className="page-subtitle">Rehearse your conference talk</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="presentation-coach"
+    >
+      <header className="page-header presentation-hero">
+        <div>
+          <p className="presentation-kicker">Conference Rehearsal Deck</p>
+          <h1 className="page-title">Presentation Coach</h1>
+          <p className="page-subtitle">{talperPresentationMeta.title}</p>
+        </div>
+        <a
+          className="source-link"
+          href={talperPresentationMeta.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <ExternalLink size={16} />
+          Open Slides
+        </a>
       </header>
 
-      <div className="glass-panel p-5 mb-6 border-l-4 border-l-purple-500 bg-purple-950">
-        <h3 className="text-sm font-semibold text-purple-300 mb-2">Model Opening Script</h3>
-        <p className="text-sm text-gray-300 leading-relaxed italic">
-          "{openingScript}"
-        </p>
-        <button 
-          onClick={() => speakText(openingScript, 0.9)}
-          className="mt-3 flex items-center gap-2 text-xs font-semibold text-purple-300 bg-purple-950 px-3 py-1.5 rounded-full"
-        >
-          <PlayCircle size={14} /> Listen to Flow
-        </button>
-      </div>
-
-      <div className="glass-panel p-5 mb-6 text-center">
-        <h3 className="text-sm text-gray-400 font-medium tracking-wider uppercase mb-4">Self-Recording Practice</h3>
-        <button 
-          onClick={() => setIsRecording(!isRecording)}
-          className={`mx-auto flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 transition-all duration-300 ${isRecording ? 'border-red-500 bg-red-950 shadow-xl' : 'border-gray-500 bg-gray-800 hover:bg-gray-700'}`}
-        >
-          {isRecording ? <StopCircle size={32} className="text-red-500 mb-1" /> : <Mic size={32} className="text-gray-400 mb-1" />}
-          <span className={`text-xs font-bold ${isRecording ? 'text-red-400' : 'text-gray-400'}`}>
-            {isRecording ? '01:24' : 'START'}
-          </span>
-        </button>
-        <p className="text-xs text-gray-500 mt-4"><AlertTriangle size={12} className="inline mr-1"/> Mock timer only in this prototype</p>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <Clock className="text-gray-400" /> Structure (15-20 min)
-        </h3>
-        <div className="space-y-3">
-          {sections.map((sec, i) => (
-            <div key={i} className="glass-panel p-4 flex items-center justify-between">
-              <div>
-                <h4 className="text-white font-medium text-sm">{sec.title}</h4>
-                <p className="text-gray-400 text-xs mt-1">{sec.hint}</p>
-              </div>
-              <span className="text-xs font-mono font-bold text-purple-300 bg-purple-950 px-2 py-1 rounded">
-                ~{sec.duration}
-              </span>
-            </div>
-          ))}
+      <section className="presentation-stage glass-panel" aria-label="TALPer presentation slide player">
+        <div className="stage-topline">
+          <div>
+            <span className="slide-pill">Slide {activeSlide.number}</span>
+            <span className="slide-section">{activeSlide.section}</span>
+          </div>
+          <span className="deck-duration">{talperPresentationMeta.totalDuration}</span>
         </div>
-      </div>
+
+        <div className="slide-frame-shell">
+          <iframe
+            key={activeSlide.pdfPage}
+            className="slide-frame"
+            src={pdfPageUrl}
+            title={`Slide ${activeSlide.number}: ${activeSlide.title}`}
+          />
+        </div>
+
+        <div className="slide-progress" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+
+        <div className="slide-controls">
+          <button
+            className="coach-control secondary"
+            onClick={() => goToSlide(activeIndex - 1)}
+            disabled={activeIndex === 0}
+          >
+            <ChevronLeft size={18} />
+            Previous
+          </button>
+
+          <div className="listen-controls" aria-label="Narration controls">
+            {!isSpeaking && (
+              <button className="coach-control primary" onClick={speakCurrentSlide}>
+                <PlayCircle size={18} />
+                Listen
+              </button>
+            )}
+            {isSpeaking && !isPaused && (
+              <button className="coach-control primary" onClick={pauseCurrentSpeech}>
+                <PauseCircle size={18} />
+                Pause
+              </button>
+            )}
+            {isSpeaking && isPaused && (
+              <button className="coach-control primary" onClick={resumeCurrentSpeech}>
+                <PlayCircle size={18} />
+                Resume
+              </button>
+            )}
+            <button className="coach-control danger" onClick={stopCurrentSpeech} disabled={!isSpeaking}>
+              <StopCircle size={18} />
+              Stop
+            </button>
+          </div>
+
+          <button
+            className="coach-control secondary"
+            onClick={() => goToSlide(activeIndex + 1)}
+            disabled={activeIndex === talperPresentationSlides.length - 1}
+          >
+            Next
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </section>
+
+      <section className="practice-grid">
+        <article className="glass-panel script-panel">
+          <div className="script-header">
+            <div>
+              <p className="presentation-kicker">Speaker Notes</p>
+              <h2>{activeSlide.title}</h2>
+              <p>{activeSlide.subtitle}</p>
+            </div>
+            <button className="round-reset" onClick={() => goToSlide(0)} aria-label="Back to first slide">
+              <RotateCcw size={18} />
+            </button>
+          </div>
+
+          <div className="rate-control">
+            <Volume2 size={16} />
+            <label htmlFor="speech-rate">Speech rate</label>
+            <input
+              id="speech-rate"
+              type="range"
+              min="0.65"
+              max="1.1"
+              step="0.05"
+              value={rate}
+              onChange={(event) => setRate(Number(event.target.value))}
+            />
+            <span>{rate.toFixed(2)}x</span>
+          </div>
+
+          {speechError && <p className="speech-error">{speechError}</p>}
+
+          <p className="script-copy">{activeSlide.script}</p>
+        </article>
+
+        <aside className="glass-panel slide-list-panel">
+          <div className="slide-list-title">
+            <FileText size={18} />
+            <span>Slide Navigator</span>
+          </div>
+          <div className="slide-list">
+            {talperPresentationSlides.map((slide, index) => (
+              <button
+                key={slide.number}
+                className={`slide-list-item ${index === activeIndex ? 'active' : ''}`}
+                onClick={() => goToSlide(index)}
+              >
+                <span>{String(slide.number).padStart(2, '0')}</span>
+                <strong>{slide.title}</strong>
+                <small>{slide.section}</small>
+              </button>
+            ))}
+          </div>
+        </aside>
+      </section>
     </motion.div>
   );
 }
