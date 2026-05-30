@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
   FileText,
+  ListVideo,
   PauseCircle,
   PlayCircle,
   RotateCcw,
@@ -23,42 +24,96 @@ const clampSlideIndex = (index) =>
 
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [playbackMode, setPlaybackMode] = useState('idle');
   const [isPaused, setIsPaused] = useState(false);
   const [speechError, setSpeechError] = useState('');
   const [rate, setRate] = useState(0.9);
+  const playbackSessionRef = useRef(0);
+  const isMountedRef = useRef(true);
 
   const activeSlide = talperPresentationSlides[activeIndex];
   const pdfPageUrl = `${talperDeckPdf}#page=${activeSlide.pdfPage}&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
   const progress = ((activeIndex + 1) / talperPresentationSlides.length) * 100;
+  const isSpeaking = playbackMode !== 'idle';
 
   useEffect(() => {
-    cancelSpeech();
-    setIsSpeaking(false);
-    setIsPaused(false);
-    setSpeechError('');
+    isMountedRef.current = true;
 
     return () => {
+      isMountedRef.current = false;
+      playbackSessionRef.current += 1;
       cancelSpeech();
     };
-  }, [activeIndex]);
+  }, []);
+
+  const beginPlaybackSession = (mode) => {
+    playbackSessionRef.current += 1;
+    setSpeechError('');
+    setPlaybackMode(mode);
+    setIsPaused(false);
+    return playbackSessionRef.current;
+  };
+
+  const finishPlaybackSession = (sessionId) => {
+    if (!isMountedRef.current || playbackSessionRef.current !== sessionId) {
+      return;
+    }
+
+    setPlaybackMode('idle');
+    setIsPaused(false);
+  };
+
+  const stopCurrentSpeech = () => {
+    playbackSessionRef.current += 1;
+    cancelSpeech();
+    setPlaybackMode('idle');
+    setIsPaused(false);
+  };
 
   const goToSlide = (index) => {
+    if (isSpeaking) {
+      stopCurrentSpeech();
+    }
     setActiveIndex(clampSlideIndex(index));
   };
 
   const speakCurrentSlide = async () => {
-    setSpeechError('');
-    setIsSpeaking(true);
-    setIsPaused(false);
+    const sessionId = beginPlaybackSession('single');
 
     try {
       await speakText(activeSlide.script, { rate, lang: 'en-US' });
     } catch {
       setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
     } finally {
-      setIsSpeaking(false);
-      setIsPaused(false);
+      finishPlaybackSession(sessionId);
+    }
+  };
+
+  const playAllSlides = async () => {
+    const sessionId = beginPlaybackSession('all');
+
+    try {
+      for (let index = 0; index < talperPresentationSlides.length; index += 1) {
+        if (playbackSessionRef.current !== sessionId) {
+          return;
+        }
+
+        if (isMountedRef.current) {
+          setActiveIndex(index);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        if (playbackSessionRef.current !== sessionId) {
+          return;
+        }
+
+        await speakText(talperPresentationSlides[index].script, { rate, lang: 'en-US' });
+      }
+    } catch {
+      setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
+    } finally {
+      finishPlaybackSession(sessionId);
     }
   };
 
@@ -69,12 +124,6 @@ export default function PresentCoach() {
 
   const resumeCurrentSpeech = () => {
     resumeSpeech();
-    setIsPaused(false);
-  };
-
-  const stopCurrentSpeech = () => {
-    cancelSpeech();
-    setIsSpeaking(false);
     setIsPaused(false);
   };
 
@@ -127,7 +176,7 @@ export default function PresentCoach() {
           <button
             className="coach-control secondary"
             onClick={() => goToSlide(activeIndex - 1)}
-            disabled={activeIndex === 0}
+            disabled={activeIndex === 0 || playbackMode === 'all'}
           >
             <ChevronLeft size={18} />
             Previous
@@ -135,10 +184,16 @@ export default function PresentCoach() {
 
           <div className="listen-controls" aria-label="Narration controls">
             {!isSpeaking && (
-              <button className="coach-control primary" onClick={speakCurrentSlide}>
-                <PlayCircle size={18} />
-                Listen
-              </button>
+              <>
+                <button className="coach-control primary" onClick={speakCurrentSlide}>
+                  <PlayCircle size={18} />
+                  Listen
+                </button>
+                <button className="coach-control secondary" onClick={playAllSlides}>
+                  <ListVideo size={18} />
+                  Play All
+                </button>
+              </>
             )}
             {isSpeaking && !isPaused && (
               <button className="coach-control primary" onClick={pauseCurrentSpeech}>
@@ -161,12 +216,20 @@ export default function PresentCoach() {
           <button
             className="coach-control secondary"
             onClick={() => goToSlide(activeIndex + 1)}
-            disabled={activeIndex === talperPresentationSlides.length - 1}
+            disabled={activeIndex === talperPresentationSlides.length - 1 || playbackMode === 'all'}
           >
             Next
             <ChevronRight size={18} />
           </button>
         </div>
+
+        {isSpeaking && (
+          <p className="playback-status">
+            {playbackMode === 'all'
+              ? `正在連續播放全部投影片，目前第 ${activeSlide.number} 頁`
+              : `正在播放第 ${activeSlide.number} 頁講稿`}
+          </p>
+        )}
       </section>
 
       <section className="practice-grid">

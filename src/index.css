@@ -510,6 +510,13 @@ body {
   padding: 10px 12px;
 }
 
+.playback-status {
+  color: #9ed0ff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .script-copy {
   color: #eef4ff;
   font-size: 1rem;
