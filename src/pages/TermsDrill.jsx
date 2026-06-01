@@ -145,7 +145,7 @@ export default function TermsDrill() {
 
   const speakListeningItem = useCallback(async (item) => {
     await speakText(item.term, { rate: 0.82, lang: 'en-US' });
-    await speakText(`中文解釋：${item.translation}`, { rate: 0.95, lang: 'zh-TW' });
+    await speakText(item.translation, { rate: 0.95, lang: 'zh-TW' });
 
     if (item.practice_sentence) {
       await speakText(item.practice_sentence, { rate: 0.82, lang: 'en-US' });
@@ -296,7 +296,7 @@ export default function TermsDrill() {
         <div className="flex flex-col md:flex-row md:items-center gap-3 justify-between">
           <div>
             <p className="text-sm font-semibold text-white">Driving Listening Mode</p>
-            <p className="text-xs text-gray-400">連續播放目前篩選範圍的英文單字或句型，接著播放中文解釋。</p>
+            <p className="text-xs text-gray-400">連續播放目前篩選範圍的英文單字或句型，接著播放中文意思。</p>
           </div>
           <div className="flex gap-2">
             {!isPlayingAll ? (
