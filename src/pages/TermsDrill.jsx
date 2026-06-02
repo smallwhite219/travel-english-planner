@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlayCircle, ChevronRight, ChevronLeft, BookOpen, Filter, Shuffle, RotateCcw, Layers, GraduationCap, ListVideo, StopCircle } from 'lucide-react';
+import { PlayCircle, ChevronRight, ChevronLeft, BookOpen, Filter, Shuffle, RotateCcw, Layers, GraduationCap, ListVideo, Repeat, StopCircle } from 'lucide-react';
 import { technicalTerms } from '../data/technical-terms';
 import { vocabularyTerms, vocabularySections } from '../data/vocabulary-terms';
 import { conferenceListeningItems, conferenceListeningSections } from '../data/conference-listening';
@@ -95,6 +95,7 @@ export default function TermsDrill() {
   const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
   const [isPlayingAll, setIsPlayingAll] = useState(false);
   const [listeningStatus, setListeningStatus] = useState('');
+  const [listeningMode, setListeningMode] = useState('');
   const [speechError, setSpeechError] = useState('');
   const listeningSessionRef = useRef(0);
 
@@ -133,6 +134,7 @@ export default function TermsDrill() {
     listeningSessionRef.current += 1;
     cancelSpeech();
     setIsPlayingAll(false);
+    setListeningMode('');
     setListeningStatus('');
   }, []);
 
@@ -152,33 +154,60 @@ export default function TermsDrill() {
     }
   }, []);
 
-  const playAllVisibleTerms = useCallback(async () => {
+  const playTerms = useCallback(async ({ terms, loop = false, mode = 'visible' }) => {
+    if (terms.length === 0) {
+      return;
+    }
+
     const sessionId = listeningSessionRef.current + 1;
     listeningSessionRef.current = sessionId;
     setIsPlayingAll(true);
+    setListeningMode(mode);
     setSpeechError('');
 
     try {
-      for (let index = 0; index < filteredTerms.length; index += 1) {
-        if (listeningSessionRef.current !== sessionId) return;
+      let round = 1;
 
-        const item = filteredTerms[index];
-        setCurrentIndex(index);
-        setShowDetails(true);
-        setListeningStatus(`正在播放 ${index + 1} / ${filteredTerms.length}: ${item.term}`);
+      do {
+        for (let index = 0; index < terms.length; index += 1) {
+          if (listeningSessionRef.current !== sessionId) return;
 
-        await speakListeningItem(item);
-        await new Promise(resolve => setTimeout(resolve, 250));
-      }
+          const item = terms[index];
+          setCurrentIndex(index);
+          setShowDetails(true);
+          setListeningStatus(
+            `${loop ? `第 ${round} 輪，` : ''}正在播放 ${index + 1} / ${terms.length}: ${item.term}`
+          );
+
+          await speakListeningItem(item);
+          await new Promise(resolve => setTimeout(resolve, 250));
+        }
+
+        round += 1;
+      } while (loop && listeningSessionRef.current === sessionId);
     } catch {
       setSpeechError('此瀏覽器目前無法啟動連續語音播放，請確認 Web Speech API 或系統語音設定。');
     } finally {
       if (listeningSessionRef.current === sessionId) {
         setIsPlayingAll(false);
+        setListeningMode('');
         setListeningStatus('');
       }
     }
-  }, [filteredTerms, speakListeningItem]);
+  }, [speakListeningItem]);
+
+  const playAllVisibleTerms = useCallback(() => {
+    playTerms({ terms: filteredTerms, mode: 'visible' });
+  }, [filteredTerms, playTerms]);
+
+  const loopAllTerms = useCallback(() => {
+    setActiveSection('All');
+    setIsShuffled(false);
+    setShowFilter(false);
+    setCurrentIndex(0);
+    setShowDetails(true);
+    playTerms({ terms: ALL_TERMS, loop: true, mode: 'loop-all' });
+  }, [playTerms]);
 
   const handleSectionChange = useCallback((section) => {
     stopListening();
@@ -298,15 +327,24 @@ export default function TermsDrill() {
             <p className="text-sm font-semibold text-white">Driving Listening Mode</p>
             <p className="text-xs text-gray-400">連續播放目前篩選範圍的英文單字或句型，接著播放中文意思。</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {!isPlayingAll ? (
-              <button
-                onClick={playAllVisibleTerms}
-                className="glass-button primary justify-center"
-              >
-                <ListVideo size={18} />
-                Play Visible
-              </button>
+              <>
+                <button
+                  onClick={playAllVisibleTerms}
+                  className="glass-button primary justify-center"
+                >
+                  <ListVideo size={18} />
+                  Play Visible
+                </button>
+                <button
+                  onClick={loopAllTerms}
+                  className="glass-button justify-center border-green-500/50 text-green-200"
+                >
+                  <Repeat size={18} />
+                  Loop All
+                </button>
+              </>
             ) : (
               <button
                 onClick={stopListening}
@@ -318,7 +356,12 @@ export default function TermsDrill() {
             )}
           </div>
         </div>
-        {listeningStatus && <p className="mt-3 text-sm text-blue-200">{listeningStatus}</p>}
+        {listeningStatus && (
+          <p className="mt-3 text-sm text-blue-200">
+            {listeningMode === 'loop-all' ? '無限重複播放全部項目。' : ''}
+            {listeningStatus}
+          </p>
+        )}
         {speechError && <p className="mt-3 text-sm text-red-200">{speechError}</p>}
       </div>
 
