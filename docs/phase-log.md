@@ -1,0 +1,106 @@
+# travel-english-planner Phase Log
+
+## 2026-06-03 Rule-Based Roleplay Feedback
+
+- model / agent: GPT-5 Codex
+- goal: Add the first version of the discussed high-effectiveness English learning loop without public AI/API risk.
+- task track: Precise Track frontend behavior change; no release, push, deploy, or AI platform dispatch.
+- files read:
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\release-topology.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TravelRoleplay.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SRSStudySession.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SRSDashboard.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\utils\srsService.js`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TravelRoleplay.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SRSStudySession.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SRSDashboard.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\utils\srsService.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Keep all feedback deterministic and local; no `llmService`, external AI, API key, or remote scoring path was added.
+  - Add response practice inside the existing `TravelRoleplay` page instead of creating a parallel learning surface.
+  - Store scenario response reinforcement cards in browser localStorage and make SRS sessions review them alongside existing morphology cards.
+- verification:
+  - `git -C D:\vibeCode\projects\travel-english-planner diff --check` passed with only existing line-ending warnings.
+  - `npm run build` passed.
+- blockers / risks:
+  - In-app Browser verification was attempted twice, but the Browser/Node runtime failed during Windows sandbox startup. No interactive browser smoke test was completed in this phase.
+- next step:
+  - If the rule-based feedback feels too rigid, extend the local rule set and scenario answer bank before considering any optional AI mode.
+
+## 2026-06-01 Governance Gate Hardening
+
+- model / agent: GPT-5 Codex
+- goal: Apply the same task gate, release topology, and handoff discipline learned from the `typing-rpg-srs` review to `travel-english-planner`.
+- task track: Fast Track rule/document patch; no runtime code change.
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\brain\knowledge-base\integrated-orchestration-handoff-framework.md`
+  - `D:\vibeCode\brain\skills\engineering\spec-driven\SKILL.md`
+  - `D:\vibeCode\brain\skills\engineering\planning\SKILL.md`
+  - `D:\vibeCode\projects\travel-english-planner\package.json`
+  - `D:\vibeCode\projects\travel-english-planner\vite.config.js`
+  - `D:\vibeCode\projects\travel-english-planner\.github\workflows\deploy.yml`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\release-topology.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Treat this project as a standalone git repository.
+  - Treat `smallwhite219/travel-english-planner` as the authoritative remote.
+  - Require Release Track before any push, deploy, workflow, branch, remote, or Pages action.
+  - Flag the coexistence of GitHub Actions Pages deploy and `gh-pages -d dist` script as a release ambiguity that must be verified before deployment.
+  - Require explicit routing approval before AI platform dispatch.
+- verification:
+  - `Test-Path` confirmed `AGENTS.md`, `docs\release-topology.md`, `docs\task-state.md`, and `docs\phase-log.md` exist.
+  - `git -C D:\vibeCode\projects\travel-english-planner diff --check -- AGENTS.md docs/...` completed with no whitespace errors.
+  - `Get-Content` read back `docs\release-topology.md` after writing.
+- blockers:
+  - GitHub Pages source mode was not live-verified in repository settings; verify before changing deployment.
+- next step:
+  - On the next feature or deployment task, start from `docs\task-state.md` and `docs\release-topology.md`.
+
+## 2026-06-01 VoxCPM Presentation Audio Generation
+
+- model / agent: GPT-5 Codex
+- goal: Generate fixed VoxCPM English narration audio for the 21 TALPer `PresentCoach` slide scripts only.
+- task track: Precise Track asset generation; no frontend playback behavior was changed in this phase.
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\brain\knowledge-base\integrated-orchestration-handoff-framework.md`
+  - `D:\vibeCode\brain\skills\engineering\spec-driven\SKILL.md`
+  - `D:\vibeCode\brain\skills\engineering\tdd\SKILL.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\release-topology.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+- files modified / generated:
+  - `D:\vibeCode\projects\travel-english-planner\scripts\generate-talper-voxcpm-audio.py`
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\audio\voxcpm-en\manifest.json`
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\audio\voxcpm-en\slide-01.wav` through `slide-21.wav`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Used `openbmb/VoxCPM-0.5B` instead of VoxCPM2 because local GPU was not available and full VoxCPM2 is too heavy for this machine.
+  - Generated static WAV assets only; did not integrate the audio into `PresentCoach` playback UI in this phase.
+  - Stored reusable model/cache assets under `D:\vibeCode\.cache\voxcpm-py312`, `D:\vibeCode\.cache\huggingface`, and `D:\vibeCode\.cache\modelscope` for future reruns.
+  - Disabled VoxCPM denoiser for the full batch to avoid additional ModelScope runtime dependency and cache writes.
+- execution result:
+  - Generated 21 WAV files.
+  - Manifest contains 21 slide entries.
+  - Total generated narration duration: 1236.7 seconds.
+  - Generated audio asset size: about 39.6 MB.
+- verification:
+  - `python -m py_compile scripts/generate-talper-voxcpm-audio.py` passed.
+  - Audio verification reported `wav_count: 21`, `manifest_count: 21`, and no missing slide files.
+  - `npm run test:presentation` passed and validated 21 TALPer slides.
+- blockers / risks:
+  - No local NVIDIA GPU was detected via `nvidia-smi`, so all generation ran on CPU and was slow.
+  - During the initial smoke test, ModelScope's default cache wrote the denoiser model under `C:\Users\bai\.cache\modelscope`; full batch generation subsequently used D-drive cache settings and `load_denoiser=False`. Cleanup of the C-drive cache was not performed because it is outside the project workspace and should be an explicit user-approved cleanup action if desired.
+- next step:
+  - If playback integration is requested, wire `manifest.json` and the WAV files into `PresentCoach` as an optional static-audio source while preserving existing browser TTS fallback.

@@ -16,6 +16,7 @@ const SRSStudySession = ({ onNavigate }) => {
   useEffect(() => {
     const initQueue = () => {
       const progress = SRSService.getLocalProgress();
+      const customCards = SRSService.getCustomCards();
       const today = new Date();
       today.setHours(0,0,0,0);
       
@@ -27,17 +28,32 @@ const SRSStudySession = ({ onNavigate }) => {
             if (wordObj.root === rootId) {
               const prog = progress[wordObj.word];
               if (!prog) {
-                newQueue.push({ wordObj, isNew: true, progress: null });
+                newQueue.push({ type: 'word', wordObj, isNew: true, progress: null });
               } else {
                 const reviewDate = new Date(prog.nextReviewDate);
                 reviewDate.setHours(0,0,0,0);
                 if (reviewDate <= today) {
-                  newQueue.push({ wordObj, isNew: false, progress: prog });
+                  newQueue.push({ type: 'word', wordObj, isNew: false, progress: prog });
                 }
               }
             }
           });
         });
+      });
+
+      customCards.forEach(card => {
+        const progressKey = `custom:${card.id}`;
+        const prog = progress[progressKey];
+        if (!prog) {
+          newQueue.push({ type: 'custom', card, isNew: true, progress: null });
+          return;
+        }
+
+        const reviewDate = new Date(prog.nextReviewDate);
+        reviewDate.setHours(0,0,0,0);
+        if (reviewDate <= today) {
+          newQueue.push({ type: 'custom', card, isNew: false, progress: prog });
+        }
       });
       
       setQueue(newQueue.sort(() => Math.random() - 0.5));
@@ -48,7 +64,8 @@ const SRSStudySession = ({ onNavigate }) => {
 
   const handleFlip = () => {
     if (!isFlipped && queue[currentIndex]) {
-      speakText(queue[currentIndex].wordObj.word);
+      const currentItem = queue[currentIndex];
+      speakText(currentItem.type === 'custom' ? currentItem.card.answer : currentItem.wordObj.word);
     }
     setIsFlipped(true);
   };
@@ -56,8 +73,11 @@ const SRSStudySession = ({ onNavigate }) => {
   const handleRate = async (grade) => {
     const currentItem = queue[currentIndex];
     const newProgress = calculateNextReview(currentItem.progress, grade);
+    const progressKey = currentItem.type === 'custom'
+      ? `custom:${currentItem.card.id}`
+      : currentItem.wordObj.word;
     
-    await SRSService.updateWordProgress(currentItem.wordObj.word, newProgress);
+    await SRSService.updateWordProgress(progressKey, newProgress);
 
     if (grade === SRS_GRADES.AGAIN) {
       setQueue(prev => [...prev, { ...currentItem, progress: newProgress, isNew: false }]);
@@ -95,10 +115,10 @@ const SRSStudySession = ({ onNavigate }) => {
   }
 
   const currentItem = queue[currentIndex];
-  const { wordObj } = currentItem;
+  const { wordObj, card } = currentItem;
 
   // Prepare family data for the current word's root
-  const rootData = roots[wordObj.root];
+  const rootData = wordObj ? roots[wordObj.root] : null;
   const familyData = rootData ? {
     root: wordObj.root,
     mean: rootData.mean,
@@ -127,8 +147,18 @@ const SRSStudySession = ({ onNavigate }) => {
           {currentItem.isNew && (
             <span className="absolute top-4 right-4 bg-blue-950 text-blue-300 text-xs px-3 py-1 rounded-full font-bold">NEW</span>
           )}
-          <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-md tracking-wide">{wordObj.word}</h2>
-          <p className="text-gray-500 text-sm animate-pulse">Tap to reveal root family</p>
+          {currentItem.type === 'custom' ? (
+            <>
+              <span className="text-xs uppercase tracking-widest text-emerald-300 mb-4">Scenario Response</span>
+              <h2 className="text-2xl font-bold text-white mb-4 px-6 text-center leading-snug">{card.prompt}</h2>
+              <p className="text-gray-500 text-sm animate-pulse">Tap to reveal suggested response</p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-md tracking-wide">{wordObj.word}</h2>
+              <p className="text-gray-500 text-sm animate-pulse">Tap to reveal root family</p>
+            </>
+          )}
         </div>
       ) : (
         /* BACK OF CARD (Answer + Family Tree) */
@@ -136,16 +166,26 @@ const SRSStudySession = ({ onNavigate }) => {
           
           {/* Answer Highlight */}
           <div className="bg-blue-950 border border-blue-700 rounded-2xl p-6 mb-8 w-full max-w-md text-center shadow-xl">
-            <h2 className="text-4xl font-bold text-white mb-2">{wordObj.word}</h2>
-            <h3 className="text-2xl font-bold text-blue-300 mb-3">{wordObj.translation || "無翻譯"}</h3>
-            <p className="text-blue-100 mb-4">{wordObj.meaning}</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {wordObj.breakdown.map((part, i) => (
-                <span key={i} className={`px-3 py-1 rounded-md text-sm font-mono border ${part === wordObj.root ? 'bg-blue-600 text-white border-blue-400 shadow-lg' : 'bg-gray-800 text-gray-300 border-gray-600'}`}>
-                  {part}
-                </span>
-              ))}
-            </div>
+            {currentItem.type === 'custom' ? (
+              <>
+                <p className="text-xs uppercase tracking-widest text-emerald-300 mb-3">{card.scenarioName}</p>
+                <h2 className="text-2xl font-bold text-white mb-3 leading-snug">{card.answer}</h2>
+                <p className="text-blue-100">Practice recalling the full response before rating yourself.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-4xl font-bold text-white mb-2">{wordObj.word}</h2>
+                <h3 className="text-2xl font-bold text-blue-300 mb-3">{wordObj.translation || "無翻譯"}</h3>
+                <p className="text-blue-100 mb-4">{wordObj.meaning}</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {wordObj.breakdown.map((part, i) => (
+                    <span key={i} className={`px-3 py-1 rounded-md text-sm font-mono border ${part === wordObj.root ? 'bg-blue-600 text-white border-blue-400 shadow-lg' : 'bg-gray-800 text-gray-300 border-gray-600'}`}>
+                      {part}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Root Family Tree */}

@@ -5,13 +5,14 @@ import { SRSService } from '../utils/srsService';
 
 const SRSDashboard = ({ onNavigate }) => {
   const [progress, setProgress] = useState({});
-  const [stats, setStats] = useState({ newCards: 0, reviewCards: 0, totalLearned: 0 });
+  const [stats, setStats] = useState({ newCards: 0, reviewCards: 0, totalLearned: 0, responseCards: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       const data = await SRSService.syncFromCloud();
+      const customCards = SRSService.getCustomCards();
       setProgress(data || {});
       
       // Calculate today's tasks
@@ -44,7 +45,25 @@ const SRSDashboard = ({ onNavigate }) => {
         });
       });
 
-      setStats({ newCards: newCardsCount, reviewCards: reviewCardsCount, totalLearned: learnedCount });
+      let responseCardsCount = 0;
+      customCards.forEach(card => {
+        const wordProg = data[`custom:${card.id}`];
+        if (!wordProg) {
+          newCardsCount++;
+          responseCardsCount++;
+          return;
+        }
+
+        learnedCount++;
+        responseCardsCount++;
+        const reviewDate = new Date(wordProg.nextReviewDate);
+        reviewDate.setHours(0,0,0,0);
+        if (reviewDate <= today) {
+          reviewCardsCount++;
+        }
+      });
+
+      setStats({ newCards: newCardsCount, reviewCards: reviewCardsCount, totalLearned: learnedCount, responseCards: responseCardsCount });
       setIsLoading(false);
     };
     
@@ -80,6 +99,10 @@ const SRSDashboard = ({ onNavigate }) => {
             <div>
               <p className="text-3xl font-bold text-purple-400">{stats.totalLearned}</p>
               <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Total Learned</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-amber-300">{stats.responseCards}</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Responses</p>
             </div>
           </div>
           

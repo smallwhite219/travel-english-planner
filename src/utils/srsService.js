@@ -4,6 +4,7 @@
 
 // 預設的使用者 ID，若未來加上登入系統可替換
 const USER_ID = 'user_traveler_001';
+const CUSTOM_CARDS_KEY = 'travel_response_srs_cards';
 
 // 注意：請務必在專案根目錄建立 .env.local 檔案，並設定 VITE_GAS_URL=您的新網址
 const GAS_URL = import.meta.env.VITE_GAS_URL;
@@ -25,6 +26,49 @@ export class SRSService {
     } catch (e) {
       console.error("Local storage error:", e);
     }
+  }
+
+  static getCustomCards() {
+    try {
+      const data = localStorage.getItem(CUSTOM_CARDS_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error("Local storage error:", e);
+      return [];
+    }
+  }
+
+  static addCustomCard(card) {
+    const cards = this.getCustomCards();
+    const normalizedAnswer = card.answer.trim().toLowerCase();
+    const exists = cards.some((item) =>
+      item.scenarioId === card.scenarioId &&
+      item.answer.trim().toLowerCase() === normalizedAnswer
+    );
+
+    if (exists) {
+      return { added: false, cards };
+    }
+
+    const nextCard = {
+      id: card.id || `response-${Date.now()}`,
+      type: 'scenario-response',
+      prompt: card.prompt,
+      answer: card.answer,
+      scenarioId: card.scenarioId,
+      scenarioName: card.scenarioName,
+      createdAt: new Date().toISOString()
+    };
+
+    const nextCards = [...cards, nextCard];
+
+    try {
+      localStorage.setItem(CUSTOM_CARDS_KEY, JSON.stringify(nextCards));
+    } catch (e) {
+      console.error("Local storage error:", e);
+    }
+
+    return { added: true, cards: nextCards };
   }
 
   /**
