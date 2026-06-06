@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlayCircle, ChevronRight, ChevronLeft, BookOpen, Filter, Shuffle, RotateCcw, Layers, GraduationCap, ListVideo, Repeat, StopCircle } from 'lucide-react';
 import { technicalTerms } from '../data/technical-terms';
-import { vocabularyTerms, vocabularySections } from '../data/vocabulary-terms';
-import { conferenceListeningItems, conferenceListeningSections } from '../data/conference-listening';
+import { vocabularyTerms } from '../data/vocabulary-terms';
+import { conferenceListeningItems } from '../data/conference-listening';
 import { cancelSpeech, speakText } from '../utils/tts';
 
 // Merge both data sources into a unified format
@@ -51,15 +51,91 @@ const buildUnifiedTerms = () => {
 
 const ALL_TERMS = buildUnifiedTerms();
 
-// Build section options
+const TERM_FILTER_GROUPS = [
+  {
+    name: 'Core 15-min',
+    sections: [
+      'Priority Practice Sentence Patterns',
+      'TBICS 15-min Core Vocabulary',
+      'TBICS 15-min Sentence Patterns',
+      'TBICS 15-min Script Sentences',
+    ],
+  },
+  {
+    name: 'Complete 15-min',
+    sections: [
+      'TBICS 15-min Complete Vocabulary',
+      'TBICS 15-min Complete Sentence Patterns',
+      'TBICS 15-min Complete Script Sentences',
+    ],
+  },
+  {
+    name: 'General Vocabulary',
+    sections: [
+      'Opening and Introduction',
+      'Background and Motivation',
+      'Theoretical Framework',
+      'TALPer Functions',
+      'Conference Sentence Patterns',
+      'Introduction',
+      'Background',
+      'System Design',
+    ],
+  },
+  {
+    name: 'Research & Method',
+    sections: [
+      'Research Questions and Methods',
+      'ENA and Analysis',
+      'Research Question Sentence Patterns',
+      'Method Sentence Patterns',
+      'Analysis Sentence Patterns',
+      'Research Questions',
+      'Method',
+    ],
+  },
+  {
+    name: 'Results & Discussion',
+    sections: [
+      'Results and Discussion',
+      'Limitations and Future Research',
+      'Results Sentence Patterns',
+      'Achievement Comparison Sentence Patterns',
+      'ENA Results Sentence Patterns',
+      'Discussion Sentence Patterns',
+      'Conclusion Sentence Patterns',
+      'Limitations Sentence Patterns',
+      'Contributions Sentence Patterns',
+      'Q&A Sentence Patterns',
+      'Results',
+      'Discussion',
+      'Conclusion',
+    ],
+  },
+  {
+    name: 'Technical Terms',
+    sections: ['Technical Terms'],
+  },
+];
+
+const getFilterGroupSections = (groupName) =>
+  TERM_FILTER_GROUPS.find(group => group.name === groupName)?.sections ?? [];
+
+const isTermInFilterGroup = (term, groupName) => {
+  if (groupName === 'All') {
+    return true;
+  }
+
+  return getFilterGroupSections(groupName).includes(term.section);
+};
+
+// Build simplified section options
 const ALL_SECTIONS = [
   { name: 'All', count: ALL_TERMS.length },
-  ...conferenceListeningSections.map(name => ({
-    name,
-    count: conferenceListeningItems.filter(item => item.section === name).length,
+  ...TERM_FILTER_GROUPS.map(group => ({
+    name: group.name,
+    count: ALL_TERMS.filter(term => group.sections.includes(term.section)).length,
   })),
-  ...vocabularySections.map(s => ({ name: s.name, count: s.termCount })),
-  { name: 'Technical Terms', count: technicalTerms.length },
 ];
 
 // Section colors for visual distinction
@@ -82,6 +158,11 @@ const SECTION_COLORS = {
   'Results and Discussion': { bg: 'rgba(192, 38, 211, 0.15)', border: 'rgba(232, 121, 249, 0.42)', text: '#f5d0fe', dot: '#e879f9' },
   'Limitations and Future Research': { bg: 'rgba(71, 85, 105, 0.22)', border: 'rgba(148, 163, 184, 0.42)', text: '#cbd5e1', dot: '#94a3b8' },
   'Conference Sentence Patterns': { bg: 'rgba(22, 163, 74, 0.15)', border: 'rgba(74, 222, 128, 0.42)', text: '#bbf7d0', dot: '#4ade80' },
+  'Core 15-min': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
+  'Complete 15-min': { bg: 'rgba(124, 58, 237, 0.18)', border: 'rgba(167, 139, 250, 0.46)', text: '#ddd6fe', dot: '#a78bfa' },
+  'General Vocabulary': { bg: 'rgba(5, 150, 105, 0.16)', border: 'rgba(52, 211, 153, 0.44)', text: '#a7f3d0', dot: '#34d399' },
+  'Research & Method': { bg: 'rgba(14, 116, 144, 0.17)', border: 'rgba(34, 211, 238, 0.44)', text: '#a5f3fc', dot: '#22d3ee' },
+  'Results & Discussion': { bg: 'rgba(217, 119, 6, 0.17)', border: 'rgba(251, 191, 36, 0.44)', text: '#fde68a', dot: '#fbbf24' },
 };
 
 const DEFAULT_COLOR = { bg: 'rgba(100, 116, 139, 0.15)', border: 'rgba(100, 116, 139, 0.4)', text: '#94a3b8', dot: '#64748b' };
@@ -103,7 +184,7 @@ export default function TermsDrill() {
   const filteredTerms = useMemo(() => {
     let terms = activeSection === 'All'
       ? ALL_TERMS
-      : ALL_TERMS.filter(t => t.section === activeSection);
+      : ALL_TERMS.filter(t => isTermInFilterGroup(t, activeSection));
     
     if (isShuffled) {
       terms = [...terms].sort(() => Math.random() - 0.5);
@@ -292,7 +373,7 @@ export default function TermsDrill() {
             <div className="glass-panel p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Layers size={16} className="text-blue-400" />
-                <span className="text-sm font-medium text-gray-300">Filter by Section</span>
+                <span className="text-sm font-medium text-gray-300">Filter by Practice Group</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {ALL_SECTIONS.map(sec => {
