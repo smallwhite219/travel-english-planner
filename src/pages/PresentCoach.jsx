@@ -29,6 +29,22 @@ import {
 const clampSlideIndex = (index) =>
   Math.min(Math.max(index, 0), talperPresentationSlides.length - 1);
 
+const splitScriptParagraphs = (text = '') =>
+  text
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+const getScriptParagraphPairs = (slide) => {
+  const englishParagraphs = splitScriptParagraphs(slide.script);
+  const zhParagraphs = splitScriptParagraphs(slide.scriptZh);
+
+  return englishParagraphs.map((english, index) => ({
+    english,
+    zh: zhParagraphs[index] ?? '',
+  }));
+};
+
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackMode, setPlaybackMode] = useState('idle');
@@ -44,6 +60,7 @@ export default function PresentCoach() {
   const pdfPageUrl = `${talperDeckPdf}#page=${activeSlide.pdfPage}&toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
   const progress = ((activeIndex + 1) / talperPresentationSlides.length) * 100;
   const isSpeaking = playbackMode !== 'idle';
+  const scriptParagraphPairs = getScriptParagraphPairs(activeSlide);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -309,7 +326,18 @@ export default function PresentCoach() {
 
           {speechError && <p className="speech-error">{speechError}</p>}
 
-          <p className="script-copy">{activeSlide.script}</p>
+          <div className="script-copy bilingual-script">
+            {scriptParagraphPairs.map((paragraph, index) => (
+              <div className="script-pair" key={`${activeSlide.number}-${index}`}>
+                <p className="script-copy-en">{paragraph.english}</p>
+                {paragraph.zh && (
+                  <p className="script-copy-zh" lang="zh-Hant">
+                    {paragraph.zh}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </article>
 
         <aside className="glass-panel slide-list-panel">

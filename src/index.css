@@ -552,13 +552,42 @@ body {
 }
 
 .script-copy {
-  color: #eef4ff;
-  font-size: 1rem;
-  line-height: 1.72;
   max-height: 520px;
   overflow-y: auto;
   padding-right: 4px;
-  white-space: pre-line;
+}
+
+.bilingual-script {
+  display: grid;
+  gap: 16px;
+}
+
+.script-pair {
+  border-bottom: 1px solid rgba(139, 159, 190, 0.18);
+  display: grid;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+
+.script-pair:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.script-copy-en,
+.script-copy-zh {
+  line-height: 1.72;
+}
+
+.script-copy-en {
+  color: #eef4ff;
+  font-size: 1rem;
+}
+
+.script-copy-zh {
+  color: #b7c0cc;
+  font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
+  font-size: 0.94rem;
 }
 
 .slide-list-title {
