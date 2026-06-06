@@ -8,12 +8,12 @@ import {
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const deckPdfPath = new URL(
-  '../src/assets/talper-presentation/TALPer_SRL_4L_20min.pdf',
+  '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf',
   import.meta.url,
 );
 
-assert.equal(talperPresentationMeta.deckTitle, 'TALPer_SRL_4L_20min');
-assert.equal(talperPresentationSlides.length, 21);
+assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_15min');
+assert.equal(talperPresentationSlides.length, 12);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
 
 const splitParagraphs = (text = '') =>

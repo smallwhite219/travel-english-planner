@@ -16,7 +16,7 @@ import {
   talperPresentationMeta,
   talperPresentationSlides,
 } from '../data/talper-presentation';
-import talperDeckPdf from '../assets/talper-presentation/TALPer_SRL_4L_20min.pdf';
+import talperDeckPdf from '../assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf';
 import {
   cancelSpeech,
   getEnglishVoices,
