@@ -1,5 +1,35 @@
 # travel-english-planner Phase Log
 
+## 2026-06-06 TBICS 15-minute Speaker Practice Content
+
+- model / agent: GPT-5 Codex
+- goal: Add the revised TBICS 15-minute speaker-note vocabulary, sentence patterns, and script sentences to the existing conference listening / vocabulary drill flow, with a core-to-complete practice hierarchy.
+- task track: Precise Track content/data update; no release, push, deploy, external AI dispatch, SRS logic change, or roleplay behavior change.
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\conference-listening.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TermsDrill.jsx`
+  - `D:\vibeCode\outputs\manual-20260605-tbics-15min\presentations\tbics-15min\output\TBICS2026_TALPer_SRL4L_15min_speaker_notes_v2.md`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\conference-listening.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added dedicated `TBICS 15-min` sections instead of overwriting the previous 20-minute conference practice material.
+  - Organized practice into `Core` sections for fast pre-presentation memorization and `Complete` sections for long-form listening coverage.
+  - Included vocabulary, reusable sentence patterns, and full script sentences, with special coverage for coding framework and ENA explanation.
+  - Kept the existing deterministic/local learning flow; no public AI/API path was added.
+- verification:
+  - `npm run build` passed.
+  - Data validation confirmed the six new TBICS 15-minute sections exist and contain 176 total practice items.
+- blockers / risks:
+  - No live GitHub Pages deployment was performed in this phase.
+- next step:
+  - Use Vocabulary Drill filter sections beginning with `TBICS 15-min Core` for focused practice, then switch to `TBICS 15-min Complete` sections for full listening coverage.
+
 ## 2026-06-03 Rule-Based Roleplay Feedback
 
 - model / agent: GPT-5 Codex
