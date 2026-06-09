@@ -1,5 +1,29 @@
 # travel-english-planner Phase Log
 
+## 2026-06-10 Speech v10 PDF and Notes Correction
+
+- model / agent: GPT-5 Codex
+- goal: Replace the speech page slide PDF and speaker notes with the user-specified v10 files after the live page still showed the older PDF.
+- task track: Precise Track content/asset correction + Release Track push to `origin/main`; no external AI dispatch, backend change, or secrets access.
+- user-specified sources:
+  - `C:\Users\bai\Downloads\TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx`
+  - `C:\Users\bai\Downloads\TBICS2026_TALPer_SRL4L_15min_speaker_notes_v10.md`
+- files modified / generated:
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\TBICS2026_TALPer_SRL4L_15min.pdf`
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Exported the specified v10 PPTX to the exact PDF path consumed by `PresentCoach`.
+  - Rebuilt `talper-presentation.js` from the specified v10 speaker notes.
+  - The v10 notes contain English script and Chinese prompt notes, not full paragraph-by-paragraph translations; to satisfy the requested display format, the site data now uses the v10 English text and a matching Traditional Chinese translation paragraph after each English paragraph.
+  - Updated validation from 12 slides to 13 slides to match the specified v10 notes.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 13 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted updated v10 PPTX/PDF assets in `dist`.
+  - Build emitted the existing Vite chunk-size warning only.
+
 ## 2026-06-10 Speech Word Pronunciation Release
 
 - model / agent: GPT-5 Codex

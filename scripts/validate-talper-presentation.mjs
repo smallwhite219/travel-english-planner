@@ -11,10 +11,15 @@ const deckPdfPath = new URL(
   '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf',
   import.meta.url,
 );
+const deckPptxPath = new URL(
+  '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx',
+  import.meta.url,
+);
 
-assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_15min');
-assert.equal(talperPresentationSlides.length, 12);
+assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend');
+assert.equal(talperPresentationSlides.length, 13);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
+assert.ok(existsSync(deckPptxPath), 'expected TALPer slide PPTX asset to exist');
 
 const splitParagraphs = (text = '') =>
   text
