@@ -1,5 +1,25 @@
 # travel-english-planner Phase Log
 
+## 2026-06-10 Speech Script Encoding Hotfix
+
+- model / agent: GPT-5 Codex
+- goal: Fix live speech script display after the v10 release rendered literal `\n\n` and Chinese text as question marks.
+- task track: Fast Track bugfix on released content + Release Track push to `origin/main`; no backend change, secrets access, or feature scope change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- root cause:
+  - The previous data generation wrote escaped newline sequences as literal `\\n\\n` inside the displayed text.
+  - Chinese translations had already been damaged into `????` before commit due to an encoding/write step.
+- fix:
+  - Rewrote the speech data using UTF-8 template literals so real line breaks and Traditional Chinese text are preserved.
+  - Kept the existing v10 PDF/PPTX assets and word-pronunciation behavior unchanged.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 13 TALPer slides.
+  - `Select-String` check found no literal `\\n` or `????` in `talper-presentation.js`.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/index-BQSB8lgS.js`.
+  - Build emitted the existing Vite chunk-size warning only.
+
 ## 2026-06-10 Speech v10 PDF and Notes Correction
 
 - model / agent: GPT-5 Codex
