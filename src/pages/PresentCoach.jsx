@@ -45,11 +45,17 @@ const getScriptParagraphPairs = (slide) => {
   }));
 };
 
+const tokenizeScript = (script) =>
+  script.match(/[A-Za-z]+(?:[-'][A-Za-z]+)*|\r?\n|\s+|[^A-Za-z\s]+/g) ?? [];
+
+const isWordToken = (token) => /^[A-Za-z]+(?:[-'][A-Za-z]+)*$/.test(token);
+
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackMode, setPlaybackMode] = useState('idle');
   const [isPaused, setIsPaused] = useState(false);
   const [speechError, setSpeechError] = useState('');
+  const [lastSpokenWord, setLastSpokenWord] = useState('');
   const [rate, setRate] = useState(0.9);
   const [englishVoices, setEnglishVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -110,6 +116,7 @@ export default function PresentCoach() {
     cancelSpeech();
     setPlaybackMode('idle');
     setIsPaused(false);
+    setLastSpokenWord('');
   };
 
   const goToSlide = (index) => {
@@ -125,7 +132,9 @@ export default function PresentCoach() {
     try {
       await speakText(activeSlide.script, { rate, lang: 'en-US', voiceURI: selectedVoiceURI });
     } catch {
-      setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
+      setSpeechError(
+        'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
+      );
     } finally {
       finishPlaybackSession(sessionId);
     }
@@ -157,7 +166,26 @@ export default function PresentCoach() {
         });
       }
     } catch {
-      setSpeechError('此瀏覽器目前無法啟動語音合成，請確認 Web Speech API 或系統語音設定。');
+      setSpeechError(
+        'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
+      );
+    } finally {
+      finishPlaybackSession(sessionId);
+    }
+  };
+
+  const speakWord = async (word) => {
+    const sessionId = beginPlaybackSession('word');
+    setLastSpokenWord(word);
+
+    try {
+      await speakText(word, {
+        rate: Math.max(0.75, Math.min(rate, 0.95)),
+        lang: 'en-US',
+        voiceURI: selectedVoiceURI,
+      });
+    } catch {
+      setSpeechError('Word pronunciation is not available in this browser.');
     } finally {
       finishPlaybackSession(sessionId);
     }
@@ -172,6 +200,32 @@ export default function PresentCoach() {
     resumeSpeech();
     setIsPaused(false);
   };
+
+  const renderScriptTokens = (script) =>
+    tokenizeScript(script).map((token, index) => {
+      if (token === '\n' || token === '\r\n') {
+        return <br key={`br-${index}`} />;
+      }
+
+      if (!isWordToken(token)) {
+        return token;
+      }
+
+      const isActiveWord = lastSpokenWord.toLowerCase() === token.toLowerCase();
+
+      return (
+        <button
+          key={`${token}-${index}`}
+          className={`script-word ${isActiveWord ? 'active' : ''}`}
+          type="button"
+          onClick={() => speakWord(token)}
+          aria-label={`Pronounce ${token}`}
+          title={`Pronounce ${token}`}
+        >
+          {token}
+        </button>
+      );
+    });
 
   return (
     <motion.div
@@ -241,7 +295,7 @@ export default function PresentCoach() {
                 </button>
               </>
             )}
-            {isSpeaking && !isPaused && (
+            {isSpeaking && !isPaused && playbackMode !== 'word' && (
               <button className="coach-control primary" onClick={pauseCurrentSpeech}>
                 <PauseCircle size={18} />
                 Pause
@@ -272,8 +326,10 @@ export default function PresentCoach() {
         {isSpeaking && (
           <p className="playback-status">
             {playbackMode === 'all'
-              ? `正在連續播放全部投影片，目前第 ${activeSlide.number} 頁`
-              : `正在播放第 ${activeSlide.number} 頁講稿`}
+              ? `Playing all slides. Current slide: ${activeSlide.number}.`
+              : playbackMode === 'word'
+                ? `Pronouncing: ${lastSpokenWord}`
+                : `Playing slide ${activeSlide.number}.`}
           </p>
         )}
       </section>
@@ -329,7 +385,9 @@ export default function PresentCoach() {
           <div className="script-copy bilingual-script">
             {scriptParagraphPairs.map((paragraph, index) => (
               <div className="script-pair" key={`${activeSlide.number}-${index}`}>
-                <p className="script-copy-en">{paragraph.english}</p>
+                <p className="script-copy-en interactive-script">
+                  {renderScriptTokens(paragraph.english)}
+                </p>
                 {paragraph.zh && (
                   <p className="script-copy-zh" lang="zh-Hant">
                     {paragraph.zh}

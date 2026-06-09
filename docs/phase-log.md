@@ -1,5 +1,42 @@
 # travel-english-planner Phase Log
 
+## 2026-06-10 Speech Word Pronunciation Release
+
+- model / agent: GPT-5 Codex
+- goal: Publish the speech page update to GitHub with clickable English word pronunciation in the bilingual speaker notes.
+- task track: Precise Track frontend behavior change + Release Track push to `origin/main`; no external AI dispatch, backend change, or secrets access.
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\release-topology.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Fetched and rebased onto `origin/main` after remote advanced with `Add bilingual speech notes`, `Replace speech deck with TBICS 15min version`, and `Simplify terms practice filters`.
+  - Skipped the overlapping local 15-minute deck commit to preserve the remote bilingual speaker-note content.
+  - Added click-to-pronounce only to English script tokens inside the bilingual speaker notes; Chinese translation remains static.
+  - Used the existing browser Web Speech API wrapper; no external TTS API or key was added.
+  - Preserved the existing PDF slide viewer from the remote version.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 12 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed.
+  - Build emitted the existing Vite chunk-size warning only.
+- release:
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+- blockers / risks:
+  - Pages source mode still not independently verified through repository settings.
+  - Web Speech API pronunciation depends on browser and installed English voices.
+
 ## 2026-06-06 TBICS 15-minute Speaker Practice Content
 
 - model / agent: GPT-5 Codex

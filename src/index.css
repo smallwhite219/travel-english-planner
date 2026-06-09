@@ -584,6 +584,40 @@ body {
   font-size: 1rem;
 }
 
+.interactive-script {
+  white-space: normal;
+}
+
+.script-word {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  display: inline;
+  font: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 1px 2px;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.script-word:hover,
+.script-word:focus-visible {
+  background: rgba(93, 163, 255, 0.18);
+  box-shadow: 0 0 0 1px rgba(143, 184, 255, 0.45);
+  color: #d7e5ff;
+  outline: none;
+}
+
+.script-word.active {
+  background: rgba(84, 209, 138, 0.18);
+  box-shadow: 0 0 0 1px rgba(84, 209, 138, 0.5);
+  color: #b8ffd1;
+}
+
 .script-copy-zh {
   color: #b7c0cc;
   font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
