@@ -1,5 +1,36 @@
 # travel-english-planner Phase Log
 
+## 2026-06-10 Speech Template PDF and Claude Script Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Update the speech page slide PDF and bilingual speaker notes from the user-provided template PDF and Claude script text.
+- task track: Fast Track content/asset refresh; no release, push, deploy, backend, routing, or secrets access.
+- user-specified sources:
+  - `C:\Users\bai\Downloads\TBICS_template_21.05.2026.pdf`
+  - `C:\Users\bai\Downloads\claude 講稿.txt`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\TBICS2026_TALPer_SRL4L_15min.pdf`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Preserved the existing speech PDF import path so `PresentCoach` continues to load the deck without UI changes.
+  - Parsed 14 `## Slide N` sections from the new script and paired each English rehearsal line with its Traditional Chinese prompt.
+  - Set the speech source link to the new PDF asset because no replacement PPTX was provided.
+  - Updated presentation validation from 13 to 14 slides.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 14 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/TBICS2026_TALPer_SRL4L_15min-BaWwRp17.pdf`.
+  - Data smoke check confirmed the new deck title, 14-slide count, and readable Traditional Chinese text on slides 1 and 14.
+  - Build emitted the existing Vite chunk-size warning only.
+- release:
+  - User requested GitHub push after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+- blockers / risks:
+  - Pages source mode was not independently verified through repository settings in this phase; local release topology still records this as an ambiguity before changing deployment mode.
+
 ## 2026-06-10 Speech Script User Revision Import
 
 - model / agent: GPT-5 Codex

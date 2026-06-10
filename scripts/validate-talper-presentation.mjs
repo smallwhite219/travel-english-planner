@@ -16,8 +16,8 @@ const deckPptxPath = new URL(
   import.meta.url,
 );
 
-assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend');
-assert.equal(talperPresentationSlides.length, 13);
+assert.equal(talperPresentationMeta.deckTitle, 'TBICS_template_21.05.2026');
+assert.equal(talperPresentationSlides.length, 14);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
 assert.ok(existsSync(deckPptxPath), 'expected TALPer slide PPTX asset to exist');
 
