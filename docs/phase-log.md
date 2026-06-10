@@ -1,5 +1,25 @@
 # travel-english-planner Phase Log
 
+## 2026-06-10 Speech Script User Revision Import
+
+- model / agent: GPT-5 Codex
+- goal: Replace only the speech page bilingual script under the speed controls with the user-edited Markdown file while preserving existing speech playback and word-pronunciation features.
+- task track: Fast Track content replacement + Release Track push to `origin/main`; no UI behavior, PDF/PPTX asset, backend, or secrets change.
+- user-specified source:
+  - `C:\Users\bai\Downloads\TBICS2026 TALPer 15min 中英對照講稿.md`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Parsed 13 `## Slide N` sections from the Markdown and replaced only `script` / `scriptZh`.
+  - Removed Markdown bold markers from the website data because the speech panel renders plain text, not Markdown.
+  - Preserved existing slide metadata, v10 PDF/PPTX links, speed control, whole-slide playback, all-slides playback, and clickable English word pronunciation.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 13 TALPer slides.
+  - Data smoke check confirmed the new opening sentence and Traditional Chinese text are present, with no `????`, literal `\\n`, or `**` markers.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/index-DWUpvswA.js`.
+  - Build emitted the existing Vite chunk-size warning only.
+
 ## 2026-06-10 Speech Script Encoding Hotfix
 
 - model / agent: GPT-5 Codex

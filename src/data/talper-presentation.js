@@ -1,14 +1,14 @@
 const v10DeckPptx = new URL(
-  '../assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx',
+  "../assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx",
   import.meta.url,
 ).href;
 
 export const talperPresentationMeta = {
   title:
-    'Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning',
-  deckTitle: 'TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend',
-  totalDuration: '15 min',
-  speaker: 'Zong-En Bai',
+    "Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning",
+  deckTitle: "TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend",
+  totalDuration: "15 min",
+  speaker: "Zong-En Bai",
   sourceUrl: v10DeckPptx,
 };
 
@@ -16,346 +16,414 @@ export const talperPresentationSlides = [
   {
     number: 1,
     pdfPage: 1,
-    section: 'Opening',
-    title: 'Title',
-    subtitle: 'Opening and core problem',
-    script: `Good morning everyone. My name is Zong-En Bai, from the Graduate Institute of Educational Information and Measurement at National Taichung University of Education, Taiwan.
+    section: "Opening",
+    title: "Title",
+    subtitle: "Opening and core problem",
+    script: `Good morning everyone. My name is Zong-En Bai, from National Taichung University of Education, Taiwan.
 
-Today I will present our study, Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning.
+Today I present our study: Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning.
 
-The focus of this study is TALPer, an AI learning companion designed for elementary mathematics problem solving. More specifically, we ask whether TALPer can improve students' mathematics learning when it is embedded in a structured self-regulated learning framework, and whether different students benefit from it in different ways.`,
-    scriptZh: `大家早安。我是白宗恩，來自國立臺中教育大學教育資訊與測驗統計研究所。
+Our companion is called TALPer.
 
-今天我要報告我們的研究：將 AI 學習夥伴整合到自我調節學習 4L 架構中，對國小數學學習的影響。
+We ask: can TALPer improve mathematics learning inside a structured self-regulated learning framework — and do different students benefit in different ways?`,
+    scriptZh: `大家早安，我是白宗恩，來自台灣的國立臺中教育大學。
 
-本研究聚焦於 TALPer，這是一個為國小數學解題設計的 AI 學習夥伴。更具體地說，我們想了解，當 TALPer 被嵌入結構化的自我調節學習框架時，是否能提升學生的數學學習，以及不同學生是否會以不同方式受益。`,
+今天我要報告我們的研究：《將 AI 學習夥伴整合進自我調節學習 4L 框架對國小數學學習的影響》。
+
+我們的學習夥伴名為 TALPer。
+
+我們想問：在結構化的自我調節學習框架中，TALPer 能否提升數學學習？不同的學生是否會以不同的方式受益？`,
   },
   {
     number: 2,
     pdfPage: 2,
-    section: 'Core Story',
-    title: 'Core Story',
-    subtitle: 'The main thesis and roadmap',
-    script: `Let me begin with the core story of this presentation.
+    section: "Core Story",
+    title: "Core Story",
+    subtitle: "The main thesis and roadmap",
+    script: `Here is the core story.
 
-Our main finding is that TALPer improves mathematics learning, but the more important lesson is not simply that AI is useful. The stronger message is differentiated: students benefit most when they can regulate, question, monitor, and reflect with AI.
+TALPer does improve learning. But the more important lesson is not simply that AI is useful.
 
-So the presentation follows four steps. First, I will introduce the problem: generative AI can scaffold learning, but it can also create dependence. Second, I will explain our intervention: TALPer was embedded in a self-regulated learning 4L framework. Third, I will show three layers of evidence: learning outcomes, learning-process coding, and ENA network structures. Finally, I will discuss the implication: AI access alone is not enough. Students also need guidance in how to learn with AI.`,
-    scriptZh: `我先從這份簡報的核心故事開始。
+It is differentiated: students benefit most when they can regulate, question, monitor, and reflect with AI.
 
-我們的主要發現是 TALPer 能提升數學學習，但更重要的重點不只是 AI 有用而已。更強的訊息是差異化的：當學生能夠和 AI 一起調節、提問、監控與反思時，他們受益最多。
+The talk has four steps: the problem, our intervention, three layers of evidence, and the implication — that AI access alone is not enough.`,
+    scriptZh: `以下是本場報告的核心故事。
 
-因此，這份報告分成四個步驟。第一，我會介紹問題：生成式 AI 可以支架學習，但也可能造成依賴。第二，我會說明我們的介入設計：TALPer 被嵌入自我調節學習的 4L 架構。第三，我會呈現三層證據：學習成效、學習歷程編碼，以及 ENA 網絡結構。最後，我會討論其意涵：只有 AI 使用權限是不夠的，學生也需要知道如何和 AI 一起學習。`,
+TALPer 確實能提升學習，但更重要的啟示，並不只是「AI 很有用」。
+
+關鍵在於差異化：當學生能夠運用 AI 進行調節、提問、監控與反思時，受益最大。
+
+本報告分為四個部分：問題、我們的介入方式、三層證據，以及一個啟示——光是能用 AI 並不足夠。`,
   },
   {
     number: 3,
     pdfPage: 3,
-    section: 'Background',
-    title: 'Background',
-    subtitle: 'The scaffold-dependence tension',
-    script: `The background of this study comes from a tension in current AI-supported learning.
+    section: "Background",
+    title: "Background",
+    subtitle: "The scaffold-dependence tension",
+    script: `Our study comes from a tension in AI-supported learning.
 
-On the one hand, generative AI can work as a scaffold for self-regulated learning. It can provide immediate feedback, step-by-step guidance, support for planning and monitoring, and differentiated help for students who need different levels of support.
+On one hand, generative AI can scaffold self-regulated learning: immediate feedback, step-by-step guidance, and differentiated help.
 
-This potential has been discussed in recent studies on generative AI and self-regulated learning, including Chiu and Wu and colleagues.
+On the other hand, there is a dependence risk.
 
-On the other hand, there is also a dependence risk. If students mainly use AI to get answers quickly, AI may support passive answer-seeking, procedural shortcutting, and reduced learner agency. This concern has also been raised in recent work by Jin and colleagues, and by Lee and Low.
+If students use AI mainly to get answers quickly, it can support passive answer-seeking and reduced learner agency.
 
-For us, the important research gap is whether this scaffold-dependence tension differs across learner ability levels. In other words, when students have access to the same AI learning companion, do they all use it in the same way? Or do some students turn it into a tool for conceptual regulation, while others use it mainly for procedural completion?
+Our research gap is this: does the scaffold-dependence tension differ across ability levels?
 
-This is why we ground the study in Zimmerman's self-regulated learning cycle: forethought, performance, and self-reflection.`,
-    scriptZh: `本研究的背景來自目前 AI 支持學習中的一個張力。
+With the same AI companion, do all students use it the same way — or do some use it for conceptual regulation, and others only for procedural completion?
 
-一方面，生成式 AI 可以作為自我調節學習的支架。它能提供即時回饋、逐步引導、支持規劃與監控，並對需要不同支持程度的學生提供差異化協助。
+We ground the study in Zimmerman's SRL cycle: forethought, performance, and self-reflection.`,
+    scriptZh: `我們的研究源自 AI 輔助學習中的一個矛盾。
 
-這樣的潛力已在近年生成式 AI 與自我調節學習的研究中被討論，包括 Chiu、Wu 及其同事的研究。
+一方面，生成式 AI 可以作為自我調節學習的鷹架：提供即時回饋、逐步引導，以及差異化的協助。
 
-另一方面，也存在依賴的風險。如果學生主要使用 AI 來快速取得答案，AI 可能會支持被動找答案、程序捷徑，以及降低學習者自主性。這個疑慮也在 Jin 及其同事、以及 Lee 和 Low 的近期研究中被提出。
+另一方面，也存在依賴的風險。
 
-對我們而言，重要的研究缺口是：這種支架與依賴的張力是否會因學習者能力而不同。換句話說，當學生使用同一個 AI 學習夥伴時，他們是否都用同樣方式使用它？還是有些學生把它變成概念調節的工具，而另一些學生主要把它用於完成程序？
+如果學生主要用 AI 來快速取得答案，反而會助長被動找答案，並削弱學習自主性。
 
-因此，我們將研究奠基於 Zimmerman 的自我調節學習循環：前思、表現與自我反思。`,
+我們的研究缺口是：這種「鷹架與依賴」的矛盾，是否會隨著學生能力程度而有所不同？
+
+使用同一個 AI 夥伴時，所有學生都會以相同方式使用它嗎？還是有些人用它來進行概念調節，有些人卻只用它來完成計算步驟？
+
+我們以 Zimmerman 的自我調節學習循環為基礎：預備期、執行期與自我反思期。`,
   },
   {
     number: 4,
     pdfPage: 4,
-    section: 'Theory',
-    title: 'Theory',
-    subtitle: 'SRL cycle mapped to classroom 4L practice',
-    script: `This slide shows the theoretical mapping that supports our design.
+    section: "Theory",
+    title: "Theory",
+    subtitle: "SRL cycle mapped to classroom 4L practice",
+    script: `This slide shows our theoretical mapping.
 
-Zimmerman's SRL model describes learning as a cycle. In the forethought phase, learners set goals and activate prior knowledge. In the performance phase, they monitor their progress, choose strategies, and adjust their actions. In the self-reflection phase, they notice errors and consolidate understanding.
+Zimmerman's model is a cycle.
 
-Ho's 4L framework operationalizes these ideas in classroom practice. Self-learning corresponds mainly to forethought, because students prepare, set goals, and activate prior knowledge before class. Co-learning and mutual learning correspond mainly to the performance phase, because students monitor understanding, receive scaffolded feedback, and exchange strategies with peers. Teacher-guided learning corresponds to self-reflection, because teachers help students address misconceptions and integrate what they have learned.
+In forethought, learners set goals and activate prior knowledge.
 
-This mapping is important for our study because it connects the instructional design, the SRL coding scheme, and the ENA analysis. We are not only asking whether students score higher. We are also asking whether their learning process shows a more complete regulatory cycle.`,
-    scriptZh: `這張投影片呈現支撐我們設計的理論對應。
+In performance, they monitor and adjust.
 
-Zimmerman 的 SRL 模型將學習描述為一個循環。在前思階段，學習者設定目標並啟動先備知識。在表現階段，他們監控進度、選擇策略並調整行動。在自我反思階段，他們注意錯誤並鞏固理解。
+In self-reflection, they notice errors and consolidate understanding.
 
-Ho 的 4L 架構把這些想法落實到課室實作中。自學主要對應前思，因為學生在課前準備、設定目標並啟動先備知識。共學與互學主要對應表現階段，因為學生監控理解、接受支架回饋，並和同儕交換策略。教師導學則對應自我反思，因為教師協助學生處理迷思概念並整合所學。
+Ho's 4L framework turns this into classroom practice.
 
-這個對應對本研究很重要，因為它連結了教學設計、SRL 編碼架構與 ENA 分析。我們不只是問學生分數是否提高，也是在問他們的學習歷程是否呈現更完整的調節循環。`,
+Self-learning maps to forethought. Co-learning and mutual learning map to performance. Teacher-guided learning maps to self-reflection.
+
+This mapping matters because it links our instructional design, our coding scheme, and our network analysis.
+
+We ask not only whether students score higher, but whether their learning shows a more complete regulatory cycle.`,
+    scriptZh: `這張投影片呈現我們的理論對應關係。
+
+Zimmerman 的模型是一個循環。
+
+在預備期，學習者設定目標並喚起先備知識。
+
+在執行期，他們監控進度並調整做法。
+
+在自我反思期，他們察覺錯誤並鞏固理解。
+
+Ho 的 4L 框架把這些理念轉化為課堂實務。
+
+自學對應預備期；共學與互學對應執行期；師導學習對應自我反思期。
+
+這個對應很重要，因為它串連了我們的教學設計、編碼架構與網絡分析。
+
+我們不只問學生分數是否更高，也問他們的學習是否展現出更完整的調節循環。`,
   },
   {
     number: 5,
     pdfPage: 5,
-    section: 'Model',
-    title: 'Model',
-    subtitle: 'TALPer embedded in the learning cycle',
-    script: `Here is how TALPer was embedded inside the SRL 4L learning cycle.
+    section: "Model",
+    title: "Model",
+    subtitle: "TALPer embedded in the learning cycle",
+    script: `Here is how TALPer was embedded in the 4L cycle.
 
-In the pre-class self-learning phase, students used the Taiwan Adaptive Learning Platform and TALPer for preparation. TALPer recorded students' questions and learning traces, so these records could become evidence for the teacher.
+Before class, students used the Taiwan Adaptive Learning Platform and TALPer to prepare.
 
-During class, the teacher used these logs to introduce key concepts and identify common difficulties. Then, in the co-learning phase, TALPer provided dialogic feedback and supported logical verification. Students were not only receiving answers; ideally, they were guided to reason through mathematical problems.
+TALPer recorded their questions and learning traces — evidence for the teacher.
 
-In the mutual learning phase, students shared strategies with peers. Finally, in the teacher-guided phase, the teacher helped students reflect, address misconceptions, and consolidate their understanding.
+During class, the teacher used these logs to introduce key concepts and spot common difficulties.
 
-So TALPer was not treated as a separate tool outside the lesson. It was embedded into the classroom routine, connecting self-learning, co-learning, mutual learning, and teacher-guided reflection.`,
-    scriptZh: `這裡說明 TALPer 如何被嵌入 SRL 4L 學習循環中。
+In co-learning, TALPer gave dialogic feedback and supported logical verification — guiding reasoning, not just giving answers.
 
-在課前自學階段，學生使用因材網和 TALPer 進行準備。TALPer 記錄學生的問題與學習軌跡，因此這些紀錄可以成為教師的教學證據。
+In mutual learning, students shared strategies with peers.
 
-課堂中，教師使用這些紀錄來介紹關鍵概念並辨識共同困難。接著在共學階段，TALPer 提供對話式回饋並支持邏輯驗證。學生不只是接收答案；理想上，他們會被引導去推理數學問題。
+Finally, the teacher guided reflection and addressed misconceptions.
 
-在互學階段，學生和同儕分享策略。最後，在教師導學階段，教師協助學生反思、處理迷思概念，並鞏固理解。
+So TALPer was not a separate tool. It was woven into the classroom routine.`,
+    scriptZh: `以下是 TALPer 如何融入 4L 循環。
 
-因此，TALPer 並不是課堂外的一個獨立工具。它被嵌入課室流程，連結自學、共學、互學與教師引導反思。`,
+課前，學生使用「台灣adaptive 學習平台」與 TALPer 進行準備。
+
+TALPer 記錄了學生的提問與學習軌跡，成為教師的依據。
+
+課堂中，教師利用這些紀錄來引介重要概念，並找出常見困難。
+
+在共學階段，TALPer 提供對話式回饋並支援邏輯驗證——引導推理，而非只是給答案。
+
+在互學階段，學生與同儕分享策略。
+
+最後，教師引導反思並處理迷思概念。
+
+所以 TALPer 並非獨立於課堂外的工具，而是融入了整個課堂流程。`,
   },
   {
     number: 6,
     pdfPage: 6,
-    section: 'Research Questions',
-    title: 'Research Questions',
-    subtitle: 'Outcome, process, and structure',
-    script: `Based on this design, we asked three research questions, each corresponding to a different evidence layer.
+    section: "Research Questions",
+    title: "Research Questions",
+    subtitle: "Outcome, process, and structure",
+    script: `We asked three questions, each for a different evidence layer.
 
-RQ1 focuses on learning outcomes: does TALPer plus SRL 4L improve mathematics learning compared with SRL 4L instruction alone?
+RQ1, outcomes: does TALPer plus SRL 4L improve learning, compared with SRL 4L alone?
 
-RQ2 focuses on the learning process: when TALPer is available, do high- and low-achieving students differ in their self-regulated learning strategy use?
+RQ2, process: with TALPer available, do high- and low-achieving students differ in their self-regulated strategy use?
 
-RQ3 focuses on cognitive network structure: do high- and low-achieving students organize their learning behaviors differently, as represented by ENA?
+RQ3, structure: do they organize their learning behaviors differently, as shown by ENA?
 
-Together, these questions allow us to move from outcome evidence to process evidence, and then to structural evidence.`,
-    scriptZh: `基於這個設計，我們提出三個研究問題，每一個都對應到不同層次的證據。
+So we move from outcome, to process, to structure.`,
+    scriptZh: `我們提出三個研究問題，各自對應一層證據。
 
-RQ1 聚焦於學習成效：相較於只有 SRL 4L 教學，TALPer 加上 SRL 4L 是否能提升數學學習？
+RQ1 學習成效：TALPer 加上 SRL 4L，相較於只用 SRL 4L，能否提升學習？
 
-RQ2 聚焦於學習歷程：當學生可以使用 TALPer 時，高成就與低成就學生在自我調節學習策略使用上是否不同？
+RQ2 學習歷程：在可使用 TALPer 的情況下，高、低成就學生在自我調節策略的運用上是否有差異？
 
-RQ3 聚焦於認知網絡結構：以 ENA 表徵時，高成就與低成就學生是否以不同方式組織他們的學習行為？
+RQ3 結構：如 ENA 所示，他們組織學習行為的方式是否不同？
 
-這些問題讓我們能從成效證據，進一步走向歷程證據，再走向結構證據。`,
+因此，我們從成效，進到歷程，再到結構。`,
   },
   {
     number: 7,
     pdfPage: 7,
-    section: 'Research Design',
-    title: 'Research Design',
-    subtitle: 'Quasi-experimental design',
-    script: `This was a quasi-experimental study with 44 fifth-grade students from a public elementary school in Taiwan.
+    section: "Research Design",
+    title: "Research Design",
+    subtitle: "Quasi-experimental design",
+    script: `This was a quasi-experimental study with 44 fifth-grade students from a public elementary school in Taiwan: 21 in the experimental group, 23 in the control group.
 
-There were 21 students in the experimental group and 23 students in the control group. Both groups learned the same unit, Ratios and Percentages, across five lessons over two weeks.
+Both groups learned the same unit — Ratios and Percentages — over two weeks.
 
-The key design point is that both groups followed the same SRL 4L instructional structure. The difference was TALPer access. The experimental group received SRL 4L instruction with TALPer support, while the control group received the same SRL 4L structure without TALPer.
+The key point: both followed the same SRL 4L structure. The only difference was TALPer access.
 
-This comparison helps isolate the contribution of TALPer, because the broader pedagogical framework was held constant across groups.
+This lets us isolate TALPer's contribution, because the pedagogy was held constant.
 
-Before the intervention, the two groups did not show a significant pre-test difference, with p equal to .376. This suggests that the two groups were reasonably comparable at baseline.`,
-    scriptZh: `這是一項準實驗研究，對象是臺灣一所公立國小的 44 位五年級學生。
+At baseline, the two groups showed no significant pre-test difference, p = .376 — so they were comparable.`,
+    scriptZh: `這是一項準實驗研究，對象是台灣某公立國小的 44 名五年級學生：實驗組 21 人、控制組 23 人。
 
-實驗組有 21 位學生，控制組有 23 位學生。兩組都在兩週內、共五節課學習同一個單元：比率與百分率。
+兩組在兩週內學習相同單元——「比與百分率」。
 
-關鍵設計點是，兩組都遵循相同的 SRL 4L 教學結構。差異在於是否能使用 TALPer。實驗組接受有 TALPer 支持的 SRL 4L 教學，控制組則接受沒有 TALPer 的相同 SRL 4L 結構。
+關鍵在於：兩組都採用相同的 SRL 4L 結構，唯一的差別是能否使用 TALPer。
 
-這樣的比較有助於隔離 TALPer 的貢獻，因為兩組的大教學架構保持一致。
+這讓我們能單獨檢視 TALPer 的貢獻，因為教學框架維持一致。
 
-介入前，兩組前測沒有顯著差異，p 值為 .376。這表示兩組在基線上大致可比較。`,
+在起點上，兩組的前測沒有顯著差異，p = .376，因此具有可比性。`,
   },
   {
     number: 8,
     pdfPage: 8,
-    section: 'Analysis',
-    title: 'Analysis',
-    subtitle: 'From scores to learning-process structure',
-    script: `Our analysis moved from scores to learning-process structure.
+    section: "Analysis",
+    title: "Analysis",
+    subtitle: "From scores to learning-process structure",
+    script: `Our analysis moved from scores to learning structure.
 
-For the outcome layer, we used pre- and post-tests, and then ANCOVA with pre-test scores as the covariate. This allowed us to compare adjusted post-test performance while accounting for baseline differences.
+For outcomes, we used pre- and post-tests, with ANCOVA using the pre-test as covariate.
 
-For the process layer, we coded students' TALPer dialogues using an SRL coding framework. The coding framework included metacognitive behaviors and cognitive behaviors.
+For the process, we coded students' TALPer dialogues using an SRL framework with two types of behavior.
 
-The metacognitive codes included goal setting, strategy selection, monitoring and evaluation, and reflection. The cognitive codes included conceptual questions, conceptual explanations, procedural questions, and procedural execution.
+Metacognitive codes — such as goal setting and reflection. And cognitive codes — such as conceptual questions versus procedural execution.
 
-These codes are important because they distinguish between deeper conceptual engagement and more procedural forms of interaction. For example, asking about the meaning of a mathematical concept is different from asking for calculation steps.
+This distinction matters: asking what a concept means is different from asking for calculation steps.
 
-For the structure layer, we used Epistemic Network Analysis. ENA does not only count how often behaviors occur. Instead, it models how coded behaviors co-occur and connect with one another during learning. In this study, the X-axis reflects relative cognitive tendencies, and the Y-axis reflects structural complexity and diversity in the cognitive network.
+For structure, we used Epistemic Network Analysis.
 
-So the purpose of this analysis was to see whether students connected planning, inquiry, execution, monitoring, and reflection when learning with TALPer.`,
-    scriptZh: `我們的分析從分數進一步走向學習歷程結構。
+ENA does not just count behaviors — it models how they connect during learning.
 
-在成效層次，我們使用前測與後測，接著以 ANCOVA 將前測分數作為共變量。這讓我們能在控制基線差異後，比較調整後的後測表現。
+The X-axis reflects cognitive tendency; the Y-axis reflects structural complexity.
 
-在歷程層次，我們使用 SRL 編碼架構來編碼學生與 TALPer 的對話。這個編碼架構包含後設認知行為與認知行為。
+So the goal was to see whether students connected planning, inquiry, execution, monitoring, and reflection with TALPer.`,
+    scriptZh: `我們的分析從分數延伸到學習結構。
 
-後設認知編碼包含目標設定、策略選擇、監控與評估，以及反思。認知編碼包含概念問題、概念解釋、程序問題與程序執行。
+在成效層面，我們採用前後測，並以前測為共變量進行 ANCOVA 分析。
 
-這些編碼很重要，因為它們能區分較深層的概念投入與較程序性的互動形式。例如，詢問數學概念的意義，和詢問計算步驟，是不同的。
+在歷程層面，我們以一套包含兩類行為的 SRL 架構，對學生的 TALPer 對話進行編碼。
 
-在結構層次，我們使用 Epistemic Network Analysis。ENA 不只是計算行為出現的頻率，而是建模編碼行為在學習過程中如何共同出現並彼此連結。在本研究中，X 軸反映相對認知傾向，Y 軸反映認知網絡中的結構複雜性與多樣性。
+後設認知編碼——例如目標設定與反思；以及認知編碼——例如概念性提問相對於程序性執行。
 
-因此，這項分析的目的，是檢視學生在使用 TALPer 學習時，是否會連結規劃、探究、執行、監控與反思。`,
+這個區分很重要：詢問一個概念的意義，與詢問計算步驟，是不同的。
+
+在結構層面，我們使用知識網絡分析（ENA）。
+
+ENA 不只是計算行為次數，而是建模這些行為在學習過程中如何彼此連結。
+
+X 軸反映認知傾向；Y 軸反映結構的複雜度。
+
+因此，目標是檢視學生在使用 TALPer 時，是否將規劃、探究、執行、監控與反思連結起來。`,
   },
   {
     number: 9,
     pdfPage: 9,
-    section: 'RQ1 Result',
-    title: 'RQ1 Result',
-    subtitle: 'TALPer adds measurable value',
-    script: `Now I will move to the results.
+    section: "RQ1 Result",
+    title: "RQ1 Result",
+    subtitle: "TALPer adds measurable value",
+    script: `Now the results.
 
-For RQ1, we found that TALPer-supported SRL 4L instruction produced higher adjusted post-test scores.
+For RQ1, TALPer-supported instruction produced higher adjusted scores.
 
-Both groups improved significantly from pre-test to post-test. The control group showed a gain of 14.45 points, and the TALPer group showed a gain of 26.45 points. Both gains were statistically significant, with p less than .001.
+Both groups improved significantly. But the TALPer group gained much more — about 26 points versus 14 points for the control group.
 
-After controlling for pre-test performance, the adjusted post-test mean was 76.56 for the control group and 85.49 for the TALPer group.
+After controlling for the pre-test, the adjusted post-test mean was 85.5 for TALPer, versus 76.6 for the control group.
 
-The ANCOVA result was significant: F(1, 41) equals 4.71, p equals .036, with eta squared equal to .114. This indicates a medium effect size.
+The ANCOVA was significant: p = .036, with a medium effect size.
 
-So the answer to RQ1 is yes: TALPer added measurable value beyond SRL 4L instruction alone.`,
-    scriptZh: `接著我進入研究結果。
+So the answer to RQ1 is yes — TALPer added measurable value beyond SRL 4L alone.`,
+    scriptZh: `接下來是結果。
 
-針對 RQ1，我們發現有 TALPer 支持的 SRL 4L 教學產生了較高的調整後後測分數。
+在 RQ1 中，TALPer 輔助的教學產生了較高的調整後分數。
 
-兩組從前測到後測都有顯著進步。控制組進步 14.45 分，TALPer 組進步 26.45 分。兩個進步幅度都達統計顯著，p 小於 .001。
+兩組都有顯著進步，但 TALPer 組進步更多——大約 26 分，相較於控制組的 14 分。
 
-控制前測表現後，控制組的調整後後測平均為 76.56，TALPer 組為 85.49。
+在控制前測之後，調整後的後測平均分數，TALPer 組為 85.5，控制組為 76.6。
 
-ANCOVA 結果達顯著：F(1, 41) 等於 4.71，p 等於 .036，eta squared 等於 .114。這表示中等效果量。
+ANCOVA 結果顯著：p = .036，效果量為中等。
 
-因此，RQ1 的答案是肯定的：相較於只有 SRL 4L 教學，TALPer 增加了可測量的價值。`,
+所以 RQ1 的答案是肯定的——TALPer 在 SRL 4L 之外，帶來了可測量的額外價值。`,
   },
   {
     number: 10,
     pdfPage: 10,
-    section: 'RQ2 Result',
-    title: 'RQ2 Result',
-    subtitle: 'Different regulatory uses of TALPer',
-    script: `For RQ2, we looked only at the experimental group, because we wanted to understand how students used TALPer when the tool was available.
+    section: "RQ2 Result",
+    title: "RQ2 Result",
+    subtitle: "Different regulatory uses of TALPer",
+    script: `For RQ2, we looked only at the experimental group, to see how students used TALPer when it was available.
 
-We compared high-achieving students and low-achieving students within the TALPer group. There were 10 high-achieving students and 11 low-achieving students.
+We compared 10 high-achieving and 11 low-achieving students.
 
-The key result is that the major difference was not tool access, because both groups had access to TALPer. The major difference was regulatory strategy.
+The key result: the difference was not tool access — both groups had TALPer. The difference was regulatory strategy.
 
-High-achieving students showed more goal setting, conceptual questioning, monitoring, reflection, and iterative strategy use. In other words, they used TALPer as part of a regulatory cycle.
+High-achieving students showed more goal setting, conceptual questioning, monitoring, and reflection.
 
-Low-achieving students were more likely to show strategy selection, procedural asking, answer-seeking flow, and limited reflection. Their interaction pattern was more focused on completing procedures.
+They used TALPer as part of a regulatory cycle.
 
-The difference was statistically pronounced, with t(12.07) equals 4.05, p less than .001, and Cohen's d equal to 1.83.
+Low-achieving students leaned toward procedural asking and answer-seeking, with limited reflection.
 
-This suggests that TALPer did not automatically produce the same learning process for every student.`,
-    scriptZh: `針對 RQ2，我們只分析實驗組，因為我們想了解當工具可用時，學生如何使用 TALPer。
+This difference was large and significant, with Cohen's d = 1.83.
 
-我們比較 TALPer 組中的高成就學生與低成就學生。其中高成就學生有 10 位，低成就學生有 11 位。
+So TALPer did not automatically create the same learning process for everyone.`,
+    scriptZh: `在 RQ2 中，我們只看實驗組，以了解學生在能使用 TALPer 時是如何運用它的。
 
-關鍵結果是，主要差異並不是工具使用權限，因為兩組都能使用 TALPer。主要差異在於調節策略。
+我們比較了 10 名高成就學生與 11 名低成就學生。
 
-高成就學生展現更多目標設定、概念提問、監控、反思與反覆策略使用。換句話說，他們把 TALPer 作為調節循環的一部分。
+關鍵結果是：差異不在於能否使用工具——兩組都有 TALPer；差異在於調節策略。
 
-低成就學生則較常展現策略選擇、程序性提問、尋求答案的流程，以及有限反思。他們的互動模式更聚焦於完成程序。
+高成就學生展現出更多的目標設定、概念性提問、監控與反思。
 
-這個差異在統計上相當明顯，t(12.07) 等於 4.05，p 小於 .001，Cohen's d 等於 1.83。
+他們把 TALPer 當作調節循環的一部分。
 
-這表示 TALPer 不會自動為每位學生產生相同的學習歷程。`,
+低成就學生則偏向程序性提問與尋求答案，反思較少。
+
+這個差異既大又顯著，Cohen's d = 1.83。
+
+因此，TALPer 並不會自動為每位學生創造出相同的學習歷程。`,
   },
   {
     number: 11,
     pdfPage: 11,
-    section: 'RQ3 Result',
-    title: 'RQ3 Result',
-    subtitle: 'Network-level process differences',
-    script: `RQ3 examines the network structures behind these differences.
+    section: "RQ3 Result",
+    title: "RQ3 Result",
+    subtitle: "Network-level process differences",
+    script: `RQ3 examines the networks behind these differences.
 
-The ENA visualization shows that high-achieving students formed more integrated and multidirectional cognitive networks. Their learning behaviors connected goal setting, conceptual inquiry, procedural execution, monitoring, and reflection.
+The ENA shows that high-achieving students formed more integrated, multidirectional networks.
 
-In practical terms, this means that high-achieving students did not only ask TALPer for help. They tended to move back and forth among planning, asking conceptual questions, trying procedures, checking understanding, and reflecting on their work.
+They moved back and forth among planning, conceptual questions, trying procedures, checking understanding, and reflecting.
 
-In contrast, low-achieving students showed a more fragmented and procedural pattern. Their network was closer to an ask-receive-execute cycle. They tended to ask procedural questions, receive guidance, and carry out steps, but with fewer links to conceptual explanation or reflection.
+Low-achieving students showed a more fragmented, procedural pattern — closer to an ask-receive-execute cycle, with fewer links to explanation or reflection.
 
-This result is important because it helps explain the differentiated effect of AI support. TALPer can provide feedback, but the structure of learning still depends on how students regulate their interaction with the tool.
+This helps explain the differentiated effect.
 
-So the ENA result supports the same conclusion as RQ2, but at a structural level: high-achievers used TALPer within a richer regulatory network, while low-achievers remained closer to procedural dependence.`,
+TALPer provides feedback, but the structure of learning still depends on how students regulate their interaction.
+
+So ENA supports the same conclusion as RQ2, at a structural level: high-achievers used TALPer within a richer regulatory network, while low-achievers stayed closer to procedural dependence.`,
     scriptZh: `RQ3 檢視這些差異背後的網絡結構。
 
-ENA 視覺化顯示，高成就學生形成較整合且多方向的認知網絡。他們的學習行為連結了目標設定、概念探究、程序執行、監控與反思。
+ENA 顯示，高成就學生形成了更為整合、多向連結的網絡。
 
-在實務意義上，這表示高成就學生不只是向 TALPer 求助。他們傾向在規劃、提出概念問題、嘗試程序、檢查理解與反思作品之間來回移動。
+他們在規劃、概念性提問、嘗試步驟、檢核理解與反思之間來回移動。
 
-相較之下，低成就學生呈現較片段且程序性的模式。他們的網絡更接近「提問、接收、執行」的循環。他們傾向提出程序問題、接收指引並執行步驟，但較少連結到概念解釋或反思。
+低成就學生則呈現較零散、偏程序性的模式——較接近「提問—接收—執行」的循環，較少連結到解釋或反思。
 
-這個結果很重要，因為它有助於解釋 AI 支持的差異化效果。TALPer 可以提供回饋，但學習結構仍取決於學生如何調節自己與工具的互動。
+這有助於解釋這種差異化的效果。
 
-因此，ENA 結果在結構層次上支持了與 RQ2 相同的結論：高成就學生在較豐富的調節網絡中使用 TALPer，而低成就學生則更接近程序依賴。`,
+TALPer 能提供回饋，但學習的結構仍取決於學生如何調節自己與工具的互動。
+
+所以 ENA 在結構層面支持了與 RQ2 相同的結論：高成就者在更豐富的調節網絡中使用 TALPer，而低成就者則較停留在程序性依賴。`,
   },
   {
     number: 12,
     pdfPage: 12,
-    section: 'Implications',
-    title: 'Implications',
-    subtitle: 'Teaching students to regulate with AI',
-    script: `The pedagogical implication is that teachers need to teach students how to regulate with AI.
+    section: "Implications",
+    title: "Implications",
+    subtitle: "Teaching students to regulate with AI",
+    script: `The implication: teachers need to teach students how to regulate with AI.
 
-Our findings suggest that TALPer's effectiveness cannot be assumed from tool availability alone. Providing students with an AI learning companion is helpful, but it is not sufficient.
+Providing an AI companion is helpful, but not sufficient.
 
-Teachers may need to guide students in three ways.
+Teachers can help in three ways.
 
-First, guided questioning: students should learn how to ask conceptual questions, not only request answers or procedures.
+First, guided questioning — students should learn to ask conceptual questions, not just request answers.
 
-Second, structured reflection: students need prompts that help them check, explain, and revise their thinking.
+Second, structured reflection — prompts that help them check, explain, and revise their thinking.
 
-Third, dialogue modeling: teachers can show examples of productive TALPer-mediated dialogue, so students can see what high-quality interaction with AI looks like.
+Third, dialogue modeling — showing examples of productive AI dialogue.
 
-These supports are especially important for low-achieving students, who may tend toward procedural dependence. If we want AI feedback to support deeper learning, it should invite explanation, comparison, and reflection.`,
-    scriptZh: `教學意涵是，教師需要教學生如何和 AI 一起調節學習。
+These supports matter most for low-achieving students, who tend toward procedural dependence.`,
+    scriptZh: `本研究的啟示是：教師需要教導學生如何運用 AI 進行自我調節。
 
-我們的發現顯示，不能只因為學生能使用工具，就假設 TALPer 會有效。提供學生一個 AI 學習夥伴是有幫助的，但這還不夠。
+提供一個 AI 學習夥伴是有幫助的，但並不足夠。
 
-教師可能需要從三個方向引導學生。
+教師可以從三個方面提供協助。
 
-第一，引導式提問：學生應學會提出概念問題，而不只是要求答案或程序。
+第一，引導式提問——學生應學會問概念性問題，而不只是要答案。
 
-第二，結構化反思：學生需要能幫助他們檢查、解釋與修正思考的提示。
+第二，結構化反思——透過提示，幫助他們檢核、解釋並修正自己的想法。
 
-第三，對話示範：教師可以示範有效的 TALPer 中介對話，讓學生看到高品質的人機互動長什麼樣子。
+第三，對話示範——展示高品質 AI 對話的範例。
 
-這些支持對低成就學生尤其重要，因為他們可能傾向程序依賴。如果我們希望 AI 回饋支持更深層的學習，它應該邀請學生解釋、比較與反思。`,
+這些支持對低成就學生最為重要，因為他們傾向於程序性依賴。`,
   },
   {
     number: 13,
     pdfPage: 13,
-    section: 'Closing',
-    title: 'Closing',
-    subtitle: 'AI tools plus regulatory classroom routines',
-    script: `To conclude, this study shows that an AI learning companion is not a silver bullet.
+    section: "Closing",
+    title: "Closing",
+    subtitle: "AI tools plus regulatory classroom routines",
+    script: `To conclude: an AI learning companion is not a silver bullet.
 
-TALPer improved mathematics learning outcomes when integrated into the SRL 4L framework. However, the process and ENA results show that the scaffolding effect depends on learners' regulatory awareness.
+TALPer improved outcomes inside the SRL 4L framework.
 
-High-achieving students were able to use TALPer feedback for conceptual deepening and multidirectional regulation. Low-achieving students were more likely to remain in surface-level procedural interaction.
+But the process and ENA results show the scaffolding effect depends on learners' regulatory awareness.
 
-Therefore, the key message is that AI-supported instruction should not only focus on access to AI tools. It should also support students' capacity to ask better questions, monitor understanding, and reflect on learning.
+High-achievers used TALPer for conceptual deepening; low-achievers stayed at surface-level procedures.
 
-There are also limitations. The sample size was small, with 44 students, and longer-term studies are needed. Future research should examine interventions that foster regulatory awareness among low-achieving students and test TALPer integration across different mathematics domains.
+So AI-supported instruction should not only focus on access. It should build students' capacity to ask better questions, monitor understanding, and reflect.
 
-Thank you very much. I welcome your questions and comments.`,
-    scriptZh: `總結來說，本研究顯示 AI 學習夥伴並不是萬靈丹。
+Our limitations: a small sample of 44 students and a short two-week intervention.
 
-當 TALPer 被整合到 SRL 4L 架構中時，它提升了數學學習成效。然而，歷程與 ENA 結果顯示，支架效果取決於學習者的調節意識。
+Future work should test longer-term use, and whether explicit regulatory scaffolding can especially help low-achieving students.
 
-高成就學生能使用 TALPer 回饋來深化概念並進行多方向調節。低成就學生則較可能停留在表層的程序性互動。
+Thank you very much. I welcome your questions.`,
+    scriptZh: `總結來說：AI 學習夥伴並非萬靈丹。
 
-因此，核心訊息是，AI 支持教學不應只聚焦於是否能使用 AI 工具，也應支持學生提出更好問題、監控理解與反思學習的能力。
+TALPer 在 SRL 4L 框架中提升了學習成效。
 
-本研究也有限制。樣本數較小，只有 44 位學生，也需要更長期的研究。未來研究可以檢驗能促進低成就學生調節意識的介入，並測試 TALPer 在不同數學領域中的整合。
+但歷程與 ENA 的結果顯示，鷹架效果取決於學習者的調節意識。
 
-非常謝謝大家，歡迎提出問題與建議。`,
+高成就者用 TALPer 深化概念；低成就者則停留在表面的程序操作。
+
+因此，AI 輔助教學不應只關注能否取用工具，更應培養學生提出更好問題、監控理解與反思的能力。
+
+本研究的限制：樣本僅 44 名學生，且介入期僅兩週、較為短暫。
+
+未來研究應檢驗更長期的使用，以及明確的調節鷹架是否能特別協助低成就學生。
+
+非常感謝大家，歡迎各位提問。`,
   },
 ];
