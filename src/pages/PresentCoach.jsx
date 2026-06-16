@@ -45,6 +45,8 @@ const getScriptParagraphPairs = (slide) => {
   }));
 };
 
+const getNarrationScript = (slide) => slide.narrationScript || slide.script;
+
 const tokenizeScript = (script) =>
   script.match(/[A-Za-z]+(?:[-'][A-Za-z]+)*|\r?\n|\s+|[^A-Za-z\s]+/g) ?? [];
 
@@ -130,7 +132,11 @@ export default function PresentCoach() {
     const sessionId = beginPlaybackSession('single');
 
     try {
-      await speakText(activeSlide.script, { rate, lang: 'en-US', voiceURI: selectedVoiceURI });
+      await speakText(getNarrationScript(activeSlide), {
+        rate,
+        lang: 'en-US',
+        voiceURI: selectedVoiceURI,
+      });
     } catch {
       setSpeechError(
         'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
@@ -159,7 +165,7 @@ export default function PresentCoach() {
           return;
         }
 
-        await speakText(talperPresentationSlides[index].script, {
+        await speakText(getNarrationScript(talperPresentationSlides[index]), {
           rate,
           lang: 'en-US',
           voiceURI: selectedVoiceURI,

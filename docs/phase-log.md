@@ -1,5 +1,67 @@
 # travel-english-planner Phase Log
 
+## 2026-06-16 Speech v13 PDF and Pronunciation Script Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Update the PresentCoach speech PDF and bilingual pronunciation script from the user-provided v13 PDF and DOCX.
+- task track: Precise Track content/data/frontend compatibility update; no commit, push, deploy, backend, secrets access, or external AI dispatch.
+- user-specified sources:
+  - `C:\Users\bai\Downloads\__發音講稿.docx`
+  - `C:\Users\bai\Downloads\TBICS2026_TALPer_SRL4L_v13_20260616.pptx.pdf`
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\release-topology.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\TBICS2026_TALPer_SRL4L_15min.pdf`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- intermediate artifacts:
+  - `D:\vibeCode\planned\26-06-16-update-travel-english-planner-speech-slides-script-codex.md`
+  - `D:\vibeCode\outputs\travel-english-speech-v13\source-extract.json`
+  - `D:\vibeCode\outputs\travel-english-speech-v13\mapping-review.json`
+  - `D:\vibeCode\outputs\travel-english-speech-v13\*.py`
+  - `D:\vibeCode\outputs\travel-english-speech-v13\*.mjs`
+- key decisions:
+  - Rebuilt `talper-presentation.js` from the first 15 official `## Slide N` sections in the DOCX.
+  - Replaced the stable PDF asset path with the user-provided v13 PDF; the updated PDF has 15 pages.
+  - Preserved visible pronunciation pause cues (`/`, `//`, `///`) in the displayed English script.
+  - Added `narrationScript` and updated `PresentCoach` so browser TTS reads clean text without Markdown bold markers or pause slash cues.
+  - Removed the old v10 PPTX existence gate from presentation validation because the user provided v13 PDF, not a v13 PPTX, and the UI opens the PDF asset.
+  - Skipped DOCX blockquote reminders and practice-advice headings when building slide scripts.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 15 TALPer slides.
+  - `npm run build` was blocked by PowerShell execution policy for `npm.ps1`; reran with bundled Node.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/TBICS2026_TALPer_SRL4L_15min-DPgBIttj.pdf`.
+  - Data smoke check passed: deck title `TBICS2026_TALPer_SRL4L_v13_20260616`, 15 slides, first slide `Title`, last slide `Thank You`, PDF asset size `1185865` bytes.
+  - PDF asset page-count check passed: 15 pages.
+  - Vite preview HTTP smoke passed:
+    - `http://127.0.0.1:4173/travel-english-planner/` returned `200 OK`.
+    - `http://127.0.0.1:4173/travel-english-planner/assets/TBICS2026_TALPer_SRL4L_15min-DPgBIttj.pdf` returned `200 OK`, `Content-Type: application/pdf`, `Content-Length: 1185865`.
+  - Build emitted the existing Vite chunk-size warning only.
+- blockers / risks:
+  - In-app Browser control tool was not available through tool discovery in this session, so no visual browser click-through smoke test was completed.
+  - No v13 PPTX source was provided; the repository still contains the older v10 PPTX asset, but the speech page uses the updated v13 PDF.
+- release:
+  - User requested GitHub update after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+  - Pages workflow file confirmed locally at `.github/workflows/deploy.yml`.
+- release risks:
+  - Live GitHub Pages source mode was not independently verified through repository settings in this phase.
+  - Push may trigger the existing GitHub Actions Pages workflow; post-push workflow status was not yet checked at the time of this local log entry.
+- next step:
+  - After push, verify GitHub Actions / Pages status if GitHub auth and network access are available.
+
 ## 2026-06-10 Speech Template PDF and Claude Script Refresh
 
 - model / agent: GPT-5 Codex

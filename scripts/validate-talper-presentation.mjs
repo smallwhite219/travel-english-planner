@@ -11,15 +11,10 @@ const deckPdfPath = new URL(
   '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf',
   import.meta.url,
 );
-const deckPptxPath = new URL(
-  '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min_v10_no_slide11_legend.pptx',
-  import.meta.url,
-);
 
-assert.equal(talperPresentationMeta.deckTitle, 'TBICS_template_21.05.2026');
-assert.equal(talperPresentationSlides.length, 14);
+assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v13_20260616');
+assert.equal(talperPresentationSlides.length, 15);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
-assert.ok(existsSync(deckPptxPath), 'expected TALPer slide PPTX asset to exist');
 
 const splitParagraphs = (text = '') =>
   text
@@ -38,6 +33,23 @@ talperPresentationSlides.forEach((slide, index) => {
   assert.ok(slide.section?.length > 0, `slide ${expectedNumber} section is required`);
   assert.ok(slide.script?.split(/\s+/).length > 20, `slide ${expectedNumber} script is unexpectedly short`);
   assert.ok(slide.scriptZh?.length > 20, `slide ${expectedNumber} Chinese translation is required`);
+  assert.ok(
+    slide.narrationScript?.split(/\s+/).length > 20,
+    `slide ${expectedNumber} narration script is unexpectedly short`,
+  );
+  assert.ok(
+    /[\u3400-\u9fff]/u.test(slide.scriptZh),
+    `slide ${expectedNumber} Chinese translation must contain Han characters`,
+  );
+  assert.ok(!slide.script.includes('**'), `slide ${expectedNumber} script must not leak Markdown bold markers`);
+  assert.ok(!slide.scriptZh.includes('**'), `slide ${expectedNumber} Chinese script must not leak Markdown bold markers`);
+  assert.ok(
+    !slide.narrationScript.includes('**') && !/[｜/]{1,3}/u.test(slide.narrationScript),
+    `slide ${expectedNumber} narration script must be clean for TTS`,
+  );
+  assert.ok(!slide.script.includes('\\\\n'), `slide ${expectedNumber} script must not contain literal newline escapes`);
+  assert.ok(!slide.scriptZh.includes('\\\\n'), `slide ${expectedNumber} Chinese script must not contain literal newline escapes`);
+  assert.ok(!slide.scriptZh.includes('????'), `slide ${expectedNumber} Chinese script appears corrupted`);
   assert.equal(
     scriptZhParagraphs.length,
     scriptParagraphs.length,
