@@ -7,7 +7,7 @@ export const talperPresentationMeta = {
   "title": "Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning",
   "deckTitle": "TBICS2026_TALPer_SRL4L_v13_20260616",
   "totalDuration": "13 min 30 sec",
-  "speaker": "Bor-Chen Kuo",
+  "speaker": "zong-en bai",
   "sourceUrl": talperDeckPdf
 };
 
@@ -18,9 +18,9 @@ export const talperPresentationSlides = [
     "section": "Title 0:40",
     "title": "Title",
     "subtitle": "Rehearsal segment 0:40",
-    "script": "Good morning, everyone. //\n\nMy name is Bor-Chen Kuo, / from National Taichung University of Education / in Taiwan. //\n\nToday I will share our study / on an AI learning companion / called TALPer. //\n\nWe integrated it / into a learning framework / called SRL 4L. //\n\nAnd we studied its effects / on elementary mathematics learning. ///",
+    "script": "Good morning, everyone. //\n\nMy name is zong-en bai, / from National Taichung University of Education / in Taiwan. //\n\nToday I will share our study / on an AI learning companion / called TALPer. //\n\nWe integrated it / into a learning framework / called SRL 4L. //\n\nAnd we studied its effects / on elementary mathematics learning. ///",
     "scriptZh": "大家早安。\n\n我是郭伯臣，來自台灣國立台中教育大學。\n\n今天我要分享一個 AI 學習夥伴 TALPer 的研究。\n\n我們把它整合進一個學習架構，叫做 SRL 4L。\n\n並研究它對國小數學學習的影響。",
-    "narrationScript": "Good morning, everyone.\n\nMy name is Bor-Chen Kuo,. from National Taichung University of Education. in Taiwan.\n\nToday I will share our study. on an AI learning companion. called TALPer.\n\nWe integrated it. into a learning framework. called SRL 4L.\n\nAnd we studied its effects. on elementary mathematics learning."
+    "narrationScript": "Good morning, everyone.\n\nMy name is zong-en bai. from National Taichung University of Education. in Taiwan.\n\nToday I will share our study. on an AI learning companion. called TALPer.\n\nWe integrated it. into a learning framework. called SRL 4L.\n\nAnd we studied its effects. on elementary mathematics learning."
   },
   {
     "number": 2,

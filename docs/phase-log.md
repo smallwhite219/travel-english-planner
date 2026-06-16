@@ -1,5 +1,25 @@
 # travel-english-planner Phase Log
 
+## 2026-06-16 Speech v13 Presenter Name Hotfix
+
+- model / agent: GPT-5 Codex
+- goal: Correct the Slide 1 presenter name in the v13 speech script from `Bor-Chen Kuo` to `zong-en bai`.
+- task track: Fast Track content hotfix + Release Track push to `origin/main`; no backend, secrets access, deployment-mode change, or external AI dispatch.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Updated the visible English script, the TTS-only `narrationScript`, and `talperPresentationMeta.speaker` together so the speech page stays internally consistent.
+  - Left the existing Traditional Chinese translation untouched because the user requested only the English line.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 15 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+- release:
+  - User requested push after the local correction.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+
 ## 2026-06-16 Speech v13 PDF and Pronunciation Script Refresh
 
 - model / agent: GPT-5 Codex
