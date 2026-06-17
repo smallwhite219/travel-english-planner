@@ -1,5 +1,45 @@
 # travel-english-planner Phase Log
 
+## 2026-06-17 Speech Slide 8 and Sentence Pronunciation Update
+
+- model / agent: GPT-5 Codex
+- goal: Refresh Slide 8 speaker notes from the updated `__發音講稿.docx` and add sentence-level pronunciation practice.
+- task track: Precise Track content + frontend TTS behavior update + Release Track push to `origin/main`; no backend, secrets access, deployment-mode change, or external AI dispatch.
+- user-specified source:
+  - `C:\Users\bai\Downloads\__發音講稿.docx`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- intermediate artifacts:
+  - `D:\vibeCode\outputs\travel-english-speech-v13\source-extract.json`
+  - `D:\vibeCode\outputs\travel-english-speech-v13\update_slide8_only.py`
+- key decisions:
+  - Updated only Slide 8 from the refreshed DOCX so the Slide 1 `zong-en bai` hotfix is preserved.
+  - Added sentence-level TTS controls under each English paragraph using compact speaker buttons with numbered labels.
+  - Kept existing whole-deck, whole-slide, and single-word pronunciation behaviors unchanged.
+  - Reused the existing Web Speech API wrapper; no external TTS service or API key was added.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 15 TALPer slides and checked the refreshed Slide 8 text.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/index-DBv5F2Ym.js` / `assets/index-B4opLB7s.css`.
+  - Vite preview HTTP smoke passed:
+    - `http://127.0.0.1:4174/travel-english-planner/` returned `200 OK`.
+    - `http://127.0.0.1:4174/travel-english-planner/assets/TBICS2026_TALPer_SRL4L_15min-DPgBIttj.pdf` returned `200 OK`.
+  - Build emitted the existing Vite chunk-size warning only.
+- blockers / risks:
+  - In-app Browser control tool was not available through tool discovery in this session, so no visual click-through smoke test was completed.
+  - Sentence pronunciation depends on browser Web Speech API support and installed English voices.
+- release:
+  - User requested GitHub push after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+  - Live GitHub Pages source mode was not independently verified through repository settings in this phase.
+- next step:
+  - After push, verify GitHub Actions / Pages status if GitHub auth and network access are available.
+
 ## 2026-06-16 Speech v13 Presenter Name Hotfix
 
 - model / agent: GPT-5 Codex

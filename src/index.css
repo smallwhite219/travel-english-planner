@@ -618,6 +618,46 @@ body {
   color: #b8ffd1;
 }
 
+.sentence-practice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sentence-practice-button {
+  align-items: center;
+  appearance: none;
+  background: rgba(12, 22, 38, 0.72);
+  border: 1px solid rgba(143, 184, 255, 0.32);
+  border-radius: 7px;
+  color: #cfe0ff;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 4px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 42px;
+  padding: 0 9px;
+}
+
+.sentence-practice-button:hover,
+.sentence-practice-button:focus-visible {
+  background: rgba(93, 163, 255, 0.22);
+  border-color: rgba(143, 184, 255, 0.62);
+  color: #ffffff;
+  outline: none;
+}
+
+.sentence-practice-button.active {
+  background: rgba(84, 209, 138, 0.18);
+  border-color: rgba(84, 209, 138, 0.6);
+  color: #b8ffd1;
+}
+
 .script-copy-zh {
   color: #b7c0cc;
   font-family: 'Inter', 'Microsoft JhengHei', sans-serif;

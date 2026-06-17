@@ -52,12 +52,26 @@ const tokenizeScript = (script) =>
 
 const isWordToken = (token) => /^[A-Za-z]+(?:[-'][A-Za-z]+)*$/.test(token);
 
+const cleanSentenceText = (text = '') =>
+  text
+    .replace(/[｜/]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.!?;:])/g, '$1')
+    .trim();
+
+const splitPracticeSentences = (script = '') =>
+  cleanSentenceText(script)
+    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((sentence) => sentence.trim())
+    .filter((sentence) => /[A-Za-z]/.test(sentence)) ?? [];
+
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackMode, setPlaybackMode] = useState('idle');
   const [isPaused, setIsPaused] = useState(false);
   const [speechError, setSpeechError] = useState('');
   const [lastSpokenWord, setLastSpokenWord] = useState('');
+  const [lastSpokenSentence, setLastSpokenSentence] = useState('');
   const [rate, setRate] = useState(0.9);
   const [englishVoices, setEnglishVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -119,6 +133,7 @@ export default function PresentCoach() {
     setPlaybackMode('idle');
     setIsPaused(false);
     setLastSpokenWord('');
+    setLastSpokenSentence('');
   };
 
   const goToSlide = (index) => {
@@ -183,6 +198,7 @@ export default function PresentCoach() {
   const speakWord = async (word) => {
     const sessionId = beginPlaybackSession('word');
     setLastSpokenWord(word);
+    setLastSpokenSentence('');
 
     try {
       await speakText(word, {
@@ -192,6 +208,24 @@ export default function PresentCoach() {
       });
     } catch {
       setSpeechError('Word pronunciation is not available in this browser.');
+    } finally {
+      finishPlaybackSession(sessionId);
+    }
+  };
+
+  const speakSentence = async (sentence) => {
+    const sessionId = beginPlaybackSession('sentence');
+    setLastSpokenWord('');
+    setLastSpokenSentence(sentence);
+
+    try {
+      await speakText(sentence, {
+        rate,
+        lang: 'en-US',
+        voiceURI: selectedVoiceURI,
+      });
+    } catch {
+      setSpeechError('Sentence pronunciation is not available in this browser.');
     } finally {
       finishPlaybackSession(sessionId);
     }
@@ -232,6 +266,36 @@ export default function PresentCoach() {
         </button>
       );
     });
+
+  const renderSentenceControls = (script, paragraphIndex) => {
+    const sentences = splitPracticeSentences(script);
+
+    if (sentences.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="sentence-practice" aria-label="Sentence pronunciation controls">
+        {sentences.map((sentence, sentenceIndex) => {
+          const isActiveSentence = lastSpokenSentence === sentence;
+
+          return (
+            <button
+              key={`${activeSlide.number}-${paragraphIndex}-${sentenceIndex}`}
+              className={`sentence-practice-button ${isActiveSentence ? 'active' : ''}`}
+              type="button"
+              onClick={() => speakSentence(sentence)}
+              aria-label={`Pronounce sentence ${sentenceIndex + 1}: ${sentence}`}
+              title={`Pronounce sentence ${sentenceIndex + 1}`}
+            >
+              <Volume2 size={13} />
+              <span>{sentenceIndex + 1}</span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <motion.div
@@ -335,7 +399,9 @@ export default function PresentCoach() {
               ? `Playing all slides. Current slide: ${activeSlide.number}.`
               : playbackMode === 'word'
                 ? `Pronouncing: ${lastSpokenWord}`
-                : `Playing slide ${activeSlide.number}.`}
+                : playbackMode === 'sentence'
+                  ? `Practicing sentence: ${lastSpokenSentence}`
+                  : `Playing slide ${activeSlide.number}.`}
           </p>
         )}
       </section>
@@ -394,6 +460,7 @@ export default function PresentCoach() {
                 <p className="script-copy-en interactive-script">
                   {renderScriptTokens(paragraph.english)}
                 </p>
+                {renderSentenceControls(paragraph.english, index)}
                 {paragraph.zh && (
                   <p className="script-copy-zh" lang="zh-Hant">
                     {paragraph.zh}

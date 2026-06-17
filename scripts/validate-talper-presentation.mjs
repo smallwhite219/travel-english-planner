@@ -13,8 +13,13 @@ const deckPdfPath = new URL(
 );
 
 assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v13_20260616');
+assert.equal(talperPresentationMeta.speaker, 'zong-en bai');
 assert.equal(talperPresentationSlides.length, 15);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
+
+const slide8 = talperPresentationSlides[7];
+assert.match(slide8.script, /The process has \/ three parts\./);
+assert.match(slide8.script, /Post class, \/ students do workbook exercises \/ for review\./);
 
 const splitParagraphs = (text = '') =>
   text
