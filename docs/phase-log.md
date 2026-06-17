@@ -1,5 +1,59 @@
 # travel-english-planner Phase Log
 
+## 2026-06-17 Speech v14 PDF and Pronunciation Script Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Update the PresentCoach speech PDF and bilingual pronunciation script from the user-provided v14 PDF and DOCX.
+- task track: Fast Track content/data/asset refresh; no commit, push, deploy, backend, secrets access, or external AI dispatch.
+- user-specified sources:
+  - `C:\Users\bai\Downloads\__發音講稿.docx`
+  - `C:\Users\bai\Downloads\TBICS2026_TALPer_SRL4L_v14_20260617.pptx.pdf`
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\assets\talper-presentation\TBICS2026_TALPer_SRL4L_15min.pdf`
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- intermediate artifacts:
+  - `D:\vibeCode\outputs\travel-english-speech-v14\source-extract.json`
+  - `D:\vibeCode\outputs\travel-english-speech-v14\docx-paragraphs.txt`
+  - `D:\vibeCode\outputs\travel-english-speech-v14\extract_sources.py`
+  - `D:\vibeCode\outputs\travel-english-speech-v14\generate_talper_data.py`
+  - `D:\vibeCode\outputs\travel-english-speech-v14\preview_smoke.ps1`
+- key decisions:
+  - Rebuilt `talper-presentation.js` from the first 16 official slide sections in the DOCX.
+  - Replaced the stable PDF asset path with the user-provided v14 PDF; the updated PDF has 16 pages.
+  - Preserved visible pronunciation pause cues (`/`, `//`, `///`) in the displayed English script and removed Markdown bold markers from website data.
+  - Kept `narrationScript` as clean TTS text without Markdown bold markers or pause slash cues.
+  - Excluded DOCX rehearsal notes, red warning blockquotes, pronunciation tables, and Q&A appendix content from the website speech script.
+  - Used Brain Markdown / direct file fallback because `gbrain` was unavailable in the sandbox session.
+- verification:
+  - DOCX extraction found 16 slide sections; PDF page-count check found 16 pages.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and checked the new Slide 14 and Slide 15 discussion sections.
+  - `node node_modules\vite\bin\vite.js build` passed and emitted `assets/TBICS2026_TALPer_SRL4L_15min-BegcFMvD.pdf`.
+  - Vite preview HTTP smoke passed:
+    - `http://127.0.0.1:4175/travel-english-planner/` returned `200 OK`.
+    - `http://127.0.0.1:4175/travel-english-planner/assets/TBICS2026_TALPer_SRL4L_15min-BegcFMvD.pdf` returned `200 OK`, `Content-Type: application/pdf`, `Content-Length: 1280924`.
+  - Build emitted the existing Vite chunk-size warning only.
+- blockers / risks:
+  - No browser click-through smoke test was run in this phase.
+  - Sentence pronunciation still depends on browser Web Speech API support and installed English voices.
+- release:
+  - User requested GitHub push after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main`.
+  - No Pages mode, workflow, deployment branch, or Vite base change was made.
+  - Live GitHub Pages source mode was not independently verified through repository settings in this phase.
+
 ## 2026-06-17 Speech Slide 8 and Sentence Pronunciation Update
 
 - model / agent: GPT-5 Codex

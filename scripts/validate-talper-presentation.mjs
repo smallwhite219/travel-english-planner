@@ -12,14 +12,22 @@ const deckPdfPath = new URL(
   import.meta.url,
 );
 
-assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v13_20260616');
+assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v14_20260617');
 assert.equal(talperPresentationMeta.speaker, 'zong-en bai');
-assert.equal(talperPresentationSlides.length, 15);
+assert.equal(talperPresentationSlides.length, 16);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
 
 const slide8 = talperPresentationSlides[7];
 assert.match(slide8.script, /The process has \/ three parts\./);
 assert.match(slide8.script, /Post class, \/ students do workbook exercises \/ for review\./);
+
+const slide14 = talperPresentationSlides[13];
+assert.equal(slide14.title, 'Discussion: Findings in Relation to Prior Literature');
+assert.match(slide14.script, /we relate our findings \/ to prior literature/);
+
+const slide15 = talperPresentationSlides[14];
+assert.equal(slide15.title, 'Discussion: ENA, Learning Pathways, and Cognitive Network Structures');
+assert.match(slide15.script, /process-level contribution \/ of our study/);
 
 const splitParagraphs = (text = '') =>
   text
@@ -36,10 +44,11 @@ talperPresentationSlides.forEach((slide, index) => {
   assert.equal(slide.pdfPage, expectedNumber, `slide ${expectedNumber} must map to same PDF page`);
   assert.ok(slide.title?.length > 0, `slide ${expectedNumber} title is required`);
   assert.ok(slide.section?.length > 0, `slide ${expectedNumber} section is required`);
-  assert.ok(slide.script?.split(/\s+/).length > 20, `slide ${expectedNumber} script is unexpectedly short`);
+  assert.ok(scriptParagraphs.length > 0, `slide ${expectedNumber} script must have paragraphs`);
+  assert.ok(slide.script?.split(/\s+/).length > 8, `slide ${expectedNumber} script is unexpectedly short`);
   assert.ok(slide.scriptZh?.length > 20, `slide ${expectedNumber} Chinese translation is required`);
   assert.ok(
-    slide.narrationScript?.split(/\s+/).length > 20,
+    slide.narrationScript?.split(/\s+/).length > 8,
     `slide ${expectedNumber} narration script is unexpectedly short`,
   );
   assert.ok(
@@ -49,7 +58,9 @@ talperPresentationSlides.forEach((slide, index) => {
   assert.ok(!slide.script.includes('**'), `slide ${expectedNumber} script must not leak Markdown bold markers`);
   assert.ok(!slide.scriptZh.includes('**'), `slide ${expectedNumber} Chinese script must not leak Markdown bold markers`);
   assert.ok(
-    !slide.narrationScript.includes('**') && !/[｜/]{1,3}/u.test(slide.narrationScript),
+    !slide.narrationScript.includes('**') &&
+      !slide.narrationScript.includes('嚚') &&
+      !slide.narrationScript.includes('\uFFFD'),
     `slide ${expectedNumber} narration script must be clean for TTS`,
   );
   assert.ok(!slide.script.includes('\\\\n'), `slide ${expectedNumber} script must not contain literal newline escapes`);

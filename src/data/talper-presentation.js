@@ -5,8 +5,8 @@ const talperDeckPdf = new URL(
 
 export const talperPresentationMeta = {
   "title": "Effects of Integrating an AI Learning Companion into a Self-Regulated Learning 4L Framework on Elementary Mathematics Learning",
-  "deckTitle": "TBICS2026_TALPer_SRL4L_v13_20260616",
-  "totalDuration": "13 min 30 sec",
+  "deckTitle": "TBICS2026_TALPer_SRL4L_v14_20260617",
+  "totalDuration": "15 min 30 sec",
   "speaker": "zong-en bai",
   "sourceUrl": talperDeckPdf
 };
@@ -18,9 +18,9 @@ export const talperPresentationSlides = [
     "section": "Title 0:40",
     "title": "Title",
     "subtitle": "Rehearsal segment 0:40",
-    "script": "Good morning, everyone. //\n\nMy name is zong-en bai, / from National Taichung University of Education / in Taiwan. //\n\nToday I will share our study / on an AI learning companion / called TALPer. //\n\nWe integrated it / into a learning framework / called SRL 4L. //\n\nAnd we studied its effects / on elementary mathematics learning. ///",
-    "scriptZh": "大家早安。\n\n我是郭伯臣，來自台灣國立台中教育大學。\n\n今天我要分享一個 AI 學習夥伴 TALPer 的研究。\n\n我們把它整合進一個學習架構，叫做 SRL 4L。\n\n並研究它對國小數學學習的影響。",
-    "narrationScript": "Good morning, everyone.\n\nMy name is zong-en bai. from National Taichung University of Education. in Taiwan.\n\nToday I will share our study. on an AI learning companion. called TALPer.\n\nWe integrated it. into a learning framework. called SRL 4L.\n\nAnd we studied its effects. on elementary mathematics learning."
+    "script": "Good morning, everyone. //\n\nMy name is ZONG EN BAI, / from National Taichung University of Education / in Taiwan. //\n\nToday I will share our study / on an AI learning companion / called TALPer. //\n\nWe integrated it / into a learning framework / called SRL 4L. //\n\nAnd we studied its effects / on elementary mathematics learning. ///",
+    "scriptZh": "大家早安。\n\n我是白宗恩，來自台灣國立台中教育大學。\n\n今天我要分享一個 AI 學習夥伴 TALPer 的研究。\n\n我們把它整合進一個學習架構，叫做 SRL 4L。\n\n並研究它對國小數學學習的影響。",
+    "narrationScript": "Good morning, everyone.\n\nMy name is ZONG EN BAI,. from National Taichung University of Education. in Taiwan.\n\nToday I will share our study. on an AI learning companion. called TALPer.\n\nWe integrated it. into a learning framework. called SRL 4L.\n\nAnd we studied its effects. on elementary mathematics learning."
   },
   {
     "number": 2,
@@ -82,7 +82,16 @@ export const talperPresentationSlides = [
     "scriptZh": "本研究有三個研究問題。\n\n第一，與單純 SRL 4L 相比，TALPer 是否提升學習成效？\n\n第二，高成就與低成就學生使用 SRL 4L 的方式是否不同？\n\n第三，ENA 圖譜在他們的網絡結構上告訴我們什麼？",
     "narrationScript": "Our study has. three research questions.\n\nFirst,. does TALPer improve learning outcomes,. compared with SRL 4L alone?.\n\nSecond,. do high and low achievers. use SRL 4L differently?.\n\nThird,. what do the ENA maps tell us. about their network structures?."
   },
-  { "number": 8, "pdfPage": 8, "section": "Pedagogical Framework 1:10", "title": "Pedagogical Framework", "subtitle": "Rehearsal segment 1:10", "script": "Let me explain / how we put TALPer / into the SRL 4L framework. //\n\nThe process has / three parts. //\n\nPre class, / In class, / and Post class. //\n\nPre class, / students watch videos / and talk with TALPer. //\n\nThis sparks motivation, / and introduces basic concepts. //\n\nIn class, / the four phases / happen in order. //\n\nSelf, / co, / mutual, / and teacher-guided learning. //\n\nTALPer helps students / check their data / and reasoning. //\n\nTeachers also use / TALPer logs / to guide their teaching. //\n\nPost class, / students do workbook exercises / for review. //\n\nSo TALPer is not an add-on. // It is part of the cycle. ///", "scriptZh": "讓我說明我們如何把 TALPer 放進 SRL 4L 架構。\n\n整個歷程分為三部分。\n\n課前、課中，以及課後。\n\n課前，學生觀看影片並與 TALPer 對話。\n\n這能引發動機，並介紹基本概念。\n\n課中，四個階段依序進行。\n\n自學、共學、互學，以及導學。\n\nTALPer 幫助學生檢查資料與推理。\n\n教師也利用 TALPer 紀錄來引導教學。\n\n課後，學生完成習作練習作為複習。\n\n所以 TALPer 不是附加工具，而是循環的一部分。", "narrationScript": "Let me explain. how we put TALPer. into the SRL 4L framework.\n\nThe process has. three parts.\n\nPre class,. In class,. and Post class.\n\nPre class,. students watch videos. and talk with TALPer.\n\nThis sparks motivation,. and introduces basic concepts.\n\nIn class,. the four phases. happen in order.\n\nSelf,. co,. mutual,. and teacher-guided learning.\n\nTALPer helps students. check their data. and reasoning.\n\nTeachers also use. TALPer logs. to guide their teaching.\n\nPost class,. students do workbook exercises. for review.\n\nSo TALPer is not an add-on. It is part of the cycle." },
+  {
+    "number": 8,
+    "pdfPage": 8,
+    "section": "Pedagogical Framework 1:10",
+    "title": "Pedagogical Framework",
+    "subtitle": "Rehearsal segment 1:10",
+    "script": "Let me explain / how we put TALPer / into the SRL 4L framework. //\n\nThe process has / three parts. //\n\nPre class, / In class, / and Post class. //\n\nPre class, / students watch videos / and talk with TALPer. //\n\nThis sparks motivation, / and introduces basic concepts. //\n\nIn class, / the four phases / happen in order. //\n\nSelf, / co, / mutual, / and teacher-guided learning. //\n\nTALPer helps students / check their data / and reasoning. //\n\nTeachers also use / TALPer logs / to guide their teaching. //\n\nPost class, / students do workbook exercises / for review. //\n\nSo TALPer is not an add-on. // It is part of the cycle. ///",
+    "scriptZh": "讓我說明我們如何把 TALPer 放進 SRL 4L 架構。\n\n整個歷程分為三部分。\n\n課前、課中，以及課後。\n\n課前，學生觀看影片並與 TALPer 對話。\n\n這能引發動機，並介紹基本概念。\n\n課中，四個階段依序進行。\n\n自學、共學、互學，以及導學。\n\nTALPer 幫助學生檢查資料與推理。\n\n教師也利用 TALPer 紀錄來引導教學。\n\n課後，學生完成習作練習作為複習。\n\n所以 TALPer 不是附加工具，而是循環的一部分。",
+    "narrationScript": "Let me explain. how we put TALPer. into the SRL 4L framework.\n\nThe process has. three parts.\n\nPre class,. In class,. and Post class.\n\nPre class,. students watch videos. and talk with TALPer.\n\nThis sparks motivation,. and introduces basic concepts.\n\nIn class,. the four phases. happen in order.\n\nSelf,. co,. mutual,. and teacher-guided learning.\n\nTALPer helps students. check their data. and reasoning.\n\nTeachers also use. TALPer logs. to guide their teaching.\n\nPost class,. students do workbook exercises. for review.\n\nSo TALPer is not an add-on. It is part of the cycle."
+  },
   {
     "number": 9,
     "pdfPage": 9,
@@ -136,21 +145,31 @@ export const talperPresentationSlides = [
   {
     "number": 14,
     "pdfPage": 14,
-    "section": "Conclusion 1:10",
-    "title": "Conclusion",
-    "subtitle": "Rehearsal segment 1:10",
-    "script": "Let me conclude. //\n\nFirst, / TALPer improved learning outcomes / within SRL 4L. //\n\nBut the process data / tells a deeper story. //\n\nTALPer's effect / depends on / the learner's awareness. //\n\nHigh achievers used it / for inquiry, / monitoring, / and reflection. //\n\nLow achievers / relied on it / for steps and answers. //\n\nSo the message for teachers / is clear. //\n\nDo not just / give students / access to AI. //\n\nTeachers should guide / how students use AI. //\n\nThis can be done / through questions, / reflection, / and good examples. //\n\nTALPer works best / as a learning tool, / not a shortcut. ///",
-    "scriptZh": "讓我做個總結。\n\n第一，TALPer 在 SRL 4L 架構中提升了學習成效。\n\n但歷程資料告訴我們更深的故事。\n\nTALPer 的效果取決於學習者的意識。\n\n高成就學生用它來探究、監控與反思。\n\n低成就學生則依賴它來取得步驟與答案。\n\n所以給教師的訊息很清楚。\n\n不要只是給學生 AI 的使用權限。\n\n教師應該引導學生如何使用 AI。\n\n這可以透過提問、反思與良好示範來達成。\n\nTALPer 作為學習工具最有效，而不是作為捷徑。",
-    "narrationScript": "Let me conclude.\n\nFirst,. TALPer improved learning outcomes. within SRL 4L.\n\nBut the process data. tells a deeper story.\n\nTALPer's effect. depends on. the learner's awareness.\n\nHigh achievers used it. for inquiry,. monitoring,. and reflection.\n\nLow achievers. relied on it. for steps and answers.\n\nSo the message for teachers. is clear.\n\nDo not just. give students. access to AI.\n\nTeachers should guide. how students use AI.\n\nThis can be done. through questions,. reflection,. and good examples.\n\nTALPer works best. as a learning tool,. not a shortcut."
+    "section": "Discussion: Findings in Relation to Prior Literature 約 1:25-1:40",
+    "title": "Discussion: Findings in Relation to Prior Literature",
+    "subtitle": "Rehearsal segment 約 1:25-1:40",
+    "script": "In this discussion section, / we relate our findings / to prior literature. //\n\nPrevious studies suggest / that generative AI / can support self-regulated learning / by providing feedback, / prompts, / and scaffolds / for planning, / monitoring, / and reflection. //\n\nHowever, / researchers also caution / that effective AI use / requires learner agency. //\n\nIf students rely passively / on AI-generated answers, / AI may reduce critical engagement / rather than promote deeper learning. //\n\nOur study extends this literature / in two ways. //\n\nFirst, / we found that integrating TALPer / into the SRL 4L framework / significantly improved students’ mathematics learning outcomes. //\n\nThis suggests that TALPer / can serve as a meaningful learning scaffold / when embedded in a structured pedagogical framework. //\n\nSecond, / our findings show / that TALPer effectiveness / depends on learners’ regulatory awareness. //\n\nStudents with stronger SRL awareness / used TALPer for monitoring, / reflection, / and deeper regulation, / whereas students with weaker awareness / relied more on procedures and answers. //\n\nThe key message is that AI / can support learning, / but its effectiveness depends on / how learners regulate their engagement with AI. ///",
+    "scriptZh": "在本段討論中，/ 我們將研究發現 / 與既有文獻進行連結。//\n\n過去研究指出，/ 生成式 AI 可以透過提供回饋、/ 提示與鷹架，/ 支持學生在規劃、/ 監控與反思中的自主學習。//\n\n然而，/ 研究者也提醒，/ 有效使用 AI / 需要學習者具備學習主體性。//\n\n如果學生只是被動依賴 / AI 生成的答案，/ AI 可能會降低批判性投入，/ 而不是促進更深層的學習。//\n\n本研究從兩個方面 / 延伸了既有文獻。//\n\n第一，/ 我們發現，/ 將 TALPer 整合進 SRL 4L 架構中，/ 能顯著提升學生的數學學習成效。//\n\n這表示，/ 當 TALPer 被嵌入結構化的教學架構中時，/ 可以成為有意義的學習鷹架。//\n\n第二，/ 我們的研究發現顯示，/ TALPer 的效果 / 取決於學習者的調節意識。//\n\n具備較強自主學習意識的學生，/ 會使用 TALPer 進行監控、/ 反思與更深層的調節；/ 相對地，/ 意識較弱的學生則更依賴程序與答案。//\n\n本研究的核心訊息是：/ AI 可以支持學習，/ 但其效果取決於 / 學習者如何調節自己與 AI 的互動。///",
+    "narrationScript": "In this discussion section,. we relate our findings. to prior literature.\n\nPrevious studies suggest. that generative AI. can support self-regulated learning. by providing feedback,. prompts,. and scaffolds. for planning,. monitoring,. and reflection.\n\nHowever,. researchers also caution. that effective AI use. requires learner agency.\n\nIf students rely passively. on AI-generated answers,. AI may reduce critical engagement. rather than promote deeper learning.\n\nOur study extends this literature. in two ways.\n\nFirst,. we found that integrating TALPer. into the SRL 4L framework. significantly improved students’ mathematics learning outcomes.\n\nThis suggests that TALPer. can serve as a meaningful learning scaffold. when embedded in a structured pedagogical framework.\n\nSecond,. our findings show. that TALPer effectiveness. depends on learners’ regulatory awareness.\n\nStudents with stronger SRL awareness. used TALPer for monitoring,. reflection,. and deeper regulation,. whereas students with weaker awareness. relied more on procedures and answers.\n\nThe key message is that AI. can support learning,. but its effectiveness depends on. how learners regulate their engagement with AI."
   },
   {
     "number": 15,
     "pdfPage": 15,
+    "section": "Discussion: ENA, Learning Pathways, and Cognitive Network Structures 約 1:25-1:45",
+    "title": "Discussion: ENA, Learning Pathways, and Cognitive Network Structures",
+    "subtitle": "Rehearsal segment 約 1:25-1:45",
+    "script": "This slide focuses / on the process-level contribution / of our study. //\n\nPrior ENA research shows / that meaningful learning / can be understood through the connections / among cognitive and metacognitive processes, / rather than through isolated behaviors alone. //\n\nBuilding on this perspective, / we used ENA / to examine how students engaged with TALPer / during AI-supported SRL. //\n\nThe results showed / that high- and low-achieving students / followed different AI-supported learning pathways. //\n\nHigh-achieving students / engaged more in goal setting, / conceptual inquiry, / monitoring, / and reflection. //\n\nIn contrast, / low-achieving students / focused more on procedural asking, / answer seeking, / and showed limited reflection. //\n\nENA further revealed / distinct cognitive network structures. //\n\nHigh-achievers formed / more integrated, / multidirectional, / and densely connected networks, / while low-achievers showed / more fragmented, / linear, / and procedure-oriented networks. //\n\nOverall, / ENA helped us reveal / not only whether AI-supported learning differed, / but also how these differences / were structurally organized. ///",
+    "scriptZh": "這張投影片聚焦於 / 本研究在學習歷程層面的貢獻。//\n\n過去 ENA 研究指出，/ 有意義的學習 / 可以透過認知與後設認知歷程之間的連結來理解，/ 而不只是看單一、孤立的行為。//\n\n基於這個觀點，/ 我們使用 ENA / 來檢視學生在 AI 支持的自主學習中，/ 如何與 TALPer 互動。//\n\n研究結果顯示，/ 高成就與低成就學生 / 呈現出不同的 AI 支持學習路徑。//\n\n高成就學生 / 更多投入於目標設定、/ 概念探究、/ 監控與反思。//\n\n相較之下，/ 低成就學生 / 更聚焦於程序性提問、/ 尋求答案，/ 且反思較為有限。//\n\nENA 進一步揭示了 / 兩組學生不同的認知網絡結構。//\n\n高成就學生形成 / 較整合、/ 多方向且連結密集的網絡；/ 低成就學生則呈現 / 較片段、/ 線性且以程序為導向的網絡。//\n\n整體而言，/ ENA 幫助我們揭示的不只是 / AI 支持學習是否有所不同，/ 也呈現出這些差異 / 是如何在結構上被組織起來的。///",
+    "narrationScript": "This slide focuses. on the process-level contribution. of our study.\n\nPrior ENA research shows. that meaningful learning. can be understood through the connections. among cognitive and metacognitive processes,. rather than through isolated behaviors alone.\n\nBuilding on this perspective,. we used ENA. to examine how students engaged with TALPer. during AI-supported SRL.\n\nThe results showed. that high- and low-achieving students. followed different AI-supported learning pathways.\n\nHigh-achieving students. engaged more in goal setting,. conceptual inquiry,. monitoring,. and reflection.\n\nIn contrast,. low-achieving students. focused more on procedural asking,. answer seeking,. and showed limited reflection.\n\nENA further revealed. distinct cognitive network structures.\n\nHigh-achievers formed. more integrated,. multidirectional,. and densely connected networks,. while low-achievers showed. more fragmented,. linear,. and procedure-oriented networks.\n\nOverall,. ENA helped us reveal. not only whether AI-supported learning differed,. but also how these differences. were structurally organized."
+  },
+  {
+    "number": 16,
+    "pdfPage": 16,
     "section": "Thank You 0:30",
     "title": "Thank You",
     "subtitle": "Rehearsal segment 0:30",
-    "script": "This brings me / to the end. //\n\nThis study was supported / by Taiwan's / National Science and Technology Council. //\n\nThank you very much / for your attention. //\n\nI am happy / to take your questions. ///",
-    "scriptZh": "我的報告到這裡結束。\n\n本研究受到台灣國家科學及技術委員會支持。\n\n非常感謝各位的聆聽。\n\n我很樂意回答各位的問題。",
-    "narrationScript": "This brings me. to the end.\n\nThis study was supported. by Taiwan's. National Science and Technology Council.\n\nThank you very much. for your attention.\n\nI am happy. to take your questions."
+    "script": "This brings me / to the end. //\n\nThank you very much / for your attention. //",
+    "scriptZh": "我的報告到這裡結束。\n\n非常感謝各位的聆聽。",
+    "narrationScript": "This brings me. to the end.\n\nThank you very much. for your attention."
   }
 ];
