@@ -43,7 +43,6 @@ const formatSlowPronunciation = (text = '') =>
       return normalizedPart;
     })
     .join(' ... ')
-    .replace(/\s*\/\s*/g, ' ... ')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -128,11 +127,12 @@ export default function SlowWordPractice() {
       return false;
     }
 
+    const normalRate = Math.max(0.75, Math.min(rate, 0.95));
     setActiveSlowWordId(word.id);
-    setActiveSlowRound('English word');
+    setActiveSlowRound('Normal 1/2');
 
     await speakText(word.term, {
-      rate: Math.max(0.75, Math.min(rate, 0.95)),
+      rate: normalRate,
       lang: 'en-US',
       voiceURI: selectedVoiceURI,
     });
@@ -155,6 +155,23 @@ export default function SlowWordPractice() {
         voiceURI: selectedVoiceURI,
       });
     }
+
+    if (playbackSessionRef.current !== sessionId) {
+      return false;
+    }
+
+    setActiveSlowRound('Normal 2/2');
+    await wait(180);
+
+    if (playbackSessionRef.current !== sessionId) {
+      return false;
+    }
+
+    await speakText(word.term, {
+      rate: normalRate,
+      lang: 'en-US',
+      voiceURI: selectedVoiceURI,
+    });
 
     return playbackSessionRef.current === sessionId;
   };
@@ -229,7 +246,7 @@ export default function SlowWordPractice() {
         <div>
           <p className="presentation-kicker">Pronunciation Drill</p>
           <h1 className="page-title">Slow Word</h1>
-          <p className="page-subtitle">English word once, slow pronunciation three times, then loop.</p>
+          <p className="page-subtitle">Normal once, slow pronunciation three times, normal once, then loop.</p>
         </div>
       </header>
 

@@ -1,5 +1,21 @@
 # travel-english-planner Phase Log
 
+## 2026-06-18 Slow Word Rhythm Update
+
+- model / agent: GPT-5 Codex
+- goal: Change Slow Word playback rhythm to normal once, slow three times, normal once, then move to the next word or repeat the same word.
+- task track: Fast Track frontend TTS behavior update; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, or workflow change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Reused the existing `speakSlowWordSequence` for both all-word looping and single-word looping.
+  - Added a final normal-speed pronunciation after the three slow-pronunciation passes.
+  - Updated the visible status labels to `Normal 1/2`, `Slow 1/3` through `Slow 3/3`, and `Normal 2/2`.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+
 ## 2026-06-18 Slow Word TTS Pronunciation Respelling Hotfix
 
 - model / agent: GPT-5 Codex
