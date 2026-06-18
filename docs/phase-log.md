@@ -1,5 +1,21 @@
 # travel-english-planner Phase Log
 
+## 2026-06-18 Slow Word Slow Pass Uses Original Term
+
+- model / agent: GPT-5 Codex
+- goal: Stop slow-word playback from speaking artificial pronunciation chunks; use the original English term at slow rate instead.
+- task track: Fast Track frontend TTS hotfix + Release Track push requested by user; no backend, secrets access, external AI dispatch, Pages mode, or workflow change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Kept the visible slow-pronunciation guide on each card as a reading aid.
+  - Removed the TTS-only respelling path for slow chunks.
+  - Slow passes now speak the original English term at `0.65` rate, preserving the rhythm: normal once, slow three times, normal once.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+
 ## 2026-06-18 Slow Word Rhythm Update
 
 - model / agent: GPT-5 Codex

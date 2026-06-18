@@ -20,32 +20,6 @@ import {
   subscribeToVoiceChanges,
 } from '../utils/tts';
 
-const formatSlowPronunciation = (text = '') =>
-  text
-    .split('/')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .map((part) => {
-      const normalizedPart = part.toLowerCase();
-      const speechOverrides = {
-        pih: 'pihh',
-        nih: 'nihh',
-      };
-
-      if (speechOverrides[normalizedPart]) {
-        return speechOverrides[normalizedPart];
-      }
-
-      if (/^[a-z]$/i.test(part)) {
-        return part.toUpperCase();
-      }
-
-      return normalizedPart;
-    })
-    .join(' ... ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
 const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
 
 export default function SlowWordPractice() {
@@ -149,7 +123,7 @@ export default function SlowWordPractice() {
         return false;
       }
 
-      await speakText(formatSlowPronunciation(word.slow), {
+      await speakText(word.term, {
         rate: 0.65,
         lang: 'en-US',
         voiceURI: selectedVoiceURI,
@@ -246,7 +220,7 @@ export default function SlowWordPractice() {
         <div>
           <p className="presentation-kicker">Pronunciation Drill</p>
           <h1 className="page-title">Slow Word</h1>
-          <p className="page-subtitle">Normal once, slow pronunciation three times, normal once, then loop.</p>
+          <p className="page-subtitle">Normal word once, slow word three times, normal word once, then loop.</p>
         </div>
       </header>
 
