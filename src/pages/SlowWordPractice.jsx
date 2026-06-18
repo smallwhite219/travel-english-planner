@@ -1,9 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
+  ArrowDown,
+  ArrowUp,
+  EyeOff,
   ListVideo,
   PauseCircle,
   PlayCircle,
+  RotateCcw,
   StopCircle,
   Volume2,
 } from 'lucide-react';
@@ -20,7 +24,30 @@ import {
   subscribeToVoiceChanges,
 } from '../utils/tts';
 
+const WORD_ORDER_STORAGE_KEY = 'travelEnglishSlowWordOrder';
+
 const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
+
+const defaultWordOrder = slowWordPracticeWords.map((word) => word.id);
+
+const normalizeWordOrder = (storedOrder) => {
+  const availableIds = new Set(defaultWordOrder);
+  const uniqueStoredIds = Array.isArray(storedOrder)
+    ? storedOrder.filter((id, index) => availableIds.has(id) && storedOrder.indexOf(id) === index)
+    : [];
+  const missingIds = defaultWordOrder.filter((id) => !uniqueStoredIds.includes(id));
+
+  return [...uniqueStoredIds, ...missingIds];
+};
+
+const loadSavedWordOrder = () => {
+  try {
+    const rawOrder = window.localStorage?.getItem(WORD_ORDER_STORAGE_KEY);
+    return normalizeWordOrder(rawOrder ? JSON.parse(rawOrder) : []);
+  } catch {
+    return defaultWordOrder;
+  }
+};
 
 export default function SlowWordPractice() {
   const [playbackMode, setPlaybackMode] = useState('idle');
@@ -29,18 +56,31 @@ export default function SlowWordPractice() {
   const [activeSlowWordId, setActiveSlowWordId] = useState('');
   const [activeSlowRound, setActiveSlowRound] = useState('');
   const [selectedSlowGroupId, setSelectedSlowGroupId] = useState('all');
+  const [wordOrder, setWordOrder] = useState(loadSavedWordOrder);
+  const [skippedWordIds, setSkippedWordIds] = useState([]);
   const [rate, setRate] = useState(0.9);
   const [englishVoices, setEnglishVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
   const playbackSessionRef = useRef(0);
   const isMountedRef = useRef(true);
 
-  const selectedSlowWords =
+  const wordById = useMemo(
+    () => new Map(slowWordPracticeWords.map((word) => [word.id, word])),
+    [],
+  );
+  const skippedWordIdSet = useMemo(() => new Set(skippedWordIds), [skippedWordIds]);
+  const orderedSlowWords = useMemo(
+    () => normalizeWordOrder(wordOrder).map((id) => wordById.get(id)).filter(Boolean),
+    [wordById, wordOrder],
+  );
+  const selectedGroupWords =
     selectedSlowGroupId === 'all'
-      ? slowWordPracticeWords
-      : slowWordPracticeWords.filter((word) => word.groupId === selectedSlowGroupId);
+      ? orderedSlowWords
+      : orderedSlowWords.filter((word) => word.groupId === selectedSlowGroupId);
+  const selectedSlowWords = selectedGroupWords.filter((word) => !skippedWordIdSet.has(word.id));
   const activeSlowWord = slowWordPracticeWords.find((word) => word.id === activeSlowWordId);
   const isSpeaking = playbackMode !== 'idle';
+  const skippedSelectedCount = selectedGroupWords.length - selectedSlowWords.length;
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -68,6 +108,14 @@ export default function SlowWordPractice() {
     };
   }, []);
 
+  useEffect(() => {
+    try {
+      window.localStorage?.setItem(WORD_ORDER_STORAGE_KEY, JSON.stringify(wordOrder));
+    } catch {
+      // Order persistence is optional; playback still works without localStorage.
+    }
+  }, [wordOrder]);
+
   const beginPlaybackSession = (mode) => {
     playbackSessionRef.current += 1;
     setSpeechError('');
@@ -94,6 +142,47 @@ export default function SlowWordPractice() {
     setIsPaused(false);
     setActiveSlowWordId('');
     setActiveSlowRound('');
+  };
+
+  const moveWord = (wordId, direction) => {
+    const visibleIds = selectedGroupWords.map((word) => word.id);
+    const visibleIndex = visibleIds.indexOf(wordId);
+    const targetVisibleIndex = visibleIndex + direction;
+
+    if (visibleIndex < 0 || targetVisibleIndex < 0 || targetVisibleIndex >= visibleIds.length) {
+      return;
+    }
+
+    const targetWordId = visibleIds[targetVisibleIndex];
+    setWordOrder((currentOrder) => {
+      const nextOrder = normalizeWordOrder(currentOrder);
+      const fromIndex = nextOrder.indexOf(wordId);
+      const toIndex = nextOrder.indexOf(targetWordId);
+
+      if (fromIndex < 0 || toIndex < 0) {
+        return nextOrder;
+      }
+
+      const [movedId] = nextOrder.splice(fromIndex, 1);
+      nextOrder.splice(toIndex, 0, movedId);
+      return nextOrder;
+    });
+  };
+
+  const toggleSkippedWord = (wordId) => {
+    setSkippedWordIds((currentIds) =>
+      currentIds.includes(wordId)
+        ? currentIds.filter((id) => id !== wordId)
+        : [...currentIds, wordId],
+    );
+  };
+
+  const resetOrder = () => {
+    setWordOrder(defaultWordOrder);
+  };
+
+  const clearSkippedWords = () => {
+    setSkippedWordIds([]);
   };
 
   const speakSlowWordSequence = async (word, sessionId) => {
@@ -263,8 +352,13 @@ export default function SlowWordPractice() {
             <div>
               <p className="presentation-kicker">Slow Word</p>
               <h3>{activeSlowWord?.term ?? 'Loop pronunciation drill'}</h3>
+              <p className="slow-word-explainer" lang="zh-Hant">
+                節奏：正常 1 次 → 慢速 3 次 → 正常 1 次；慢速會念原英文單字。
+              </p>
             </div>
-            <span>{selectedSlowWords.length} words</span>
+            <span>
+              {selectedSlowWords.length}/{selectedGroupWords.length} active
+            </span>
           </div>
 
           <div className="slow-word-controls">
@@ -312,6 +406,23 @@ export default function SlowWordPractice() {
             </button>
           </div>
 
+          <div className="slow-word-session-tools" aria-label="Slow-word session tools">
+            <button
+              className="slow-word-tool-button"
+              type="button"
+              onClick={clearSkippedWords}
+              disabled={isSpeaking || skippedSelectedCount === 0}
+            >
+              <RotateCcw size={14} />
+              取消本次略過
+            </button>
+            <button className="slow-word-tool-button" type="button" onClick={resetOrder} disabled={isSpeaking}>
+              <RotateCcw size={14} />
+              重設順序
+            </button>
+            <span lang="zh-Hant">本次略過 {skippedSelectedCount} 個；不會刪除單字。</span>
+          </div>
+
           {isSpeaking && (
             <p className="playback-status">
               {playbackMode === 'slow-one'
@@ -323,23 +434,57 @@ export default function SlowWordPractice() {
           {speechError && <p className="speech-error">{speechError}</p>}
 
           <div className="slow-word-list">
-            {selectedSlowWords.map((word) => {
+            {selectedGroupWords.map((word, index) => {
               const isActiveSlowWord = activeSlowWordId === word.id;
+              const isSkippedWord = skippedWordIdSet.has(word.id);
 
               return (
-                <button
+                <article
                   key={word.id}
-                  className={`slow-word-card ${isActiveSlowWord ? 'active' : ''}`}
-                  type="button"
-                  onClick={() => loopSingleSlowWord(word)}
-                  disabled={isSpeaking}
-                  aria-label={`Loop slow pronunciation for ${word.term}`}
-                  title={`Loop ${word.term}`}
+                  className={`slow-word-card ${isActiveSlowWord ? 'active' : ''} ${isSkippedWord ? 'skipped' : ''}`}
                 >
                   <strong>{word.term}</strong>
                   <span>{word.slow}</span>
-                  <small>Loop one</small>
-                </button>
+                  <div className="slow-word-card-controls">
+                    <button
+                      className="slow-word-mini-button"
+                      type="button"
+                      onClick={() => moveWord(word.id, -1)}
+                      disabled={isSpeaking || index === 0}
+                      aria-label={`Move ${word.term} earlier`}
+                      title="Move earlier"
+                    >
+                      <ArrowUp size={13} />
+                    </button>
+                    <button
+                      className="slow-word-mini-button"
+                      type="button"
+                      onClick={() => moveWord(word.id, 1)}
+                      disabled={isSpeaking || index === selectedGroupWords.length - 1}
+                      aria-label={`Move ${word.term} later`}
+                      title="Move later"
+                    >
+                      <ArrowDown size={13} />
+                    </button>
+                    <button
+                      className="slow-word-mini-button wide"
+                      type="button"
+                      onClick={() => toggleSkippedWord(word.id)}
+                      disabled={isSpeaking}
+                    >
+                      <EyeOff size={13} />
+                      {isSkippedWord ? '加入本次' : '本次略過'}
+                    </button>
+                    <button
+                      className="slow-word-mini-button wide primary"
+                      type="button"
+                      onClick={() => loopSingleSlowWord(word)}
+                      disabled={isSpeaking || isSkippedWord}
+                    >
+                      Loop one
+                    </button>
+                  </div>
+                </article>
               );
             })}
           </div>

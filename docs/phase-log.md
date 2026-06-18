@@ -1,5 +1,43 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Slow Word Session Ordering and Skip Controls
+
+- model / agent: GPT-5 Codex
+- goal: Let the user arrange Slow Word playback order and temporarily exclude words for the current practice session without deleting them.
+- task track: Precise Track frontend interaction update; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, or workflow change.
+- Brain / ErrorLog recall:
+  - `gbrain query "travel english slow word order skip practice list"` was attempted but blocked by the Windows sandbox helper in this session.
+  - Used Brain Markdown / direct file fallback and retained the relevant Web Speech / PowerShell encoding lessons from `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added persistent browser-local ordering with `localStorage` key `travelEnglishSlowWordOrder`.
+  - Added per-card up/down controls that reorder words within the current group view.
+  - Added per-card `本次略過` / `加入本次`; skipped words are excluded from `Loop All` but remain visible and are not deleted.
+  - Added `取消本次略過` and `重設順序` session tools.
+  - Kept single-word looping disabled for skipped items to match the temporary exclusion semantics.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+
+## 2026-06-18 Slow Word Chinese Rhythm Explanation
+
+- model / agent: GPT-5 Codex
+- goal: Add a Traditional Chinese explanation beside the Slow Word panel title so the playback rhythm is clear.
+- task track: Fast Track UI copy/style patch; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, or workflow change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added the explanation `節奏：正常 1 次 → 慢速 3 次 → 正常 1 次；慢速會念原英文單字。`
+  - Kept the word count on the right and added CSS so the explanation wraps cleanly.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+
 ## 2026-06-18 Slow Word Slow Pass Uses Original Term
 
 - model / agent: GPT-5 Codex
