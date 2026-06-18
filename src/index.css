@@ -525,6 +525,118 @@ body {
   opacity: 0.6;
 }
 
+.slow-word-practice {
+  background: #111923;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+}
+
+.slow-word-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.slow-word-header h3 {
+  color: #eef4ff;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.slow-word-header span {
+  color: #9ed0ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.slow-word-controls {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.slow-word-controls select {
+  appearance: none;
+  background: #1a2533;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #eef4ff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 0.9rem;
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.slow-word-controls select:disabled {
+  opacity: 0.6;
+}
+
+.slow-word-list {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  max-height: 310px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.slow-word-card {
+  appearance: none;
+  background: #121923;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #cfe0ff;
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  text-align: left;
+}
+
+.slow-word-card:hover:not(:disabled),
+.slow-word-card:focus-visible {
+  background: rgba(93, 163, 255, 0.18);
+  border-color: rgba(143, 184, 255, 0.6);
+  color: #ffffff;
+  outline: none;
+}
+
+.slow-word-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.slow-word-card.active {
+  background: rgba(84, 209, 138, 0.18);
+  border-color: rgba(84, 209, 138, 0.62);
+  color: #b8ffd1;
+  opacity: 1;
+}
+
+.slow-word-card strong {
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.slow-word-card span {
+  color: #9da8b8;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.slow-word-card small {
+  color: #8fb8ff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .rate-control span {
   color: #d7e5ff;
   font-size: 0.82rem;
@@ -750,6 +862,10 @@ body {
 
   .coach-control {
     width: 100%;
+  }
+
+  .slow-word-controls {
+    grid-template-columns: 1fr;
   }
 
   .script-copy {

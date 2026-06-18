@@ -1,5 +1,44 @@
 # travel-english-planner Phase Log
 
+## 2026-06-18 Slow Word Pronunciation Loop
+
+- model / agent: GPT-5 Codex
+- goal: Add a slow-word practice field to the Speech page using the user-provided `C:\Users\bai\Downloads\slowWord.txt`, with all-word looping and single-word looping.
+- task track: Precise Track frontend TTS behavior update; user requested implementation scope directly; no backend, secrets access, routing, push, deploy, Pages mode, or external AI dispatch.
+- Brain / ErrorLog recall:
+  - `gbrain query "travel english tts slow word pronunciation PresentCoach"` was attempted; sandbox helper failed first, then sandbox-external retry returned `No brain configured. Run: gbrain init`.
+  - Used Brain Markdown / direct file fallback and read `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`.
+- files read:
+  - `D:\vibeCode\AGENTS.md`
+  - `D:\vibeCode\brain\SKILL.md`
+  - `D:\vibeCode\brain\skills\engineering\spec-driven\SKILL.md`
+  - `D:\vibeCode\brain\skills\engineering\tdd\SKILL.md`
+  - `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`
+  - `D:\vibeCode\projects\travel-english-planner\AGENTS.md`
+  - `D:\vibeCode\projects\travel-english-planner\docs\task-state.md`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\utils\tts.js`
+  - `C:\Users\bai\Downloads\slowWord.txt`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\slow-word-practice.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added a dedicated `slow-word` data module with 5 groups and 126 pronunciation items from `slowWord.txt`.
+  - Reused the existing browser Web Speech API wrapper and English voice selector; no external TTS service or API key was added.
+  - Slow-word sequence speaks the English term once, then speaks the slow pronunciation guide three times at `0.65` rate.
+  - Added all-word loop by selected category and single-word loop from each word card; the existing Stop / Pause / Resume controls handle the loop modes.
+  - Kept slide playback, sentence practice, and click-to-pronounce word behavior unchanged.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed and now validates the slow-word groups, unique ids, and required sample items.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4176/travel-english-planner/` with `200 OK`; preview process PID `22936` was closed afterward.
+- blockers / risks:
+  - No visual browser click-through screenshot was completed in this phase.
+  - Actual pronunciation quality still depends on the installed browser English voice and Web Speech API behavior.
+
 ## 2026-06-17 Speech v14 PDF and Pronunciation Script Refresh
 
 - model / agent: GPT-5 Codex

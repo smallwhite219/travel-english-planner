@@ -5,6 +5,10 @@ import {
   talperPresentationMeta,
   talperPresentationSlides,
 } from '../src/data/talper-presentation.js';
+import {
+  slowWordPracticeGroups,
+  slowWordPracticeWords,
+} from '../src/data/slow-word-practice.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const deckPdfPath = new URL(
@@ -16,6 +20,23 @@ assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v14_20260
 assert.equal(talperPresentationMeta.speaker, 'zong-en bai');
 assert.equal(talperPresentationSlides.length, 16);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
+assert.equal(slowWordPracticeGroups.length, 5);
+assert.equal(slowWordPracticeWords.length, 126);
+assert.equal(new Set(slowWordPracticeWords.map((word) => word.id)).size, slowWordPracticeWords.length);
+assert.ok(
+  slowWordPracticeWords.some((word) => word.term === 'Epistemic' && word.slow.includes('STEE')),
+  'slow-word list must include Epistemic pronunciation guidance',
+);
+assert.ok(
+  slowWordPracticeWords.some((word) => word.term === 'Structurally organized'),
+  'slow-word list must include discussion vocabulary',
+);
+
+slowWordPracticeWords.forEach((word) => {
+  assert.ok(word.term?.trim(), `slow-word ${word.id} term is required`);
+  assert.ok(word.slow?.trim(), `slow-word ${word.id} slow pronunciation is required`);
+  assert.ok(word.groupTitle?.trim(), `slow-word ${word.id} group title is required`);
+});
 
 const slide8 = talperPresentationSlides[7];
 assert.match(slide8.script, /The process has \/ three parts\./);
