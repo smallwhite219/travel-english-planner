@@ -3,6 +3,7 @@ import BottomNav from './components/BottomNav';
 import Dashboard from './pages/Dashboard';
 import TermsDrill from './pages/TermsDrill';
 import PresentCoach from './pages/PresentCoach';
+import SlowWordPractice from './pages/SlowWordPractice';
 import QASimulator from './pages/QASimulator';
 import TravelRoleplay from './pages/TravelRoleplay';
 import Networking from './pages/Networking';
@@ -27,6 +28,7 @@ function App() {
       case 'dashboard': return <Dashboard onNavigate={setCurrentTab} />;
       case 'terms': return <TermsDrill />;
       case 'present': return <PresentCoach />;
+      case 'slow-word': return <SlowWordPractice />;
       case 'qa': return <QASimulator />;
       case 'travel': return <TravelRoleplay />;
       case 'network': return <Networking />;
@@ -44,7 +46,7 @@ function App() {
       <div className="map-background"></div>
       <div className="map-overlay"></div>
       
-      <main className={`content-container pb-24 ${currentTab === 'present' ? 'presentation-container' : ''}`}>
+      <main className={`content-container pb-24 ${['present', 'slow-word'].includes(currentTab) ? 'presentation-container' : ''}`}>
         {renderContent()}
       </main>
 

@@ -1,5 +1,30 @@
 # travel-english-planner Phase Log
 
+## 2026-06-18 Split Slow Word Into Standalone Tab
+
+- model / agent: GPT-5 Codex
+- goal: Move Slow Word out of the Speech page into its own bottom-navigation tab at the same level as Speech.
+- task track: Precise Track frontend route / UI structure update; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, or workflow change.
+- Brain / ErrorLog recall:
+  - `gbrain query "travel english tts slow word pronunciation page tab"` was attempted but blocked by the Windows sandbox helper in this session.
+  - Used Brain Markdown / direct file fallback and reread `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\App.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\components\BottomNav.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Created a standalone `SlowWordPractice` page that owns slow-word TTS state, voice selection, rate control, category filtering, all-word looping, and single-word looping.
+  - Removed the slow-word panel and playback state from `PresentCoach`, keeping Speech focused on slides, speaker notes, sentence practice, and click-to-pronounce script words.
+  - Added a `Slow` bottom-navigation tab next to `Speech`.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+- blockers / risks:
+  - No browser click-through screenshot was completed in this phase.
+  - Slow Word pronunciation quality still depends on browser Web Speech API and installed English voices.
+
 ## 2026-06-18 Slow Word Pronunciation Loop
 
 - model / agent: GPT-5 Codex

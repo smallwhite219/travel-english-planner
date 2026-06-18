@@ -16,10 +16,6 @@ import {
   talperPresentationMeta,
   talperPresentationSlides,
 } from '../data/talper-presentation';
-import {
-  slowWordPracticeGroups,
-  slowWordPracticeWords,
-} from '../data/slow-word-practice';
 import talperDeckPdf from '../assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf';
 import {
   cancelSpeech,
@@ -69,14 +65,6 @@ const splitPracticeSentences = (script = '') =>
     ?.map((sentence) => sentence.trim())
     .filter((sentence) => /[A-Za-z]/.test(sentence)) ?? [];
 
-const formatSlowPronunciation = (text = '') =>
-  text
-    .replace(/\s*\/\s*/g, ' ... ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
-
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackMode, setPlaybackMode] = useState('idle');
@@ -84,9 +72,6 @@ export default function PresentCoach() {
   const [speechError, setSpeechError] = useState('');
   const [lastSpokenWord, setLastSpokenWord] = useState('');
   const [lastSpokenSentence, setLastSpokenSentence] = useState('');
-  const [activeSlowWordId, setActiveSlowWordId] = useState('');
-  const [activeSlowRound, setActiveSlowRound] = useState('');
-  const [selectedSlowGroupId, setSelectedSlowGroupId] = useState('all');
   const [rate, setRate] = useState(0.9);
   const [englishVoices, setEnglishVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -98,11 +83,6 @@ export default function PresentCoach() {
   const progress = ((activeIndex + 1) / talperPresentationSlides.length) * 100;
   const isSpeaking = playbackMode !== 'idle';
   const scriptParagraphPairs = getScriptParagraphPairs(activeSlide);
-  const selectedSlowWords =
-    selectedSlowGroupId === 'all'
-      ? slowWordPracticeWords
-      : slowWordPracticeWords.filter((word) => word.groupId === selectedSlowGroupId);
-  const activeSlowWord = slowWordPracticeWords.find((word) => word.id === activeSlowWordId);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -135,8 +115,6 @@ export default function PresentCoach() {
     setSpeechError('');
     setPlaybackMode(mode);
     setIsPaused(false);
-    setActiveSlowWordId('');
-    setActiveSlowRound('');
     return playbackSessionRef.current;
   };
 
@@ -156,8 +134,6 @@ export default function PresentCoach() {
     setIsPaused(false);
     setLastSpokenWord('');
     setLastSpokenSentence('');
-    setActiveSlowWordId('');
-    setActiveSlowRound('');
   };
 
   const goToSlide = (index) => {
@@ -251,94 +227,6 @@ export default function PresentCoach() {
     } catch {
       setSpeechError('Sentence pronunciation is not available in this browser.');
     } finally {
-      finishPlaybackSession(sessionId);
-    }
-  };
-
-  const speakSlowWordSequence = async (word, sessionId) => {
-    if (playbackSessionRef.current !== sessionId) {
-      return false;
-    }
-
-    setActiveSlowWordId(word.id);
-    setLastSpokenWord(word.term);
-    setLastSpokenSentence('');
-    setActiveSlowRound('English word');
-
-    await speakText(word.term, {
-      rate: Math.max(0.75, Math.min(rate, 0.95)),
-      lang: 'en-US',
-      voiceURI: selectedVoiceURI,
-    });
-
-    for (let repeatIndex = 1; repeatIndex <= 3; repeatIndex += 1) {
-      if (playbackSessionRef.current !== sessionId) {
-        return false;
-      }
-
-      setActiveSlowRound(`Slow ${repeatIndex}/3`);
-      await wait(180);
-
-      if (playbackSessionRef.current !== sessionId) {
-        return false;
-      }
-
-      await speakText(formatSlowPronunciation(word.slow), {
-        rate: 0.65,
-        lang: 'en-US',
-        voiceURI: selectedVoiceURI,
-      });
-    }
-
-    return playbackSessionRef.current === sessionId;
-  };
-
-  const playSlowWordLoop = async () => {
-    const sessionId = beginPlaybackSession('slow-all');
-
-    try {
-      while (playbackSessionRef.current === sessionId) {
-        for (const word of selectedSlowWords) {
-          const shouldContinue = await speakSlowWordSequence(word, sessionId);
-
-          if (!shouldContinue) {
-            return;
-          }
-
-          await wait(260);
-        }
-      }
-    } catch {
-      setSpeechError('Slow-word playback is not available in this browser.');
-    } finally {
-      if (playbackSessionRef.current === sessionId) {
-        setActiveSlowWordId('');
-        setActiveSlowRound('');
-      }
-      finishPlaybackSession(sessionId);
-    }
-  };
-
-  const loopSingleSlowWord = async (word) => {
-    const sessionId = beginPlaybackSession('slow-one');
-
-    try {
-      while (playbackSessionRef.current === sessionId) {
-        const shouldContinue = await speakSlowWordSequence(word, sessionId);
-
-        if (!shouldContinue) {
-          return;
-        }
-
-        await wait(320);
-      }
-    } catch {
-      setSpeechError('Slow-word playback is not available in this browser.');
-    } finally {
-      if (playbackSessionRef.current === sessionId) {
-        setActiveSlowWordId('');
-        setActiveSlowRound('');
-      }
       finishPlaybackSession(sessionId);
     }
   };
@@ -513,11 +401,7 @@ export default function PresentCoach() {
                 ? `Pronouncing: ${lastSpokenWord}`
                 : playbackMode === 'sentence'
                   ? `Practicing sentence: ${lastSpokenSentence}`
-                  : playbackMode === 'slow-all'
-                    ? `Slow-word loop: ${activeSlowWord?.term ?? 'starting'} (${activeSlowRound || 'ready'}).`
-                    : playbackMode === 'slow-one'
-                      ? `Looping one word: ${activeSlowWord?.term ?? 'starting'} (${activeSlowRound || 'ready'}).`
-                      : `Playing slide ${activeSlide.number}.`}
+                  : `Playing slide ${activeSlide.number}.`}
           </p>
         )}
       </section>
@@ -566,65 +450,6 @@ export default function PresentCoach() {
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="slow-word-practice" aria-label="Slow-word pronunciation loop">
-            <div className="slow-word-header">
-              <div>
-                <p className="presentation-kicker">Slow Word</p>
-                <h3>Loop pronunciation drill</h3>
-              </div>
-              <span>{selectedSlowWords.length} words</span>
-            </div>
-
-            <div className="slow-word-controls">
-              <select
-                id="slow-word-group"
-                value={selectedSlowGroupId}
-                onChange={(event) => setSelectedSlowGroupId(event.target.value)}
-                disabled={isSpeaking}
-                aria-label="Slow-word category"
-              >
-                <option value="all">All slow words</option>
-                {slowWordPracticeGroups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.title}
-                  </option>
-                ))}
-              </select>
-
-              <button
-                className="coach-control secondary"
-                type="button"
-                onClick={playSlowWordLoop}
-                disabled={isSpeaking || selectedSlowWords.length === 0}
-              >
-                <ListVideo size={16} />
-                Loop All
-              </button>
-            </div>
-
-            <div className="slow-word-list">
-              {selectedSlowWords.map((word) => {
-                const isActiveSlowWord = activeSlowWordId === word.id;
-
-                return (
-                  <button
-                    key={word.id}
-                    className={`slow-word-card ${isActiveSlowWord ? 'active' : ''}`}
-                    type="button"
-                    onClick={() => loopSingleSlowWord(word)}
-                    disabled={isSpeaking}
-                    aria-label={`Loop slow pronunciation for ${word.term}`}
-                    title={`Loop ${word.term}`}
-                  >
-                    <strong>{word.term}</strong>
-                    <span>{word.slow}</span>
-                    <small>Loop one</small>
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {speechError && <p className="speech-error">{speechError}</p>}
