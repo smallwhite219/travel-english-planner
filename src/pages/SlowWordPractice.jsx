@@ -353,12 +353,14 @@ export default function SlowWordPractice() {
               <p className="presentation-kicker">Slow Word</p>
               <div className="slow-word-title-row">
                 <h3>{activeSlowWord?.term ?? 'Loop pronunciation drill'}</h3>
-                <span className="slow-word-rhythm-badge" lang="zh-Hant">
-                  正常 1 次 → 慢速 3 次 → 正常 1 次
-                </span>
+                {activeSlowWord?.meaningZh && (
+                  <span className="slow-word-meaning-badge" lang="zh-Hant">
+                    {activeSlowWord.meaningZh}
+                  </span>
+                )}
               </div>
               <p className="slow-word-explainer" lang="zh-Hant">
-                可自行調整順序，也可只在本次略過；慢速會念原英文單字，不會刪除單字。
+                英文旁邊會顯示中文意思；節奏是正常 1 次、慢速 3 次、正常 1 次。
               </p>
             </div>
             <span>
@@ -425,7 +427,7 @@ export default function SlowWordPractice() {
               <RotateCcw size={14} />
               重設順序
             </button>
-            <span lang="zh-Hant">本次略過 {skippedSelectedCount} 個；不會刪除單字。</span>
+            <span lang="zh-Hant">本次略過 {skippedSelectedCount} 個；不會刪除，下次還可以講。</span>
           </div>
 
           {isSpeaking && (
@@ -449,6 +451,9 @@ export default function SlowWordPractice() {
                   className={`slow-word-card ${isActiveSlowWord ? 'active' : ''} ${isSkippedWord ? 'skipped' : ''}`}
                 >
                   <strong>{word.term}</strong>
+                  <span className="slow-word-meaning" lang="zh-Hant">
+                    {word.meaningZh}
+                  </span>
                   <span>{word.slow}</span>
                   <div className="slow-word-card-controls">
                     <button

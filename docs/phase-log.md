@@ -1,5 +1,29 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Slow Word Chinese Meaning Display
+
+- model / agent: GPT-5 Codex
+- goal: Show the Chinese meaning of each spoken Slow Word English term beside the term, instead of only showing the playback rhythm.
+- task track: Fast Track UI/data fix with TDD-style validation update, followed by Release Track push after explicit user request.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\slow-word-practice.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added `meaningZh` to every flattened slow-word entry via a term-to-Traditional-Chinese meaning map.
+  - Replaced the active header rhythm badge with the active word's Chinese meaning.
+  - Kept rhythm guidance as secondary explanatory copy and added per-card Chinese meanings under each English term.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed and now asserts every slow word has a Han-containing `meaningZh`.
+  - `node node_modules\vite\bin\vite.js build` passed; Vite reported only the existing chunk-size warning.
+- blockers / risks:
+  - `gbrain query` and some sandboxed reads still failed in this Windows sandbox, so Brain lookup used direct Markdown/error-log fallback.
+- release:
+  - Staged only the Slow Word/data/validation/phase-log changes.
+  - Pushed to `origin/main`; GitHub Pages Actions is expected to deploy from the `main` workflow according to `docs/release-topology.md`.
+
 ## 2026-06-19 Slow Word Rhythm Badge Visibility
 
 - model / agent: GPT-5 Codex

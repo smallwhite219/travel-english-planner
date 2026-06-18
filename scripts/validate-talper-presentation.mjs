@@ -31,10 +31,29 @@ assert.ok(
   slowWordPracticeWords.some((word) => word.term === 'Structurally organized'),
   'slow-word list must include discussion vocabulary',
 );
+assert.ok(
+  slowWordPracticeWords.some(
+    (word) => word.term === 'Fourteen point four five' && word.meaningZh === '十四點四五',
+  ),
+  'slow-word list must include Chinese meaning for Fourteen point four five',
+);
+assert.ok(
+  slowWordPracticeWords.some((word) => word.term === 'Epistemic' && word.meaningZh.includes('知識論')),
+  'slow-word list must include Chinese meaning for Epistemic',
+);
+assert.ok(
+  slowWordPracticeWords.some((word) => word.term === 'TALPer' && word.meaningZh.includes('AI 學習夥伴')),
+  'slow-word list must include Chinese meaning for TALPer',
+);
 
 slowWordPracticeWords.forEach((word) => {
   assert.ok(word.term?.trim(), `slow-word ${word.id} term is required`);
   assert.ok(word.slow?.trim(), `slow-word ${word.id} slow pronunciation is required`);
+  assert.ok(word.meaningZh?.trim(), `slow-word ${word.id} Chinese meaning is required`);
+  assert.ok(
+    /[\u3400-\u9fff]/u.test(word.meaningZh),
+    `slow-word ${word.id} Chinese meaning must contain Han characters`,
+  );
   assert.ok(word.groupTitle?.trim(), `slow-word ${word.id} group title is required`);
 });
 

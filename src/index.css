@@ -555,16 +555,16 @@ body {
   gap: 8px;
 }
 
-.slow-word-rhythm-badge {
-  background: rgba(84, 209, 138, 0.12);
-  border: 1px solid rgba(84, 209, 138, 0.38);
+.slow-word-meaning-badge {
+  background: rgba(93, 163, 255, 0.14);
+  border: 1px solid rgba(143, 184, 255, 0.46);
   border-radius: 999px;
-  color: #b8ffd1;
+  color: #d7e5ff;
   font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 800;
   line-height: 1.2;
-  padding: 4px 8px;
+  padding: 5px 9px;
 }
 
 .slow-word-explainer {
@@ -701,8 +701,20 @@ body {
   line-height: 1.35;
 }
 
+.slow-word-card .slow-word-meaning {
+  color: #d7e5ff;
+  font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .slow-word-card.skipped span {
   color: #6f7d91;
+}
+
+.slow-word-card.skipped .slow-word-meaning {
+  color: #7f8da1;
 }
 
 .slow-word-card-controls {
