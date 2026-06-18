@@ -22,6 +22,27 @@ import {
 
 const formatSlowPronunciation = (text = '') =>
   text
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const normalizedPart = part.toLowerCase();
+      const speechOverrides = {
+        pih: 'pihh',
+        nih: 'nihh',
+      };
+
+      if (speechOverrides[normalizedPart]) {
+        return speechOverrides[normalizedPart];
+      }
+
+      if (/^[a-z]$/i.test(part)) {
+        return part.toUpperCase();
+      }
+
+      return normalizedPart;
+    })
+    .join(' ... ')
     .replace(/\s*\/\s*/g, ' ... ')
     .replace(/\s+/g, ' ')
     .trim();

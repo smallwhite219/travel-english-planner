@@ -1,5 +1,25 @@
 # travel-english-planner Phase Log
 
+## 2026-06-18 Slow Word TTS Pronunciation Respelling Hotfix
+
+- model / agent: GPT-5 Codex
+- goal: Stop browser TTS from spelling slow-pronunciation chunks such as `pih` and `NIH` letter by letter.
+- task track: Fast Track frontend TTS hotfix; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, or workflow change.
+- root cause:
+  - The visible slow-pronunciation guide uses stress caps and artificial syllables such as `STEE`, `NIH`, and `pih`.
+  - Browser Web Speech voices may interpret uppercase multi-letter chunks as acronyms and some non-word chunks as letter sequences.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- fix:
+  - Keep the visible card text unchanged.
+  - Normalize the text sent to TTS by splitting on `/`, lowercasing multi-letter chunks, preserving true single-letter chunks, and respelling `pih` / `NIH` as `pihh` / `nihh`.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+- blockers / risks:
+  - Actual pronunciation still depends on the selected browser English voice; Web Speech API does not support reliable phoneme-level control.
+
 ## 2026-06-18 Split Slow Word Into Standalone Tab
 
 - model / agent: GPT-5 Codex
