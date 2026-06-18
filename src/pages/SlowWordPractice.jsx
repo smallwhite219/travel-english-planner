@@ -351,9 +351,14 @@ export default function SlowWordPractice() {
           <div className="slow-word-header">
             <div>
               <p className="presentation-kicker">Slow Word</p>
-              <h3>{activeSlowWord?.term ?? 'Loop pronunciation drill'}</h3>
+              <div className="slow-word-title-row">
+                <h3>{activeSlowWord?.term ?? 'Loop pronunciation drill'}</h3>
+                <span className="slow-word-rhythm-badge" lang="zh-Hant">
+                  正常 1 次 → 慢速 3 次 → 正常 1 次
+                </span>
+              </div>
               <p className="slow-word-explainer" lang="zh-Hant">
-                節奏：正常 1 次 → 慢速 3 次 → 正常 1 次；慢速會念原英文單字。
+                可自行調整順序，也可只在本次略過；慢速會念原英文單字，不會刪除單字。
               </p>
             </div>
             <span>

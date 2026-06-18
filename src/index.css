@@ -548,6 +548,25 @@ body {
   line-height: 1.2;
 }
 
+.slow-word-title-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.slow-word-rhythm-badge {
+  background: rgba(84, 209, 138, 0.12);
+  border: 1px solid rgba(84, 209, 138, 0.38);
+  border-radius: 999px;
+  color: #b8ffd1;
+  font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 4px 8px;
+}
+
 .slow-word-explainer {
   color: #b7c0cc;
   font-family: 'Inter', 'Microsoft JhengHei', sans-serif;

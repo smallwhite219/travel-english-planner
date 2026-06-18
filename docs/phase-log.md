@@ -1,5 +1,22 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Slow Word Rhythm Badge Visibility
+
+- model / agent: GPT-5 Codex
+- goal: Make the Traditional Chinese rhythm explanation visible beside the current Slow Word English title on the live page.
+- task track: Fast Track UI copy/style patch + Release Track push after user reported the live page did not show the Chinese explanation clearly; no backend, secrets access, external AI dispatch, Pages mode, or workflow change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Kept the existing detailed Chinese explainer.
+  - Added a visible badge next to the active English title: `正常 1 次 → 慢速 3 次 → 正常 1 次`.
+  - Styled the badge to wrap on narrow screens instead of disappearing.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+
 ## 2026-06-19 Slow Word Session Ordering and Skip Controls
 
 - model / agent: GPT-5 Codex
