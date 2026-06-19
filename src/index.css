@@ -767,6 +767,33 @@ body {
   line-height: 1.5;
 }
 
+.active-speech-card {
+  background: rgba(12, 22, 38, 0.62);
+  border: 1px solid rgba(143, 184, 255, 0.24);
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.active-speech-card p {
+  margin: 0;
+}
+
+.active-speech-english {
+  color: #eef4ff;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.58;
+}
+
+.active-speech-zh {
+  color: #b7c0cc;
+  font-family: 'Inter', 'Microsoft JhengHei', sans-serif;
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
 .script-copy {
   max-height: 520px;
   overflow-y: auto;
@@ -840,6 +867,11 @@ body {
   gap: 8px;
 }
 
+.sentence-practice-set {
+  display: inline-flex;
+  gap: 4px;
+}
+
 .sentence-practice-button {
   align-items: center;
   appearance: none;
@@ -872,6 +904,11 @@ body {
   background: rgba(84, 209, 138, 0.18);
   border-color: rgba(84, 209, 138, 0.6);
   color: #b8ffd1;
+}
+
+.sentence-practice-button.loop {
+  min-width: 32px;
+  padding: 0 7px;
 }
 
 .script-copy-zh {

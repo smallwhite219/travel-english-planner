@@ -29,6 +29,9 @@ import {
 const clampSlideIndex = (index) =>
   Math.min(Math.max(index, 0), talperPresentationSlides.length - 1);
 
+const SPEECH_RATE_MIN = 0.45;
+const SPEECH_RATE_MAX = 1.1;
+
 const splitScriptParagraphs = (text = '') =>
   text
     .split(/\n\s*\n/)
@@ -47,10 +50,19 @@ const getScriptParagraphPairs = (slide) => {
 
 const getNarrationScript = (slide) => slide.narrationScript || slide.script;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const tokenizeScript = (script) =>
   script.match(/[A-Za-z]+(?:[-'][A-Za-z]+)*|\r?\n|\s+|[^A-Za-z\s]+/g) ?? [];
 
 const isWordToken = (token) => /^[A-Za-z]+(?:[-'][A-Za-z]+)*$/.test(token);
+
+const cleanPlaybackCueText = (text = '') =>
+  text
+    .replace(/\/+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.!?;:])/g, '$1')
+    .trim();
 
 const cleanSentenceText = (text = '') =>
   text
@@ -65,6 +77,37 @@ const splitPracticeSentences = (script = '') =>
     ?.map((sentence) => sentence.trim())
     .filter((sentence) => /[A-Za-z]/.test(sentence)) ?? [];
 
+const splitZhSentences = (text = '') =>
+  text
+    .match(/[^\u3002\uff01\uff1f]+[\u3002\uff01\uff1f]?/g)
+    ?.map((sentence) => sentence.trim())
+    .filter(Boolean) ?? [];
+
+const createSpeechSegmentsForParagraph = (slide, paragraph, paragraphIndex) => {
+  const narrationParagraphs = splitScriptParagraphs(getNarrationScript(slide));
+  const narrationSentences = splitPracticeSentences(narrationParagraphs[paragraphIndex] ?? paragraph.english);
+  const englishSentences = splitPracticeSentences(paragraph.english);
+  const zhSentences = splitZhSentences(paragraph.zh);
+
+  return englishSentences.map((english, sentenceIndex) => ({
+    id: `${slide.number}-${paragraphIndex}-${sentenceIndex}`,
+    slideNumber: slide.number,
+    sentenceNumber: sentenceIndex + 1,
+    paragraphIndex,
+    english: cleanPlaybackCueText(english),
+    zh: zhSentences.length === englishSentences.length ? zhSentences[sentenceIndex] : paragraph.zh,
+    speech: cleanPlaybackCueText(
+      narrationSentences.length === englishSentences.length
+        ? narrationSentences[sentenceIndex]
+        : english,
+    ),
+  }));
+};
+
+const getSlideSpeechSegments = (slide) =>
+  getScriptParagraphPairs(slide).flatMap((paragraph, paragraphIndex) =>
+    createSpeechSegmentsForParagraph(slide, paragraph, paragraphIndex),
+  );
 export default function PresentCoach() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackMode, setPlaybackMode] = useState('idle');
@@ -72,6 +115,7 @@ export default function PresentCoach() {
   const [speechError, setSpeechError] = useState('');
   const [lastSpokenWord, setLastSpokenWord] = useState('');
   const [lastSpokenSentence, setLastSpokenSentence] = useState('');
+  const [activeSpeechCue, setActiveSpeechCue] = useState(null);
   const [rate, setRate] = useState(0.9);
   const [englishVoices, setEnglishVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -134,6 +178,7 @@ export default function PresentCoach() {
     setIsPaused(false);
     setLastSpokenWord('');
     setLastSpokenSentence('');
+    setActiveSpeechCue(null);
   };
 
   const goToSlide = (index) => {
@@ -143,15 +188,41 @@ export default function PresentCoach() {
     setActiveIndex(clampSlideIndex(index));
   };
 
+  const speakSegment = async (segment, sessionId) => {
+    if (playbackSessionRef.current !== sessionId) {
+      return false;
+    }
+
+    setLastSpokenWord('');
+    setLastSpokenSentence(segment.english);
+    setActiveSpeechCue(segment);
+
+    await speakText(segment.speech || segment.english, {
+      rate,
+      lang: 'en-US',
+      voiceURI: selectedVoiceURI,
+    });
+
+    return playbackSessionRef.current === sessionId;
+  };
+
+  const speakSlideSegments = async (slide, sessionId) => {
+    const segments = getSlideSpeechSegments(slide);
+
+    for (const segment of segments) {
+      if (!(await speakSegment(segment, sessionId))) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const speakCurrentSlide = async () => {
     const sessionId = beginPlaybackSession('single');
 
     try {
-      await speakText(getNarrationScript(activeSlide), {
-        rate,
-        lang: 'en-US',
-        voiceURI: selectedVoiceURI,
-      });
+      await speakSlideSegments(activeSlide, sessionId);
     } catch {
       setSpeechError(
         'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
@@ -161,31 +232,50 @@ export default function PresentCoach() {
     }
   };
 
-  const playAllSlides = async () => {
-    const sessionId = beginPlaybackSession('all');
+  const playSlides = async ({ loop = false } = {}) => {
+    const sessionId = beginPlaybackSession(loop ? 'all-loop' : 'all');
 
     try {
-      for (let index = 0; index < talperPresentationSlides.length; index += 1) {
-        if (playbackSessionRef.current !== sessionId) {
+      do {
+        for (let index = 0; index < talperPresentationSlides.length; index += 1) {
+          if (playbackSessionRef.current !== sessionId) {
+            return;
+          }
+
+          if (isMountedRef.current) {
+            setActiveIndex(index);
+          }
+
+          await sleep(300);
+
+          if (!(await speakSlideSegments(talperPresentationSlides[index], sessionId))) {
+            return;
+          }
+        }
+      } while (loop && playbackSessionRef.current === sessionId);
+    } catch {
+      setSpeechError(
+        'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
+      );
+    } finally {
+      finishPlaybackSession(sessionId);
+    }
+  };
+
+  const playAllSlides = () => playSlides({ loop: false });
+
+  const loopAllSlides = () => playSlides({ loop: true });
+
+  const loopCurrentSlide = async () => {
+    const sessionId = beginPlaybackSession('slide-loop');
+    const slide = activeSlide;
+
+    try {
+      do {
+        if (!(await speakSlideSegments(slide, sessionId))) {
           return;
         }
-
-        if (isMountedRef.current) {
-          setActiveIndex(index);
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        if (playbackSessionRef.current !== sessionId) {
-          return;
-        }
-
-        await speakText(getNarrationScript(talperPresentationSlides[index]), {
-          rate,
-          lang: 'en-US',
-          voiceURI: selectedVoiceURI,
-        });
-      }
+      } while (playbackSessionRef.current === sessionId);
     } catch {
       setSpeechError(
         'Speech playback is not available in this browser. Please try Chrome or Edge with an English voice installed.',
@@ -199,10 +289,11 @@ export default function PresentCoach() {
     const sessionId = beginPlaybackSession('word');
     setLastSpokenWord(word);
     setLastSpokenSentence('');
+    setActiveSpeechCue(null);
 
     try {
       await speakText(word, {
-        rate: Math.max(0.75, Math.min(rate, 0.95)),
+        rate: Math.max(SPEECH_RATE_MIN, Math.min(rate, 0.95)),
         lang: 'en-US',
         voiceURI: selectedVoiceURI,
       });
@@ -213,17 +304,27 @@ export default function PresentCoach() {
     }
   };
 
-  const speakSentence = async (sentence) => {
+  const speakSentence = async (segment) => {
     const sessionId = beginPlaybackSession('sentence');
-    setLastSpokenWord('');
-    setLastSpokenSentence(sentence);
 
     try {
-      await speakText(sentence, {
-        rate,
-        lang: 'en-US',
-        voiceURI: selectedVoiceURI,
-      });
+      await speakSegment(segment, sessionId);
+    } catch {
+      setSpeechError('Sentence pronunciation is not available in this browser.');
+    } finally {
+      finishPlaybackSession(sessionId);
+    }
+  };
+
+  const loopSentence = async (segment) => {
+    const sessionId = beginPlaybackSession('sentence-loop');
+
+    try {
+      do {
+        if (!(await speakSegment(segment, sessionId))) {
+          return;
+        }
+      } while (playbackSessionRef.current === sessionId);
     } catch {
       setSpeechError('Sentence pronunciation is not available in this browser.');
     } finally {
@@ -267,35 +368,67 @@ export default function PresentCoach() {
       );
     });
 
-  const renderSentenceControls = (script, paragraphIndex) => {
-    const sentences = splitPracticeSentences(script);
+  const renderSentenceControls = (paragraph, paragraphIndex) => {
+    const segments = createSpeechSegmentsForParagraph(activeSlide, paragraph, paragraphIndex);
 
-    if (sentences.length === 0) {
+    if (segments.length === 0) {
       return null;
     }
 
     return (
       <div className="sentence-practice" aria-label="Sentence pronunciation controls">
-        {sentences.map((sentence, sentenceIndex) => {
-          const isActiveSentence = lastSpokenSentence === sentence;
+        {segments.map((segment) => {
+          const isActiveSentence = activeSpeechCue?.id === segment.id;
 
           return (
-            <button
-              key={`${activeSlide.number}-${paragraphIndex}-${sentenceIndex}`}
-              className={`sentence-practice-button ${isActiveSentence ? 'active' : ''}`}
-              type="button"
-              onClick={() => speakSentence(sentence)}
-              aria-label={`Pronounce sentence ${sentenceIndex + 1}: ${sentence}`}
-              title={`Pronounce sentence ${sentenceIndex + 1}`}
-            >
-              <Volume2 size={13} />
-              <span>{sentenceIndex + 1}</span>
-            </button>
+            <span className="sentence-practice-set" key={segment.id}>
+              <button
+                className={`sentence-practice-button ${isActiveSentence ? 'active' : ''}`}
+                type="button"
+                onClick={() => speakSentence(segment)}
+                aria-label={`Pronounce sentence ${segment.sentenceNumber}: ${segment.english}`}
+                title={`Pronounce sentence ${segment.sentenceNumber}`}
+              >
+                <Volume2 size={13} />
+                <span>{segment.sentenceNumber}</span>
+              </button>
+              <button
+                className={`sentence-practice-button loop ${isActiveSentence && playbackMode === 'sentence-loop' ? 'active' : ''}`}
+                type="button"
+                onClick={() => loopSentence(segment)}
+                aria-label={`Loop sentence ${segment.sentenceNumber}: ${segment.english}`}
+                title={`Loop sentence ${segment.sentenceNumber}`}
+              >
+                <RotateCcw size={13} />
+              </button>
+            </span>
           );
         })}
       </div>
     );
   };
+
+  const playbackStatusText = (() => {
+    if (playbackMode === 'all') {
+      return `Playing all slides. Current slide: ${activeSlide.number}.`;
+    }
+    if (playbackMode === 'all-loop') {
+      return `Looping all slides. Current slide: ${activeSlide.number}.`;
+    }
+    if (playbackMode === 'slide-loop') {
+      return `Looping slide ${activeSlide.number}.`;
+    }
+    if (playbackMode === 'sentence-loop') {
+      return `Looping sentence ${activeSpeechCue?.sentenceNumber ?? ''}.`;
+    }
+    if (playbackMode === 'word') {
+      return `Pronouncing: ${lastSpokenWord}`;
+    }
+    if (playbackMode === 'sentence') {
+      return `Practicing sentence ${activeSpeechCue?.sentenceNumber ?? ''}.`;
+    }
+    return `Playing slide ${activeSlide.number}.`;
+  })();
 
   return (
     <motion.div
@@ -363,6 +496,14 @@ export default function PresentCoach() {
                   <ListVideo size={18} />
                   Play All
                 </button>
+                <button className="coach-control secondary" onClick={loopCurrentSlide}>
+                  <RotateCcw size={18} />
+                  Loop Slide
+                </button>
+                <button className="coach-control secondary" onClick={loopAllSlides}>
+                  <ListVideo size={18} />
+                  Loop All
+                </button>
               </>
             )}
             {isSpeaking && !isPaused && playbackMode !== 'word' && (
@@ -394,15 +535,19 @@ export default function PresentCoach() {
         </div>
 
         {isSpeaking && (
-          <p className="playback-status">
-            {playbackMode === 'all'
-              ? `Playing all slides. Current slide: ${activeSlide.number}.`
-              : playbackMode === 'word'
-                ? `Pronouncing: ${lastSpokenWord}`
-                : playbackMode === 'sentence'
-                  ? `Practicing sentence: ${lastSpokenSentence}`
-                  : `Playing slide ${activeSlide.number}.`}
-          </p>
+          <div className="active-speech-card" aria-live="polite">
+            <p className="playback-status">{playbackStatusText}</p>
+            {activeSpeechCue && (
+              <>
+                <p className="active-speech-english">{activeSpeechCue.english}</p>
+                {activeSpeechCue.zh && (
+                  <p className="active-speech-zh" lang="zh-Hant">
+                    {activeSpeechCue.zh}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
         )}
       </section>
 
@@ -425,8 +570,8 @@ export default function PresentCoach() {
             <input
               id="speech-rate"
               type="range"
-              min="0.65"
-              max="1.1"
+              min={SPEECH_RATE_MIN}
+              max={SPEECH_RATE_MAX}
               step="0.05"
               value={rate}
               onChange={(event) => setRate(Number(event.target.value))}
@@ -460,7 +605,7 @@ export default function PresentCoach() {
                 <p className="script-copy-en interactive-script">
                   {renderScriptTokens(paragraph.english)}
                 </p>
-                {renderSentenceControls(paragraph.english, index)}
+                {renderSentenceControls(paragraph, index)}
                 {paragraph.zh && (
                   <p className="script-copy-zh" lang="zh-Hant">
                     {paragraph.zh}

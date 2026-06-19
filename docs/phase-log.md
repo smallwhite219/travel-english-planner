@@ -1,5 +1,36 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Speech Sentence Cue and Loop Modes
+
+- model / agent: GPT-5 Codex
+- goal: Add visible currently playing Speech sentence text with Chinese explanation, lower Speech rate to 0.45x, and support all-slide, single-slide, and single-sentence looping.
+- task track: Precise Track frontend TTS behavior update from direct user request, followed by Release Track push after explicit user request; no backend, secrets access, external AI dispatch, deploy, Pages mode, or workflow change.
+- Brain / ErrorLog recall:
+  - `gbrain query "travel english speech TTS Web Speech playback loop rate slow sentence Chinese explanation"` returned `No brain configured. Run: gbrain init`; used Brain Markdown / direct errorLog fallback.
+  - Read `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md` and kept the PowerShell encoding and bundled Node validation lessons.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Speech slide playback now speaks sentence-sized segments sequentially instead of one whole-slide utterance, so the UI can reliably show the active English sentence and matched Chinese explanation.
+  - Added `Loop Slide`, `Loop All`, and per-sentence loop controls while preserving one-shot `Listen`, `Play All`, and sentence play buttons.
+  - Lowered the Speech rate slider minimum from 0.65x to 0.45x and let word pronunciation honor the same minimum.
+  - Used Unicode escapes for Chinese punctuation splitting to avoid Windows terminal encoding corruption.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4177/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User requested GitHub push after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+  - No Pages mode, workflow, deployment branch, or Vite base change was made.
+- blockers / risks:
+  - In-app browser inspection tool was not available after tool discovery, so no visual screenshot smoke was completed in this phase.
+  - Actual TTS voice quality and pause support still depend on the browser Web Speech API and installed English voices.
+
 ## 2026-06-19 Slow Word Dynamic Slow Rate
 
 - model / agent: GPT-5 Codex
