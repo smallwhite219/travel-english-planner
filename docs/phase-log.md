@@ -1,5 +1,35 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Speech Script DOCX Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Replace the Speech page bilingual pronunciation script with the user-provided DOCX while preserving existing playback UI and other features.
+- task track: Fast Track content/data refresh; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, workflow, PDF, or player UI change.
+- Brain / ErrorLog recall:
+  - `gbrain query "travel english speech docx pronunciation script parser bilingual talper"` returned `No brain configured. Run: gbrain init`; used Brain Markdown / direct errorLog fallback.
+  - Read `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md` and avoided direct Chinese filename literals in inline scripts.
+- source:
+  - `C:\Users\bai\Downloads\__????_20260619.docx`
+- intermediate artifacts:
+  - `D:\vibeCode\outputs\travel-english-speech-20260619\docx-items.json`
+  - `D:\vibeCode\outputs\travel-english-speech-20260619\docx-text.txt`
+  - `D:\vibeCode\outputs\travel-english-speech-20260619\parsed-slides.json`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Parsed only the real `Slide 1` through `Slide 16` rehearsal section and ignored the introductory reminders, rehearsal suggestions, pronunciation cheat sheet, Q&A cheat sheet, and timing table.
+  - Replaced only `script`, `scriptZh`, and `narrationScript`; preserved slide numbers, PDF pages, titles, sections, subtitles, metadata, PDF asset, and Speech playback functionality.
+  - Removed Markdown bold markers from display/TTS data while preserving visible pause cues in `script` and `scriptZh`.
+  - Split Slide 14 and Slide 15 paragraph-internal English/Chinese line breaks before pairing bilingual lines.
+- verification:
+  - DOCX parser reported 16 slides with matching English/Chinese paragraph counts for every slide.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed after sandbox-external retry; Vite emitted the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4178/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- blockers / risks:
+  - No visual browser click-through screenshot was completed in this phase.
+  - Actual TTS voice quality still depends on the browser Web Speech API and installed English voices.
 ## 2026-06-19 Speech Sentence Cue and Loop Modes
 
 - model / agent: GPT-5 Codex
