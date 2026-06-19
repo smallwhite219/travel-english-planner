@@ -288,3 +288,22 @@ export const slowWordPracticeWords = slowWordPracticeGroups.flatMap((group) =>
     groupTitle: group.title,
   })),
 );
+
+export const getSlowWordSlowRate = (term = '') => {
+  const letterCount = term.replace(/[^A-Za-z]/g, '').length;
+  const spokenPartCount = term.trim().split(/\s+/).filter(Boolean).length;
+
+  if (letterCount >= 28 || spokenPartCount >= 5) {
+    return 0.5;
+  }
+
+  if (letterCount >= 20 || spokenPartCount >= 3) {
+    return 0.55;
+  }
+
+  if (letterCount >= 12 || spokenPartCount >= 2) {
+    return 0.6;
+  }
+
+  return 0.65;
+};

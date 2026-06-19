@@ -6,6 +6,7 @@ import {
   talperPresentationSlides,
 } from '../src/data/talper-presentation.js';
 import {
+  getSlowWordSlowRate,
   slowWordPracticeGroups,
   slowWordPracticeWords,
 } from '../src/data/slow-word-practice.js';
@@ -45,6 +46,10 @@ assert.ok(
   slowWordPracticeWords.some((word) => word.term === 'TALPer' && word.meaningZh.includes('AI 學習夥伴')),
   'slow-word list must include Chinese meaning for TALPer',
 );
+assert.equal(getSlowWordSlowRate('TALPer'), 0.65);
+assert.equal(getSlowWordSlowRate('Metacognition'), 0.6);
+assert.equal(getSlowWordSlowRate('Self-regulated learning'), 0.55);
+assert.equal(getSlowWordSlowRate('Distinct cognitive network structures'), 0.5);
 
 slowWordPracticeWords.forEach((word) => {
   assert.ok(word.term?.trim(), `slow-word ${word.id} term is required`);

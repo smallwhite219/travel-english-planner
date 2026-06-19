@@ -12,6 +12,7 @@ import {
   Volume2,
 } from 'lucide-react';
 import {
+  getSlowWordSlowRate,
   slowWordPracticeGroups,
   slowWordPracticeWords,
 } from '../data/slow-word-practice';
@@ -191,6 +192,7 @@ export default function SlowWordPractice() {
     }
 
     const normalRate = Math.max(0.75, Math.min(rate, 0.95));
+    const slowRate = getSlowWordSlowRate(word.term);
     setActiveSlowWordId(word.id);
     setActiveSlowRound('Normal 1/2');
 
@@ -205,7 +207,7 @@ export default function SlowWordPractice() {
         return false;
       }
 
-      setActiveSlowRound(`Slow ${repeatIndex}/3`);
+      setActiveSlowRound(`Slow ${repeatIndex}/3 · ${slowRate.toFixed(2)}x`);
       await wait(180);
 
       if (playbackSessionRef.current !== sessionId) {
@@ -213,7 +215,7 @@ export default function SlowWordPractice() {
       }
 
       await speakText(word.term, {
-        rate: 0.65,
+        rate: slowRate,
         lang: 'en-US',
         voiceURI: selectedVoiceURI,
       });
@@ -360,7 +362,7 @@ export default function SlowWordPractice() {
                 )}
               </div>
               <p className="slow-word-explainer" lang="zh-Hant">
-                英文旁邊會顯示中文意思；節奏是正常 1 次、慢速 3 次、正常 1 次。
+                英文旁邊會顯示中文意思；長單字會自動更慢，最低到 0.50x。
               </p>
             </div>
             <span>

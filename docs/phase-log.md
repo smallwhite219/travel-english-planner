@@ -1,5 +1,26 @@
 # travel-english-planner Phase Log
 
+## 2026-06-19 Slow Word Dynamic Slow Rate
+
+- model / agent: GPT-5 Codex
+- goal: Make longer Slow Word terms speak slower than the previous fixed 0.65x slow rate.
+- task track: Fast Track TTS behavior patch with validation update, followed by Release Track push after explicit user request.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\slow-word-practice.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\SlowWordPractice.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added `getSlowWordSlowRate(term)` so short terms remain at 0.65x, medium terms use 0.60x, longer terms use 0.55x, and the longest phrases use 0.50x.
+  - Reused the helper in playback so each of the three slow repetitions uses the term-specific rate.
+  - Updated the visible playback status to include the active slow rate, such as `Slow 1/3 · 0.50x`.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed and asserts sample rates for short, medium, long, and longest terms.
+  - `node node_modules\vite\bin\vite.js build` passed; Vite reported only the existing chunk-size warning.
+- release:
+  - Staged only the dynamic slow-rate code, validation, and phase-log changes.
+  - Pushed to `origin/main`; GitHub Pages Actions is expected to deploy from the `main` workflow according to `docs/release-topology.md`.
+
 ## 2026-06-19 Slow Word Chinese Meaning Display
 
 - model / agent: GPT-5 Codex
