@@ -68,11 +68,13 @@ assert.match(slide8.script, /Post class, \/ students do workbook exercises \/ fo
 
 const slide14 = talperPresentationSlides[13];
 assert.equal(slide14.title, 'Discussion: Findings in Relation to Prior Literature');
-assert.match(slide14.script, /we relate our findings \/ to prior literature/);
+assert.match(slide14.script, /we connect our findings \/ to existing research/);
+assert.match(slide14.script, /learners actively regulate \/ how they engage with it/);
 
 const slide15 = talperPresentationSlides[14];
 assert.equal(slide15.title, 'Discussion: ENA, Learning Pathways, and Cognitive Network Structures');
-assert.match(slide15.script, /process-level contribution \/ of our study/);
+assert.match(slide15.script, /what our study reveals \/ about the learning process/);
+assert.match(slide15.script, /how those differences \/ are structurally organized/);
 
 const splitParagraphs = (text = '') =>
   text
