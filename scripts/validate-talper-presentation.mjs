@@ -82,6 +82,22 @@ assert.ok(
   'speech script terminology must use selecting strategies instead of strategy adjustment',
 );
 
+const slide9 = talperPresentationSlides[8];
+assert.match(slide9.script, /The experimental group \/ had twenty-one students/);
+
+const slide11 = talperPresentationSlides[10];
+assert.match(slide11.script, /For the experimental group, \/ it was eighty-five point four nine/);
+
+assert.ok(
+  talperPresentationSlides.every(
+    (slide) =>
+      !slide.script.includes('TALPer group') &&
+      !slide.narrationScript.includes('TALPer group') &&
+      !slide.scriptZh.includes('TALPer \u7d44'),
+  ),
+  'speech script terminology must use experimental group instead of TALPer group',
+);
+
 const slide14 = talperPresentationSlides[13];
 assert.equal(slide14.title, 'Discussion: Findings in Relation to Prior Literature');
 assert.match(slide14.script, /I compare our findings \/ with prior literature/);

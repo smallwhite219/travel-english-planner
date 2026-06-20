@@ -1,5 +1,30 @@
 # travel-english-planner Phase Log
 
+## 2026-06-20 Speech Experimental Group Terminology Patch
+
+- model / agent: GPT-5 Codex
+- goal: Change Speech script group wording from `TALPer group` to `experimental group`, then push to GitHub.
+- task track: Fast Track terminology patch plus Release Track push; no backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or player UI change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Updated Slide 9, Slide 11, and Slide 12 display scripts and narration scripts from `TALPer group` to `experimental group`.
+  - Updated matching Traditional Chinese prompts from `TALPer ?` to `???`.
+  - Added validation guards so Speech scripts must use `experimental group` and must not regress to `TALPer group`.
+- verification:
+  - `rg` confirmed Speech data now contains `experimental group` / `???` in the relevant slides and no `TALPer group` / `TALPer ?` in `talper-presentation.js`.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4183/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - Continuing the requested speech wording update flow with push to `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+
 ## 2026-06-20 Speech Selecting Strategies Verb Patch
 
 - model / agent: GPT-5 Codex
