@@ -1,5 +1,45 @@
 # travel-english-planner Phase Log
 
+## 2026-06-20 Speech Script DOCX Terminology-Unified Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Update the Speech page pronunciation script from the user-provided 2026-06-20 terminology-unified DOCX while preserving existing slide/PDF mapping and playback behavior.
+- task track: Fast Track content/data refresh; no backend, secrets access, external AI dispatch, push, deploy, Pages mode, workflow, PDF, PPTX, or player UI change.
+- Brain / ErrorLog recall:
+  - gbrain/tool discovery was unstable in the Windows sandbox helper, so this phase used Brain Markdown and direct errorLog fallback.
+  - Reused `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`: copied the DOCX to an ASCII workspace path and used ASCII-safe parser code with Unicode escapes for full-width separators.
+- source:
+  - `C:\Users\bai\Downloads\__發音講稿_20260620_用詞統一版_chatGPT.docx`
+- intermediate artifacts:
+  - `D:\vibeCode\outputs\travel-english-speech-20260620\source.docx`
+  - `D:\vibeCode\outputs\travel-english-speech-20260620\docx-items.json`
+  - `D:\vibeCode\outputs\travel-english-speech-20260620\docx-text.txt`
+  - `D:\vibeCode\outputs\travel-english-speech-20260620\parsed-slides.json`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Replaced only `script`, `scriptZh`, and `narrationScript` for Slide 1 through Slide 16.
+  - Preserved slide numbers, PDF pages, titles, section labels, subtitle labels, deck metadata, PDF asset path, and Speech playback UI.
+  - Removed DOCX Markdown bold markers from website/TTS data while keeping visible pause markers `/`, `//`, and `///` in display scripts.
+  - Updated validation assertions to check the revised 2026-06-20 Slide 14 and Slide 15 wording around regulatory awareness and E-N-A learning pathways.
+- verification:
+  - DOCX parser reported 16 slides, with matching English/Chinese paragraph counts for every slide.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `npm run build` could not run because the local PowerShell npm wrapper is blocked by execution policy.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4180/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User requested GitHub push after local verification.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+  - No Pages mode, workflow, deployment branch, Vite base, PDF, PPTX, or player UI change was made.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+  - Actual TTS pronunciation still depends on the browser Web Speech API and installed English voices.
+
 ## 2026-06-19 Speech Slide 14 and 15 Script Refresh
 
 - model / agent: GPT-5 Codex
