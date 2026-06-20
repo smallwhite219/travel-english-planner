@@ -1,5 +1,35 @@
 # travel-english-planner Phase Log
 
+## 2026-06-20 Speech Strategy Terminology Patch
+
+- model / agent: GPT-5 Codex
+- goal: Change Speech script wording from `strategy adjustment` to `selecting strategies`, per user request, and push the update to GitHub.
+- task track: Fast Track terminology patch plus Release Track push; no backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or player UI change.
+- Brain / ErrorLog recall:
+  - Read `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`; used bundled Node and avoided relying on `npm.ps1`.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Updated only Speech slide scripts and narration scripts in `talper-presentation.js`.
+  - Updated the matching Traditional Chinese prompt from `????` to `????`.
+  - Added validation guards so Speech scripts must use `selecting strategies` and must not regress to `strategy adjustment`.
+  - Left non-Speech practice data in `conference-listening.js` untouched because the user specified ????.
+- verification:
+  - `rg` confirmed Speech data now contains `selecting strategies` / `????` and no `strategy adjustment` / `????` in `talper-presentation.js`.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4181/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User requested push in the same request.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+  - Actual TTS pronunciation still depends on the browser Web Speech API and installed English voices.
+
 ## 2026-06-20 Speech Script DOCX Terminology-Unified Refresh
 
 - model / agent: GPT-5 Codex

@@ -66,6 +66,22 @@ const slide8 = talperPresentationSlides[7];
 assert.match(slide8.script, /The process has \/ three parts\./);
 assert.match(slide8.script, /Post class, \/ students do workbook exercises \/ for review\./);
 
+const slide10 = talperPresentationSlides[9];
+assert.match(slide10.script, /Goal setting, \/ selecting strategies, \/ monitoring/);
+
+const slide12 = talperPresentationSlides[11];
+assert.match(slide12.script, /They also did \/ selecting strategies \/ again and again/);
+
+assert.ok(
+  talperPresentationSlides.every(
+    (slide) =>
+      !slide.script.includes('strategy adjustment') &&
+      !slide.narrationScript.includes('strategy adjustment') &&
+      !slide.scriptZh.includes('\u7b56\u7565\u8abf\u6574'),
+  ),
+  'speech script terminology must use selecting strategies instead of strategy adjustment',
+);
+
 const slide14 = talperPresentationSlides[13];
 assert.equal(slide14.title, 'Discussion: Findings in Relation to Prior Literature');
 assert.match(slide14.script, /I compare our findings \/ with prior literature/);
@@ -112,7 +128,7 @@ talperPresentationSlides.forEach((slide, index) => {
   );
   assert.ok(!slide.script.includes('\\\\n'), `slide ${expectedNumber} script must not contain literal newline escapes`);
   assert.ok(!slide.scriptZh.includes('\\\\n'), `slide ${expectedNumber} Chinese script must not contain literal newline escapes`);
-  assert.ok(!slide.scriptZh.includes('????'), `slide ${expectedNumber} Chinese script appears corrupted`);
+  assert.ok(!slide.scriptZh.includes('\u7b56\u7565\u8abf\u6574'), `slide ${expectedNumber} Chinese script appears corrupted`);
   assert.equal(
     scriptZhParagraphs.length,
     scriptParagraphs.length,
