@@ -70,7 +70,7 @@ const slide10 = talperPresentationSlides[9];
 assert.match(slide10.script, /Goal setting, \/ selecting strategies, \/ monitoring/);
 
 const slide12 = talperPresentationSlides[11];
-assert.match(slide12.script, /They also did \/ selecting strategies \/ again and again/);
+assert.match(slide12.script, /They also showed \/ selecting strategies \/ again and again/);
 
 assert.ok(
   talperPresentationSlides.every(

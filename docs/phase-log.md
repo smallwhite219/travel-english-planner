@@ -1,5 +1,30 @@
 # travel-english-planner Phase Log
 
+## 2026-06-20 Speech Selecting Strategies Verb Patch
+
+- model / agent: GPT-5 Codex
+- goal: Change Slide 12 Speech wording from `They also did / selecting strategies / again and again.` to `They also showed / selecting strategies / again and again.`, then push to GitHub.
+- task track: Fast Track wording patch plus Release Track push; no backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or player UI change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Updated Slide 12 display script and narration script to use `showed selecting strategies`.
+  - Updated the matched Traditional Chinese prompt from `??????` to `??????` for consistency.
+  - Updated validation to assert the revised Slide 12 wording.
+- verification:
+  - `rg` confirmed the revised Slide 12 script, Chinese prompt, and narration wording in `talper-presentation.js`.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4182/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User requested this wording fix after the previous push; proceeding with push to `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+
 ## 2026-06-20 Speech Strategy Terminology Patch
 
 - model / agent: GPT-5 Codex
