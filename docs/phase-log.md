@@ -1,5 +1,32 @@
 # travel-english-planner Phase Log
 
+## 2026-06-20 Speech Slide 14 Script Replacement
+
+- model / agent: GPT-5 Codex
+- goal: Replace Slide 14 Speech script with the user-provided bilingual wording, then push to GitHub.
+- task track: Fast Track single-slide script replacement plus Release Track push; no backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or player UI change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Replaced only Slide 14 `script`, `scriptZh`, and `narrationScript`.
+  - Preserved Slide 14 metadata, slide numbering, PDF mapping, and playback UI.
+  - Updated validation assertions for the revised Slide 14 wording: regulatory awareness plus active use, and students regulating how they use TALPer.
+  - Used UTF-8-safe script execution and escaped JSON newlines after an initial local validation caught invalid multiline JS string output.
+- verification:
+  - `rg` confirmed the revised Slide 14 English and Traditional Chinese key lines, including `active use`, `High achievers`, and `自己如何使用 TALPer`.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4184/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User explicitly requested push.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Target branch: `main`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+
 ## 2026-06-20 Speech Experimental Group Terminology Patch
 
 - model / agent: GPT-5 Codex

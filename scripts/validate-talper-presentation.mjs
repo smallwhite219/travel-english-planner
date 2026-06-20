@@ -101,7 +101,8 @@ assert.ok(
 const slide14 = talperPresentationSlides[13];
 assert.equal(slide14.title, 'Discussion: Findings in Relation to Prior Literature');
 assert.match(slide14.script, /I compare our findings \/ with prior literature/);
-assert.match(slide14.script, /students need regulatory awareness \/ when they use TALPer/);
+assert.match(slide14.script, /requires regulatory awareness \/ and active use/);
+assert.match(slide14.script, /students need to regulate \/ how they use TALPer/);
 
 const slide15 = talperPresentationSlides[14];
 assert.equal(slide15.title, 'Discussion: ENA, Learning Pathways, and Cognitive Network Structures');
