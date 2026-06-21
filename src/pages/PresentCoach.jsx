@@ -502,7 +502,7 @@ export default function PresentCoach() {
                 </button>
                 <button className="coach-control secondary" onClick={loopAllSlides}>
                   <ListVideo size={18} />
-                  Loop All
+                  Loop All Slides
                 </button>
               </>
             )}

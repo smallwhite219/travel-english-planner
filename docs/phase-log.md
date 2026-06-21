@@ -1,5 +1,35 @@
 # travel-english-planner Phase Log
 
+## 2026-06-21 Speech Whole-Deck Loop Control Clarification
+
+- model / agent: GPT-5 Codex
+- goal: Make the Speech player whole-deck loop control explicit and guard it with validation.
+- task track: Fast Track UI label clarification plus validation guard; no push, deploy, backend, secrets access, workflow, PDF, PPTX, or speech data change.
+- Brain / ErrorLog recall:
+  - Used Brain Markdown / direct errorLog fallback because gbrain was not available in this environment.
+  - Reused `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md`; avoided PowerShell text rewrites for bilingual data.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Kept the existing `all-loop` playback behavior, which already loops from slide 1 through slide 16 until Stop is pressed.
+  - Changed the control label from `Loop All` to `Loop All Slides` so the whole-presentation loop is easier to discover.
+  - Added validation assertions so the all-loop action, status mode, and clear label are checked in the TALPer presentation validation script.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and the `all-loop` Speech control guard.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4186/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User subsequently requested push.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+  - No Pages mode, workflow, deployment branch, Vite base, PDF, PPTX, or speech data change was made.
+- blockers / risks:
+  - Browser TTS voice output depends on the installed browser voice list and still needs human listening if voice quality matters.
+
+
 ## 2026-06-21 Speech Slide 6 Script Expansion
 
 - model / agent: GPT-5 Codex

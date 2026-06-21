@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
   talperPresentationMeta,
@@ -16,11 +16,19 @@ const deckPdfPath = new URL(
   '../src/assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf',
   import.meta.url,
 );
+const presentCoachSource = readFileSync(new URL('../src/pages/PresentCoach.jsx', import.meta.url), 'utf8');
 
 assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v14_20260617');
 assert.equal(talperPresentationMeta.speaker, 'zong-en bai');
 assert.equal(talperPresentationSlides.length, 16);
 assert.ok(existsSync(deckPdfPath), 'expected TALPer slide PDF asset to exist');
+assert.match(
+  presentCoachSource,
+  /const loopAllSlides = \(\) => playSlides\(\{ loop: true \}\);/,
+  'speech controls must keep a whole-deck loop action',
+);
+assert.match(presentCoachSource, /playbackMode === 'all-loop'/, 'speech status must expose all-loop playback mode');
+assert.match(presentCoachSource, /Loop All Slides/, 'speech controls must label the whole-deck loop clearly');
 assert.equal(slowWordPracticeGroups.length, 5);
 assert.equal(slowWordPracticeWords.length, 126);
 assert.equal(new Set(slowWordPracticeWords.map((word) => word.id)).size, slowWordPracticeWords.length);
