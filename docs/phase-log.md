@@ -1,5 +1,35 @@
 # travel-english-planner Phase Log
 
+## 2026-06-21 Speech Slide 6 Script Expansion
+
+- model / agent: GPT-5 Codex
+- goal: Replace Slide 6 Speech script with the user-provided TALPer introduction plus two video-description sections.
+- task track: Fast Track single-slide script replacement; no push, deploy, backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or player UI change.
+- Brain / ErrorLog recall:
+  - Used Brain Markdown / direct errorLog fallback because gbrain was not available in this environment.
+  - Reused `D:\vibeCode\brain\errorLog\2026-06-11-travel-english-speech-refresh-process-errors.md` and wrote the update through UTF-8-safe scripting to avoid PowerShell Chinese encoding damage.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\talper-presentation.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Replaced only Slide 6 `script`, `scriptZh`, and `narrationScript`.
+  - Removed Markdown bold markers from display/TTS data because the Speech data validation forbids leaking `**` into rendered text or narration.
+  - Added validation checks for the new triangle congruence/similarity and short writing response content.
+- verification:
+  - `rg` confirmed the new Slide 6 English and Traditional Chinese key lines, including `triangle congruence and similarity`, `short writing response`, `三角形的全等與相似`, and `簡短的寫作回應`.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+  - Vite preview HTTP smoke passed for `http://127.0.0.1:4185/travel-english-planner/` with `200 OK`; preview process was closed afterward.
+- release:
+  - User requested push after the local Slide 6 update.
+  - Target branch: `main`.
+  - Remote: `https://github.com/smallwhite219/travel-english-planner.git`.
+  - Expected deployment path: existing GitHub Actions Pages workflow on push to `main` according to `docs/release-topology.md`.
+  - No Pages mode, workflow, deployment branch, Vite base, PDF, PPTX, or player UI change was made.
+- blockers / risks:
+  - No browser click-through or TTS voice-quality smoke test was completed in this phase.
+
 ## 2026-06-20 Speech Slide 14 Script Replacement
 
 - model / agent: GPT-5 Codex

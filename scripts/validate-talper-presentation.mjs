@@ -62,6 +62,12 @@ slowWordPracticeWords.forEach((word) => {
   assert.ok(word.groupTitle?.trim(), `slow-word ${word.id} group title is required`);
 });
 
+const slide6 = talperPresentationSlides[5];
+assert.match(slide6.script, /triangle congruence and similarity/);
+assert.match(slide6.script, /short writing response/);
+assert.match(slide6.scriptZh, /三角形的全等與相似/);
+assert.match(slide6.scriptZh, /簡短的寫作回應/);
+
 const slide8 = talperPresentationSlides[7];
 assert.match(slide8.script, /The process has \/ three parts\./);
 assert.match(slide8.script, /Post class, \/ students do workbook exercises \/ for review\./);
