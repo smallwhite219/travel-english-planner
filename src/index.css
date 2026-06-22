@@ -970,6 +970,289 @@ body {
   font-size: 0.72rem;
 }
 
+.pronunciation-sprint-page {
+  gap: 16px;
+}
+
+.sprint-control-panel,
+.sprint-daily-panel,
+.sprint-word-panel,
+.sprint-sentence-panel,
+.sprint-notes-panel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.sprint-control-panel {
+  grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.2fr);
+}
+
+.sprint-playback-controls,
+.sprint-mode-row,
+.sprint-card-actions,
+.sprint-watch-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sprint-playback-controls,
+.sprint-mode-row,
+.sprint-active-card,
+.sprint-control-panel .speech-error {
+  grid-column: 1 / -1;
+}
+
+.sprint-mode-button {
+  appearance: none;
+  background: #121923;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #cfe0ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 8px 12px;
+}
+
+.sprint-mode-button:hover:not(:disabled),
+.sprint-mode-button.active {
+  background: rgba(93, 163, 255, 0.2);
+  border-color: rgba(143, 184, 255, 0.62);
+  color: #ffffff;
+}
+
+.sprint-mode-button.ghost {
+  margin-left: auto;
+}
+
+.sprint-section-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.sprint-section-header h2 {
+  color: #eef4ff;
+  font-size: 1rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.sprint-section-header span {
+  color: #9ed0ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.sprint-daily-list {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.sprint-daily-item {
+  align-items: center;
+  appearance: none;
+  background: #121923;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #eef4ff;
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 28px 1fr auto;
+  min-height: 54px;
+  padding: 10px;
+  text-align: left;
+}
+
+.sprint-daily-item:hover:not(:disabled),
+.sprint-daily-item.active {
+  background: rgba(84, 209, 138, 0.16);
+  border-color: rgba(84, 209, 138, 0.62);
+}
+
+.sprint-daily-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
+.sprint-daily-item span {
+  align-items: center;
+  background: rgba(93, 163, 255, 0.16);
+  border-radius: 8px;
+  color: #9ed0ff;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 900;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.sprint-daily-item strong {
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.sprint-daily-item small {
+  color: #9da8b8;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.sprint-practice-grid {
+  align-items: start;
+}
+
+.sprint-word-groups {
+  display: grid;
+  gap: 14px;
+}
+
+.sprint-word-list,
+.sprint-sentence-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sprint-word-card,
+.sprint-sentence-card {
+  background: #121923;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: #d7e5ff;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.sprint-word-card.active,
+.sprint-sentence-card.active {
+  background: rgba(84, 209, 138, 0.16);
+  border-color: rgba(84, 209, 138, 0.62);
+}
+
+.sprint-card-main,
+.sprint-sentence-title {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.sprint-card-main strong {
+  color: #ffffff;
+  display: block;
+  font-size: 1.05rem;
+}
+
+.sprint-card-main span {
+  color: #9da8b8;
+  font-size: 0.8rem;
+}
+
+.sprint-stress-badge {
+  background: rgba(93, 163, 255, 0.16);
+  border: 1px solid rgba(143, 184, 255, 0.46);
+  border-radius: 999px;
+  color: #d7e5ff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.sprint-warning {
+  background: rgba(255, 194, 102, 0.1);
+  border: 1px solid rgba(255, 194, 102, 0.28);
+  border-radius: 8px;
+  color: #ffd48a;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0;
+  padding: 8px 10px;
+}
+
+.sprint-example,
+.sprint-sentence-text,
+.sprint-pause-line {
+  color: #d7e5ff;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.sprint-sentence-title span {
+  color: #9ed0ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sprint-pause-line {
+  color: #b7c0cc;
+}
+
+.sprint-pause {
+  color: #8fb8ff;
+  font-weight: 900;
+  margin: 0 4px;
+}
+
+.sprint-pause.major {
+  color: #54d18a;
+}
+
+.sprint-watch-row span {
+  background: rgba(93, 163, 255, 0.12);
+  border: 1px solid rgba(143, 184, 255, 0.3);
+  border-radius: 999px;
+  color: #cfe0ff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 5px 9px;
+}
+
+.sprint-notes-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.sprint-note-field {
+  display: grid;
+  gap: 6px;
+}
+
+.sprint-note-field span {
+  color: #cfe0ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.sprint-note-field textarea {
+  background: #111923;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #eef4ff;
+  font: inherit;
+  min-height: 84px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.sprint-note-field textarea:focus {
+  border-color: #5da3ff;
+  outline: none;
+}
+
 @media (max-width: 900px) {
   .content-container.presentation-container {
     max-width: 600px;
@@ -986,12 +1269,21 @@ body {
   .practice-grid {
     grid-template-columns: 1fr;
   }
+
+  .sprint-control-panel {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 520px) {
   .presentation-stage,
   .script-panel,
-  .slide-list-panel {
+  .slide-list-panel,
+  .sprint-control-panel,
+  .sprint-daily-panel,
+  .sprint-word-panel,
+  .sprint-sentence-panel,
+  .sprint-notes-panel {
     padding: 12px;
   }
 
@@ -1007,6 +1299,23 @@ body {
 
   .slow-word-controls {
     grid-template-columns: 1fr;
+  }
+
+  .sprint-daily-item,
+  .sprint-card-main,
+  .sprint-sentence-title {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+  }
+
+  .sprint-card-main,
+  .sprint-sentence-title,
+  .sprint-section-header {
+    display: grid;
+  }
+
+  .sprint-mode-button.ghost {
+    margin-left: 0;
   }
 
   .script-copy {
