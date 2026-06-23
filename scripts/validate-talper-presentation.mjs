@@ -90,9 +90,14 @@ assert.ok(
   'Terms must include latest speech introduce word with script context',
 );
 assert.match(presentCoachSource, /script-word-stress-syllable/, 'Speech script must color stressed syllables inline');
-assert.equal(termsFlashcards.length, 75, 'Terms flashcards must include the user-provided merged word list');
+assert.equal(termsFlashcards.length, 76, 'Terms flashcards must include the user-provided TTS-corrected word list');
 assert.ok(
-  termsFlashcards.some((term) => term.word === 'integrated' && term.pronunciation === 'IN-te-gra-ted'),
+  termsFlashcards.some(
+    (term) =>
+      term.word === 'integrated' &&
+      term.displayPronunciation === 'IN-te-gra-ted' &&
+      term.tts === 'integrated',
+  ),
   'Terms flashcards must include high-frequency pronunciation cards',
 );
 assert.ok(
@@ -102,7 +107,9 @@ assert.ok(
 assert.match(termsDrillSource, /Terms Flashcards/, 'Terms page must render the flashcard interface');
 assert.match(termsDrillSource, /setIsFlipped/, 'Terms cards must flip between front and back');
 assert.match(termsDrillSource, /getRandomIndex/, 'Terms page must expose random practice');
-assert.match(termsDrillSource, /getSpeechSyllableText/, 'Terms playback must include syllable practice');
+assert.match(termsDrillSource, /displayPronunciation/, 'Terms page must use display pronunciation for visual syllables');
+assert.match(termsDrillSource, /ttsText/, 'Terms playback must use the TTS-safe word string');
+assert.doesNotMatch(termsDrillSource, /getSpeechSyllableText/, 'Terms playback must not read split pronunciation strings');
 assert.match(termsDrillSource, /TERMS_SPEECH_LANG = 'en-US'/, 'Terms pronunciation must be fixed to en-US');
 assert.match(termsDrillSource, /strictLang: true/, 'Terms pronunciation must not fall back to other English accents');
 

@@ -1,5 +1,31 @@
 # travel-english-planner Phase Log
 
+## 2026-06-23 Terms TTS-Safe Pronunciation Data
+
+- model / agent: GPT-5 Codex
+- goal: Separate visual pronunciation guidance from Web Speech API playback text for Terms flashcards.
+- task track: Fast Track Terms data and playback refinement; no deck, PDF, workflow, Pages mode, or deployment setting change.
+- source file:
+  - `C:\Users\bai\.codex\attachments\819b02fd-77a6-4a97-9860-b0c9b5c4dada\pasted-text.txt`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\terms-flashcards.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TermsDrill.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Replaced the Terms data with the user-provided TTS-corrected JSON.
+  - Added `displayPronunciation` for the card front and `tts` for speech playback.
+  - Kept stress as explicit data instead of deriving it from the display string.
+  - Stopped sending split pronunciation strings such as `IN-te-gra-ted` to Web Speech API.
+  - Playback now repeats the TTS-safe string while the learner visually reads the syllable/stress guide.
+- verification:
+  - Terms data smoke check passed: 76 cards, no missing required fields, and no hyphenated split strings in `tts`.
+  - `git diff --check` passed.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and TTS-safe Terms guards.
+  - `node node_modules\vite\bin\vite.js build` passed.
+- blockers / risks:
+  - TTS pronunciation quality still depends on browser and installed `en-US` voices.
+
 ## 2026-06-23 Terms en-US Pronunciation Lock
 
 - model / agent: GPT-5 Codex

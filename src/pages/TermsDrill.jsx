@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen,
@@ -15,21 +15,6 @@ import { cancelSpeech, speakText } from '../utils/tts';
 
 const TERMS_SPEECH_LANG = 'en-US';
 const TERMS_SPEECH_OPTIONS = { lang: TERMS_SPEECH_LANG, strictLang: true };
-
-const splitPronunciation = (pronunciation = '') =>
-  pronunciation
-    .replace(/\s+/g, ' ')
-    .split(/[-\s]+/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-
-const getStressParts = (pronunciation = '') =>
-  splitPronunciation(pronunciation).filter((part) => /[A-Z]{2,}/.test(part));
-
-const getSpeechSyllableText = (pronunciation = '') =>
-  splitPronunciation(pronunciation)
-    .map((part) => part.toLowerCase())
-    .join('. ');
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -56,10 +41,9 @@ export default function TermsDrill() {
   const speechSessionRef = useRef(0);
 
   const currentTerm = termsFlashcards[currentIndex];
-  const stressParts = useMemo(
-    () => getStressParts(currentTerm?.pronunciation),
-    [currentTerm?.pronunciation],
-  );
+  const displayPronunciation = currentTerm?.displayPronunciation ?? currentTerm?.pronunciation ?? '';
+  const stressText = currentTerm?.stress ?? '';
+  const ttsText = currentTerm?.tts ?? currentTerm?.word ?? '';
 
   const goToCard = useCallback((nextIndex, nextDirection = 1) => {
     cancelSpeech();
@@ -91,9 +75,7 @@ export default function TermsDrill() {
     setSpeechError('');
 
     try {
-      await speakText(currentTerm.word, { ...TERMS_SPEECH_OPTIONS, rate: 0.65 });
-
-      const syllableText = getSpeechSyllableText(currentTerm.pronunciation);
+      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.65 });
 
       for (let round = 0; round < 3; round += 1) {
         if (speechSessionRef.current !== sessionId) {
@@ -101,7 +83,7 @@ export default function TermsDrill() {
         }
 
         await wait(180);
-        await speakText(syllableText, { ...TERMS_SPEECH_OPTIONS, rate: 0.55 });
+        await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.55 });
       }
 
       if (speechSessionRef.current !== sessionId) {
@@ -109,7 +91,7 @@ export default function TermsDrill() {
       }
 
       await wait(220);
-      await speakText(currentTerm.word, { ...TERMS_SPEECH_OPTIONS, rate: 0.78 });
+      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.78 });
     } catch {
       setSpeechError('這個瀏覽器目前無法使用 Web Speech API 播放發音。');
     } finally {
@@ -117,7 +99,7 @@ export default function TermsDrill() {
         setIsSpeaking(false);
       }
     }
-  }, [currentTerm]);
+  }, [currentTerm, ttsText]);
 
   if (!currentTerm) {
     return null;
@@ -178,11 +160,11 @@ export default function TermsDrill() {
                     {currentTerm.word}
                   </h2>
                   <p className="mt-5 rounded-xl border border-blue-500/30 bg-blue-950/30 px-4 py-3 font-mono text-xl font-semibold tracking-wide text-blue-200 md:text-2xl">
-                    {currentTerm.pronunciation}
+                    {displayPronunciation}
                   </p>
-                  {stressParts.length > 0 && (
+                  {stressText && (
                     <p className="mt-3 text-sm font-medium text-emerald-200">
-                      重音：{stressParts.join(', ')}
+                      重音：{stressText}
                     </p>
                   )}
                   <p className="mt-8 text-sm text-gray-500">點擊卡片看中文與例句</p>
