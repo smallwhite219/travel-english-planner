@@ -560,7 +560,7 @@ export default function TbicsPronunciationSprint() {
               </div>
 
               <div className="sprint-word-list">
-                {group.words.map((word) => {
+                {group.words.map((word, wordIndex) => {
                   const isActive = activeItemId === word.id;
                   const isHard = hardItemIdSet.has(word.id);
 
@@ -568,18 +568,36 @@ export default function TbicsPronunciationSprint() {
                     <div className={`sprint-word-card ${isActive ? 'active' : ''}`} key={word.id}>
                       <div className="sprint-card-main">
                         <div>
-                          <strong>{word.term}</strong>
-                          <span>{word.slow}</span>
+                          <strong>{wordIndex + 1}. {word.term}</strong>
+                          <span>{word.correctCue}</span>
                         </div>
-                        <span className="sprint-stress-badge">{word.correctCue}</span>
+                        <span className="sprint-stress-badge">{group.title}</span>
                       </div>
+
+                      <dl className="sprint-word-details">
+                        <div>
+                          <dt>音節：</dt>
+                          <dd>{word.slow}</dd>
+                        </div>
+                        <div>
+                          <dt>重音：</dt>
+                          <dd>{word.stress}</dd>
+                        </div>
+                        <div>
+                          <dt>中文：</dt>
+                          <dd lang="zh-Hant">{word.meaningZh}</dd>
+                        </div>
+                        <div>
+                          <dt>例句：</dt>
+                          <dd>{word.example}</dd>
+                        </div>
+                      </dl>
 
                       {word.avoid.length > 0 && (
                         <p className="sprint-warning">
                           Avoid: {word.avoid.join(', ')}
                         </p>
                       )}
-                      <p className="sprint-example">{word.example}</p>
 
                       <div className="sprint-card-actions">
                         <button className="slow-word-mini-button primary" type="button" onClick={() => playWord(word)}>

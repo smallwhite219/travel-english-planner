@@ -963,3 +963,25 @@
   - During the initial smoke test, ModelScope's default cache wrote the denoiser model under `C:\Users\bai\.cache\modelscope`; full batch generation subsequently used D-drive cache settings and `load_denoiser=False`. Cleanup of the C-drive cache was not performed because it is outside the project workspace and should be an explicit user-approved cleanup action if desired.
 - next step:
   - If playback integration is requested, wire `manifest.json` and the WAV files into `PresentCoach` as an optional static-audio source while preserving existing browser TTS fallback.
+
+## 2026-06-23 TBICS Pronunciation Word Format
+
+- model / agent: GPT-5 Codex
+- goal: Add Chinese-labelled syllable, stress, meaning, and example formatting to the TBICS pronunciation sprint word cards, including companion and introduce.
+- task track: Fast Track frontend/data pronunciation-card update; no push, deploy, backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or speech playback behavior change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\tbics-pronunciation-sprint.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TbicsPronunciationSprint.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Kept TTS playback speaking the original English term; the new syllable text is display/practice guidance only.
+  - Added `companion` and `introduce` to the presentation pronunciation sprint with the user-provided syllable, stress, Chinese meaning, and example sentence.
+  - Added Chinese meanings to every sprint word so each card can render the same `音節 / 重音 / 中文 / 例句` structure.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and checked TBICS sprint word format fields.
+  - `npm run build` was blocked by local PowerShell execution policy for npm.ps1.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+- blockers / risks:
+  - Browser TTS pronunciation still depends on the installed English voice.

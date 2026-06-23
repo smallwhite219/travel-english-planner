@@ -10,6 +10,7 @@ import {
   slowWordPracticeGroups,
   slowWordPracticeWords,
 } from '../src/data/slow-word-practice.js';
+import { sprintWords } from '../src/data/tbics-pronunciation-sprint.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const deckPdfPath = new URL(
@@ -58,6 +59,27 @@ assert.equal(getSlowWordSlowRate('TALPer'), 0.65);
 assert.equal(getSlowWordSlowRate('Metacognition'), 0.6);
 assert.equal(getSlowWordSlowRate('Self-regulated learning'), 0.55);
 assert.equal(getSlowWordSlowRate('Distinct cognitive network structures'), 0.5);
+
+const companionWord = sprintWords.find((word) => word.id === 'companion');
+const introduceWord = sprintWords.find((word) => word.id === 'introduce');
+assert.ok(companionWord, 'sprint word companion format must exist');
+assert.equal(companionWord.slow, 'com-PAN-ion');
+assert.equal(companionWord.stress, 'PAN');
+assert.equal(companionWord.meaningZh, '夥伴');
+assert.equal(companionWord.example, 'TALPer is a companion.');
+assert.ok(introduceWord, 'sprint word introduce format must exist');
+assert.equal(introduceWord.slow, 'in-tro-DUCE');
+assert.equal(introduceWord.stress, 'DUCE');
+assert.equal(introduceWord.meaningZh, '介紹（發表用語 🔑）');
+assert.equal(introduceWord.example, 'Let me introduce TALPer.');
+
+sprintWords.forEach((word) => {
+  assert.ok(word.slow?.trim(), `sprint word ${word.id} syllables are required`);
+  assert.ok(word.stress?.trim(), `sprint word ${word.id} stress is required`);
+  assert.ok(word.meaningZh?.trim(), `sprint word ${word.id} Chinese meaning is required`);
+  assert.ok(word.example?.trim(), `sprint word ${word.id} example is required`);
+});
+
 
 slowWordPracticeWords.forEach((word) => {
   assert.ok(word.term?.trim(), `slow-word ${word.id} term is required`);

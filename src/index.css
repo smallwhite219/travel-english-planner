@@ -1169,6 +1169,32 @@ body {
   white-space: nowrap;
 }
 
+.sprint-word-details {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.sprint-word-details div {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+.sprint-word-details dt {
+  color: #9da8b8;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.sprint-word-details dd {
+  color: #d7e5ff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  min-width: 0;
+}
+
 .sprint-warning {
   background: rgba(255, 194, 102, 0.1);
   border: 1px solid rgba(255, 194, 102, 0.28);
