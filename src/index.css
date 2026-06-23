@@ -848,21 +848,12 @@ body {
 }
 
 .script-word.stress-marked {
-  align-items: baseline;
-  background: rgba(93, 163, 255, 0.1);
-  box-shadow: 0 0 0 1px rgba(143, 184, 255, 0.26);
-  display: inline-flex;
-  gap: 3px;
-  margin: 0 1px;
-  padding: 1px 4px;
-  vertical-align: baseline;
+  color: inherit;
 }
 
-.script-word-stress {
+.script-word-stress-syllable {
   color: #7dd3fc;
-  font-size: 0.62em;
   font-weight: 900;
-  letter-spacing: 0.02em;
 }
 
 .script-word:hover,

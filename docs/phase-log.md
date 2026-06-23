@@ -1,5 +1,26 @@
 # travel-english-planner Phase Log
 
+## 2026-06-23 Speech Inline Stress Coloring
+
+- model / agent: GPT-5 Codex
+- goal: Change Speech script stress guidance from appended stress labels to inline stressed-syllable coloring.
+- task track: Fast Track UI presentation refinement; no speech data, deck, PDF, workflow, Pages mode, or deployment setting change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\PresentCoach.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\index.css`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Removed the visible appended stress text such as `PAN` and `REG, LEARN` from the Speech script word buttons.
+  - Kept the pronunciation tooltip and click-to-speak behavior.
+  - Highlighted only the matching stressed syllable inside the original word, such as `com[pan]ion`, to reduce visual noise while preserving sound guidance.
+- verification:
+  - `git diff --check` passed.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+- blockers / risks:
+  - No browser screenshot smoke was completed in this phase; the change was validated by source assertions and production build.
+
 ## 2026-06-21 Speech Whole-Deck Loop Control Clarification
 
 - model / agent: GPT-5 Codex

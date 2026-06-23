@@ -58,6 +58,54 @@ const tokenizeScript = (script) =>
 
 const isWordToken = (token) => /^[A-Za-z]+(?:[-'][A-Za-z]+)*$/.test(token);
 
+const getStressMatches = (token, stress = '') => {
+  const lowerToken = token.toLowerCase();
+  const syllables = stress
+    .split(',')
+    .map((part) => part.trim().toLowerCase().replace(/[^a-z'-]+/g, ''))
+    .filter(Boolean);
+
+  return syllables
+    .map((syllable) => {
+      const start = lowerToken.indexOf(syllable);
+
+      return start >= 0 ? { start, end: start + syllable.length } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.start - b.start)
+    .filter((match, index, matches) => index === 0 || match.start >= matches[index - 1].end);
+};
+
+const renderStressColoredToken = (token, stressEntry) => {
+  const matches = stressEntry ? getStressMatches(token, stressEntry.stress) : [];
+
+  if (matches.length === 0) {
+    return <span className="script-word-text">{token}</span>;
+  }
+
+  const fragments = [];
+  let cursor = 0;
+
+  matches.forEach((match, index) => {
+    if (match.start > cursor) {
+      fragments.push(token.slice(cursor, match.start));
+    }
+
+    fragments.push(
+      <span className="script-word-stress-syllable" key={`${token}-stress-${index}`}>
+        {token.slice(match.start, match.end)}
+      </span>,
+    );
+    cursor = match.end;
+  });
+
+  if (cursor < token.length) {
+    fragments.push(token.slice(cursor));
+  }
+
+  return <span className="script-word-text">{fragments}</span>;
+};
+
 const cleanPlaybackCueText = (text = '') =>
   text
     .replace(/\/+/g, ' ')
@@ -368,12 +416,7 @@ export default function PresentCoach() {
           aria-label={stressLabel}
           title={stressLabel}
         >
-          <span className="script-word-text">{token}</span>
-          {stressEntry && (
-            <span className="script-word-stress" aria-hidden="true">
-              {stressEntry.stress}
-            </span>
-          )}
+          {renderStressColoredToken(token, stressEntry)}
         </button>
       );
     });

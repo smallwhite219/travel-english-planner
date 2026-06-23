@@ -88,7 +88,7 @@ assert.ok(
   speechPronunciationTerms.some((word) => word.term === 'introduce' && word.practice_sentence.includes('introduce')),
   'Terms must include latest speech introduce word with script context',
 );
-assert.match(presentCoachSource, /script-word-stress/, 'Speech script must render stress markers');
+assert.match(presentCoachSource, /script-word-stress-syllable/, 'Speech script must color stressed syllables inline');
 assert.match(termsDrillSource, /Speech Script Focus/, 'Terms page must expose latest speech script focus filter');
 assert.match(termsDrillSource, /learningSteps/, 'Terms cards must expose learning-method steps');
 
