@@ -1,5 +1,34 @@
 # travel-english-planner Phase Log
 
+## 2026-06-23 Terms Flashcard Content Refresh
+
+- model / agent: GPT-5 Codex
+- goal: Rebuild the Terms page around the user-provided flashcard requirements and word lists.
+- task track: Fast Track content and UI replacement; no deck, PDF, workflow, Pages mode, or deployment setting change.
+- source files:
+  - `C:\Users\bai\Downloads\terms\_高頻單字.txt`
+  - `C:\Users\bai\Downloads\terms\第二批.txt`
+  - `C:\Users\bai\Downloads\terms\需求.txt`
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\data\terms-flashcards.js`
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TermsDrill.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Merged the two user-provided word lists into one JavaScript array with 75 unique flashcards.
+  - Changed Terms from a mixed filter/listening drill into a mobile-friendly flip-card flow.
+  - Front side shows the English word or phrase plus stress/syllable pronunciation.
+  - Back side shows Chinese meaning, English example, and Chinese example translation.
+  - Added previous, next, random practice, reset, and Web Speech API pronunciation playback.
+  - Playback sequence follows the requirement: normal word at 0.65x, syllable practice three times, then normal word again.
+- verification:
+  - Terms data smoke check passed: 75 cards and no missing word, pronunciation, meaning, example, or translation fields.
+  - `git diff --check` passed.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and Terms flashcard guards.
+  - `node node_modules\vite\bin\vite.js build` passed without the prior chunk-size warning.
+- blockers / risks:
+  - Web Speech API pronunciation quality still depends on the browser and installed English voice.
+
 ## 2026-06-23 Speech Inline Stress Coloring
 
 - model / agent: GPT-5 Codex

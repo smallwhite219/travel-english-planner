@@ -15,6 +15,7 @@ import {
   getSpeechStressEntry,
   speechPronunciationTerms,
 } from '../src/data/speech-pronunciation.js';
+import { termsFlashcards } from '../src/data/terms-flashcards.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const deckPdfPath = new URL(
@@ -89,8 +90,19 @@ assert.ok(
   'Terms must include latest speech introduce word with script context',
 );
 assert.match(presentCoachSource, /script-word-stress-syllable/, 'Speech script must color stressed syllables inline');
-assert.match(termsDrillSource, /Speech Script Focus/, 'Terms page must expose latest speech script focus filter');
-assert.match(termsDrillSource, /learningSteps/, 'Terms cards must expose learning-method steps');
+assert.equal(termsFlashcards.length, 75, 'Terms flashcards must include the user-provided merged word list');
+assert.ok(
+  termsFlashcards.some((term) => term.word === 'integrated' && term.pronunciation === 'IN-te-gra-ted'),
+  'Terms flashcards must include high-frequency pronunciation cards',
+);
+assert.ok(
+  termsFlashcards.some((term) => term.word === 'elementary' && term.translation.includes('\u570b\u5c0f\u6578\u5b78')),
+  'Terms flashcards must include the second batch cards with Chinese translations',
+);
+assert.match(termsDrillSource, /Terms Flashcards/, 'Terms page must render the flashcard interface');
+assert.match(termsDrillSource, /setIsFlipped/, 'Terms cards must flip between front and back');
+assert.match(termsDrillSource, /getRandomIndex/, 'Terms page must expose random practice');
+assert.match(termsDrillSource, /getSpeechSyllableText/, 'Terms playback must include syllable practice');
 
 sprintWords.forEach((word) => {
   assert.ok(word.slow?.trim(), `sprint word ${word.id} syllables are required`);

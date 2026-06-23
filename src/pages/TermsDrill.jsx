@@ -1,660 +1,263 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlayCircle, ChevronRight, ChevronLeft, BookOpen, Filter, Shuffle, RotateCcw, Layers, GraduationCap, ListVideo, Repeat, StopCircle } from 'lucide-react';
-import { technicalTerms } from '../data/technical-terms';
-import { vocabularyTerms } from '../data/vocabulary-terms';
-import { conferenceListeningItems } from '../data/conference-listening';
-import { speechPronunciationTerms } from '../data/speech-pronunciation';
+import {
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  PlayCircle,
+  RotateCcw,
+  Shuffle,
+  Volume2,
+} from 'lucide-react';
+import { termsFlashcards } from '../data/terms-flashcards';
 import { cancelSpeech, speakText } from '../utils/tts';
 
-// Merge both data sources into a unified format
-const buildUnifiedTerms = () => {
-  const speechItems = speechPronunciationTerms.map((term) => ({
-    ...term,
-    source: 'speech-script',
-  }));
+const splitPronunciation = (pronunciation = '') =>
+  pronunciation
+    .replace(/\s+/g, ' ')
+    .split(/[-\s]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
 
-  // Vocabulary terms from docx — already have section/slide info
-  const vocabItems = vocabularyTerms.map((v, i) => ({
-    id: `vocab-${i}`,
-    term: v.term,
-    translation: v.translation,
-    practice_sentence: v.practice_phrase,
-    section: v.section,
-    slide: v.slide,
-    slideTitle: v.slideTitle,
-    source: 'vocabulary',
-  }));
+const getStressParts = (pronunciation = '') =>
+  splitPronunciation(pronunciation).filter((part) => /[A-Z]{2,}/.test(part));
 
-  // Technical terms — existing data
-  const techItems = technicalTerms.map((t, i) => ({
-    id: `tech-${i}`,
-    term: t.term,
-    translation: t.translation,
-    pronunciation: t.pronunciation,
-    stress: t.stress,
-    practice_sentence: t.practice_sentence,
-    section: 'Technical Terms',
-    slide: null,
-    slideTitle: null,
-    source: 'technical',
-  }));
+const getSpeechSyllableText = (pronunciation = '') =>
+  splitPronunciation(pronunciation)
+    .map((part) => part.toLowerCase())
+    .join('. ');
 
-  const conferenceItems = conferenceListeningItems.map((item, i) => ({
-    id: `conference-${i}`,
-    term: item.term,
-    translation: item.translation,
-    practice_sentence: item.practice,
-    section: item.section,
-    slide: null,
-    slideTitle: item.type === 'sentence' ? 'Sentence Pattern' : 'Conference Vocabulary',
-    source: 'conference',
-    itemType: item.type,
-  }));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  return [...speechItems, ...conferenceItems, ...vocabItems, ...techItems];
-};
-
-const ALL_TERMS = buildUnifiedTerms();
-
-const TERM_FILTER_GROUPS = [
-  {
-    name: 'Speech Script Focus',
-    sections: ['Latest Speech Core Words'],
-  },
-  {
-    name: 'Core 15-min',
-    sections: [
-      'Priority Practice Sentence Patterns',
-      'TBICS 15-min Core Vocabulary',
-      'TBICS 15-min Sentence Patterns',
-      'TBICS 15-min Script Sentences',
-    ],
-  },
-  {
-    name: 'Complete 15-min',
-    sections: [
-      'TBICS 15-min Complete Vocabulary',
-      'TBICS 15-min Complete Sentence Patterns',
-      'TBICS 15-min Complete Script Sentences',
-    ],
-  },
-  {
-    name: 'General Vocabulary',
-    sections: [
-      'Opening and Introduction',
-      'Background and Motivation',
-      'Theoretical Framework',
-      'TALPer Functions',
-      'Conference Sentence Patterns',
-      'Introduction',
-      'Background',
-      'System Design',
-    ],
-  },
-  {
-    name: 'Research & Method',
-    sections: [
-      'Research Questions and Methods',
-      'ENA and Analysis',
-      'Research Question Sentence Patterns',
-      'Method Sentence Patterns',
-      'Analysis Sentence Patterns',
-      'Research Questions',
-      'Method',
-    ],
-  },
-  {
-    name: 'Results & Discussion',
-    sections: [
-      'Results and Discussion',
-      'Limitations and Future Research',
-      'Results Sentence Patterns',
-      'Achievement Comparison Sentence Patterns',
-      'ENA Results Sentence Patterns',
-      'Discussion Sentence Patterns',
-      'Conclusion Sentence Patterns',
-      'Limitations Sentence Patterns',
-      'Contributions Sentence Patterns',
-      'Q&A Sentence Patterns',
-      'Results',
-      'Discussion',
-      'Conclusion',
-    ],
-  },
-  {
-    name: 'Technical Terms',
-    sections: ['Technical Terms'],
-  },
-];
-
-const getFilterGroupSections = (groupName) =>
-  TERM_FILTER_GROUPS.find(group => group.name === groupName)?.sections ?? [];
-
-const isTermInFilterGroup = (term, groupName) => {
-  if (groupName === 'All') {
-    return true;
+const getRandomIndex = (currentIndex, length) => {
+  if (length <= 1) {
+    return 0;
   }
 
-  return getFilterGroupSections(groupName).includes(term.section);
-};
+  let nextIndex = currentIndex;
 
-// Build simplified section options
-const ALL_SECTIONS = [
-  { name: 'All', count: ALL_TERMS.length },
-  ...TERM_FILTER_GROUPS.map(group => ({
-    name: group.name,
-    count: ALL_TERMS.filter(term => group.sections.includes(term.section)).length,
-  })),
-];
+  while (nextIndex === currentIndex) {
+    nextIndex = Math.floor(Math.random() * length);
+  }
 
-// Section colors for visual distinction
-const SECTION_COLORS = {
-  'Latest Speech Core Words': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
-  'Speech Script Focus': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
-  'Introduction': { bg: 'rgba(99, 102, 241, 0.15)', border: 'rgba(99, 102, 241, 0.4)', text: '#a5b4fc', dot: '#818cf8' },
-  'Background': { bg: 'rgba(139, 92, 246, 0.15)', border: 'rgba(139, 92, 246, 0.4)', text: '#c4b5fd', dot: '#a78bfa' },
-  'System Design': { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.4)', text: '#93c5fd', dot: '#60a5fa' },
-  'Research Questions': { bg: 'rgba(14, 165, 233, 0.15)', border: 'rgba(14, 165, 233, 0.4)', text: '#7dd3fc', dot: '#38bdf8' },
-  'Method': { bg: 'rgba(20, 184, 166, 0.15)', border: 'rgba(20, 184, 166, 0.4)', text: '#5eead4', dot: '#2dd4bf' },
-  'Results': { bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.4)', text: '#6ee7b7', dot: '#34d399' },
-  'Discussion': { bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)', text: '#fcd34d', dot: '#fbbf24' },
-  'Conclusion': { bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.4)', text: '#fca5a5', dot: '#f87171' },
-  'Technical Terms': { bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)', text: '#d8b4fe', dot: '#c084fc' },
-  'Opening and Introduction': { bg: 'rgba(37, 99, 235, 0.15)', border: 'rgba(96, 165, 250, 0.42)', text: '#bfdbfe', dot: '#60a5fa' },
-  'Background and Motivation': { bg: 'rgba(5, 150, 105, 0.15)', border: 'rgba(52, 211, 153, 0.42)', text: '#a7f3d0', dot: '#34d399' },
-  'Theoretical Framework': { bg: 'rgba(124, 58, 237, 0.15)', border: 'rgba(167, 139, 250, 0.42)', text: '#ddd6fe', dot: '#a78bfa' },
-  'TALPer Functions': { bg: 'rgba(14, 116, 144, 0.15)', border: 'rgba(34, 211, 238, 0.42)', text: '#a5f3fc', dot: '#22d3ee' },
-  'Research Questions and Methods': { bg: 'rgba(220, 38, 38, 0.15)', border: 'rgba(248, 113, 113, 0.42)', text: '#fecaca', dot: '#f87171' },
-  'ENA and Analysis': { bg: 'rgba(217, 119, 6, 0.15)', border: 'rgba(251, 191, 36, 0.42)', text: '#fde68a', dot: '#fbbf24' },
-  'Results and Discussion': { bg: 'rgba(192, 38, 211, 0.15)', border: 'rgba(232, 121, 249, 0.42)', text: '#f5d0fe', dot: '#e879f9' },
-  'Limitations and Future Research': { bg: 'rgba(71, 85, 105, 0.22)', border: 'rgba(148, 163, 184, 0.42)', text: '#cbd5e1', dot: '#94a3b8' },
-  'Conference Sentence Patterns': { bg: 'rgba(22, 163, 74, 0.15)', border: 'rgba(74, 222, 128, 0.42)', text: '#bbf7d0', dot: '#4ade80' },
-  'Core 15-min': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
-  'Complete 15-min': { bg: 'rgba(124, 58, 237, 0.18)', border: 'rgba(167, 139, 250, 0.46)', text: '#ddd6fe', dot: '#a78bfa' },
-  'General Vocabulary': { bg: 'rgba(5, 150, 105, 0.16)', border: 'rgba(52, 211, 153, 0.44)', text: '#a7f3d0', dot: '#34d399' },
-  'Research & Method': { bg: 'rgba(14, 116, 144, 0.17)', border: 'rgba(34, 211, 238, 0.44)', text: '#a5f3fc', dot: '#22d3ee' },
-  'Results & Discussion': { bg: 'rgba(217, 119, 6, 0.17)', border: 'rgba(251, 191, 36, 0.44)', text: '#fde68a', dot: '#fbbf24' },
-};
-
-const DEFAULT_COLOR = { bg: 'rgba(100, 116, 139, 0.15)', border: 'rgba(100, 116, 139, 0.4)', text: '#94a3b8', dot: '#64748b' };
-
-const TERM_CARD_LABELS = {
-  syllables: '\u97f3\u7bc0',
-  stress: '\u91cd\u97f3',
-  meaning: '\u4e2d\u6587',
-  scriptLine: '\u8b1b\u7a3f\u4f8b\u53e5',
-  practicePhrase: 'Practice Phrase',
-  method: '\u7df4\u7fd2\u65b9\u6cd5',
+  return nextIndex;
 };
 
 export default function TermsDrill() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showDetails, setShowDetails] = useState(false);
-  const [activeSection, setActiveSection] = useState('Speech Script Focus');
-  const [isShuffled, setIsShuffled] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
-  const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
-  const [isPlayingAll, setIsPlayingAll] = useState(false);
-  const [listeningStatus, setListeningStatus] = useState('');
-  const [listeningMode, setListeningMode] = useState('');
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [direction, setDirection] = useState(1);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechError, setSpeechError] = useState('');
-  const listeningSessionRef = useRef(0);
+  const speechSessionRef = useRef(0);
 
-  // Filter + optional shuffle
-  const filteredTerms = useMemo(() => {
-    let terms = activeSection === 'All'
-      ? ALL_TERMS
-      : ALL_TERMS.filter(t => isTermInFilterGroup(t, activeSection));
+  const currentTerm = termsFlashcards[currentIndex];
+  const stressParts = useMemo(
+    () => getStressParts(currentTerm?.pronunciation),
+    [currentTerm?.pronunciation],
+  );
 
-    if (isShuffled) {
-      terms = [...terms].sort(() => Math.random() - 0.5);
-    }
-    return terms;
-  }, [activeSection, isShuffled]);
-
-  const currentTerm = filteredTerms[currentIndex] || filteredTerms[0];
-  const sectionColor = SECTION_COLORS[currentTerm?.section] || DEFAULT_COLOR;
-
-  const handleNext = useCallback(() => {
-    setDirection(1);
-    setShowDetails(false);
-    setCurrentIndex(prev => (prev + 1) % filteredTerms.length);
-  }, [filteredTerms.length]);
+  const goToCard = useCallback((nextIndex, nextDirection = 1) => {
+    cancelSpeech();
+    speechSessionRef.current += 1;
+    setIsSpeaking(false);
+    setSpeechError('');
+    setDirection(nextDirection);
+    setIsFlipped(false);
+    setCurrentIndex(nextIndex);
+  }, []);
 
   const handlePrev = useCallback(() => {
-    setDirection(-1);
-    setShowDetails(false);
-    setCurrentIndex(prev => (prev - 1 + filteredTerms.length) % filteredTerms.length);
-  }, [filteredTerms.length]);
+    goToCard((currentIndex - 1 + termsFlashcards.length) % termsFlashcards.length, -1);
+  }, [currentIndex, goToCard]);
 
-  const handleTTS = useCallback((text) => {
-    speakText(text, 0.85);
-  }, []);
+  const handleNext = useCallback(() => {
+    goToCard((currentIndex + 1) % termsFlashcards.length, 1);
+  }, [currentIndex, goToCard]);
 
-  const stopListening = useCallback(() => {
-    listeningSessionRef.current += 1;
+  const handleRandom = useCallback(() => {
+    goToCard(getRandomIndex(currentIndex, termsFlashcards.length), 1);
+  }, [currentIndex, goToCard]);
+
+  const playPronunciation = useCallback(async () => {
+    const sessionId = speechSessionRef.current + 1;
+    speechSessionRef.current = sessionId;
     cancelSpeech();
-    setIsPlayingAll(false);
-    setListeningMode('');
-    setListeningStatus('');
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      listeningSessionRef.current += 1;
-      cancelSpeech();
-    };
-  }, []);
-
-  const speakListeningItem = useCallback(async (item) => {
-    await speakText(item.term, { rate: 0.82, lang: 'en-US' });
-    await speakText(item.translation, { rate: 0.95, lang: 'zh-TW' });
-
-    if (item.practice_sentence) {
-      await speakText(item.practice_sentence, { rate: 0.82, lang: 'en-US' });
-    }
-  }, []);
-
-  const playTerms = useCallback(async ({ terms, loop = false, mode = 'visible' }) => {
-    if (terms.length === 0) {
-      return;
-    }
-
-    const sessionId = listeningSessionRef.current + 1;
-    listeningSessionRef.current = sessionId;
-    setIsPlayingAll(true);
-    setListeningMode(mode);
+    setIsSpeaking(true);
     setSpeechError('');
 
     try {
-      let round = 1;
+      await speakText(currentTerm.word, { rate: 0.65, lang: 'en-US' });
 
-      do {
-        for (let index = 0; index < terms.length; index += 1) {
-          if (listeningSessionRef.current !== sessionId) return;
+      const syllableText = getSpeechSyllableText(currentTerm.pronunciation);
 
-          const item = terms[index];
-          setCurrentIndex(index);
-          setShowDetails(true);
-          setListeningStatus(
-            `${loop ? `第 ${round} 輪，` : ''}正在播放 ${index + 1} / ${terms.length}: ${item.term}`
-          );
-
-          await speakListeningItem(item);
-          await new Promise(resolve => setTimeout(resolve, 250));
+      for (let round = 0; round < 3; round += 1) {
+        if (speechSessionRef.current !== sessionId) {
+          return;
         }
 
-        round += 1;
-      } while (loop && listeningSessionRef.current === sessionId);
+        await wait(180);
+        await speakText(syllableText, { rate: 0.55, lang: 'en-US' });
+      }
+
+      if (speechSessionRef.current !== sessionId) {
+        return;
+      }
+
+      await wait(220);
+      await speakText(currentTerm.word, { rate: 0.78, lang: 'en-US' });
     } catch {
-      setSpeechError('此瀏覽器目前無法啟動連續語音播放，請確認 Web Speech API 或系統語音設定。');
+      setSpeechError('這個瀏覽器目前無法使用 Web Speech API 播放發音。');
     } finally {
-      if (listeningSessionRef.current === sessionId) {
-        setIsPlayingAll(false);
-        setListeningMode('');
-        setListeningStatus('');
+      if (speechSessionRef.current === sessionId) {
+        setIsSpeaking(false);
       }
     }
-  }, [speakListeningItem]);
+  }, [currentTerm]);
 
-  const playAllVisibleTerms = useCallback(() => {
-    playTerms({ terms: filteredTerms, mode: 'visible' });
-  }, [filteredTerms, playTerms]);
-
-  const loopAllTerms = useCallback(() => {
-    setActiveSection('All');
-    setIsShuffled(false);
-    setShowFilter(false);
-    setCurrentIndex(0);
-    setShowDetails(true);
-    playTerms({ terms: ALL_TERMS, loop: true, mode: 'loop-all' });
-  }, [playTerms]);
-
-  const handleSectionChange = useCallback((section) => {
-    stopListening();
-    setActiveSection(section);
-    setCurrentIndex(0);
-    setShowDetails(false);
-    setShowFilter(false);
-  }, [stopListening]);
-
-  const handleShuffle = useCallback(() => {
-    stopListening();
-    setIsShuffled(prev => !prev);
-    setCurrentIndex(0);
-    setShowDetails(false);
-  }, [stopListening]);
-
-  const handleReset = useCallback(() => {
-    stopListening();
-    setCurrentIndex(0);
-    setShowDetails(false);
-    setIsShuffled(false);
-  }, [stopListening]);
-
-  if (!currentTerm) return null;
+  if (!currentTerm) {
+    return null;
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col min-h-0"
+      className="flex min-h-0 flex-col"
     >
-      {/* Header */}
       <header className="page-header mb-4">
-        <div className="flex items-center justify-between w-full">
+        <div className="flex w-full items-start justify-between gap-3">
           <div>
-            <h1 className="page-title leading-tight flex items-center gap-2">
+            <h1 className="page-title flex items-center gap-2 leading-tight">
               <GraduationCap size={28} className="text-blue-400" />
-              Vocabulary Drill
+              Terms Flashcards
             </h1>
-            <p className="page-subtitle">Practice the latest speech script words by sound, stress, and script context</p>
+            <p className="page-subtitle">
+              Conference English pronunciation cards for stress, meaning, and example practice
+            </p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handleShuffle}
-              disabled={isPlayingAll}
-              className={`p-2.5 rounded-xl border transition-all ${
-                isShuffled
-                  ? 'bg-purple-900/50 border-purple-500/50 text-purple-300'
-                  : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:text-white'
-              }`}
-              title={isShuffled ? 'Shuffled' : 'Shuffle'}
-            >
-              <Shuffle size={18} />
-            </button>
-            <button
-              onClick={() => setShowFilter(prev => !prev)}
-              disabled={isPlayingAll}
-              className={`p-2.5 rounded-xl border transition-all ${
-                showFilter
-                  ? 'bg-blue-900/50 border-blue-500/50 text-blue-300'
-                  : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:text-white'
-              }`}
-              title="Filter by section"
-            >
-              <Filter size={18} />
-            </button>
+          <div className="rounded-full border border-blue-500/30 bg-blue-950/30 px-3 py-1.5 text-sm font-semibold text-blue-100">
+            {currentIndex + 1} / {termsFlashcards.length}
           </div>
         </div>
       </header>
 
-      {/* Section Filter Panel */}
-      <AnimatePresence>
-        {showFilter && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden mb-4"
-          >
-            <div className="glass-panel p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Layers size={16} className="text-blue-400" />
-                <span className="text-sm font-medium text-gray-300">Filter by Practice Group</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {ALL_SECTIONS.map(sec => {
-                  const color = SECTION_COLORS[sec.name] || DEFAULT_COLOR;
-                  const isActive = activeSection === sec.name;
-                  return (
-                    <button
-                      key={sec.name}
-                      onClick={() => handleSectionChange(sec.name)}
-                      className="px-3 py-1.5 rounded-full text-sm font-medium transition-all border"
-                      style={{
-                        backgroundColor: isActive ? color.bg : 'transparent',
-                        borderColor: isActive ? color.border : 'rgba(75, 85, 99, 0.5)',
-                        color: isActive ? color.text : '#9ca3af',
-                      }}
-                    >
-                      {sec.name === 'All' ? '📚 All' : sec.name}
-                      <span className="ml-1.5 text-xs opacity-70">({sec.count})</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Driving Listening Controls */}
-      <div className="glass-panel p-4 mb-4">
-        <div className="flex flex-col md:flex-row md:items-center gap-3 justify-between">
-          <div>
-            <p className="text-sm font-semibold text-white">Driving Listening Mode</p>
-            <p className="text-xs text-gray-400">連續播放目前篩選範圍的英文單字或句型，接著播放中文意思。</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {!isPlayingAll ? (
-              <>
-                <button
-                  onClick={playAllVisibleTerms}
-                  className="glass-button primary justify-center"
-                >
-                  <ListVideo size={18} />
-                  Play Visible
-                </button>
-                <button
-                  onClick={loopAllTerms}
-                  className="glass-button justify-center border-green-500/50 text-green-200"
-                >
-                  <Repeat size={18} />
-                  Loop All
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={stopListening}
-                className="glass-button justify-center border-red-500/50 text-red-200"
-              >
-                <StopCircle size={18} />
-                Stop
-              </button>
-            )}
-          </div>
-        </div>
-        {listeningStatus && (
-          <p className="mt-3 text-sm text-blue-200">
-            {listeningMode === 'loop-all' ? '無限重複播放全部項目。' : ''}
-            {listeningStatus}
-          </p>
-        )}
-        {speechError && <p className="mt-3 text-sm text-red-200">{speechError}</p>}
+      <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-gray-800">
+        <motion.div
+          className="h-full rounded-full bg-blue-400"
+          animate={{ width: `${((currentIndex + 1) / termsFlashcards.length) * 100}%` }}
+          transition={{ duration: 0.25 }}
+        />
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4 px-1">
-        <div className="flex items-center justify-between mb-1.5">
-          <span
-            className="text-xs font-medium px-2.5 py-0.5 rounded-full border"
-            style={{
-              backgroundColor: sectionColor.bg,
-              borderColor: sectionColor.border,
-              color: sectionColor.text,
-            }}
-          >
-            {currentTerm.section}
-            {currentTerm.slideTitle && ` · ${currentTerm.slideTitle}`}
-          </span>
-          <span className="text-xs text-gray-500 font-mono">
-            {currentIndex + 1} / {filteredTerms.length}
-          </span>
-        </div>
-        <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full rounded-full"
-            style={{ backgroundColor: sectionColor.dot }}
-            animate={{ width: `${((currentIndex + 1) / filteredTerms.length) * 100}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-      </div>
-
-      {/* Card Area */}
-      <div className="flex flex-col items-center py-2">
+      <div className="flex flex-1 flex-col justify-center">
         <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={currentTerm.id + currentIndex}
+          <motion.button
+            key={currentTerm.id}
+            type="button"
             custom={direction}
-            initial={{ x: direction * 80, opacity: 0, scale: 0.95 }}
+            initial={{ x: direction * 70, opacity: 0, scale: 0.97 }}
             animate={{ x: 0, opacity: 1, scale: 1 }}
-            exit={{ x: direction * -80, opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="w-full relative cursor-pointer"
-            onClick={() => setShowDetails(!showDetails)}
+            exit={{ x: direction * -70, opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            onClick={() => setIsFlipped((value) => !value)}
+            className="glass-panel min-h-[360px] w-full rounded-2xl p-5 text-left shadow-xl transition-all md:min-h-[410px] md:p-8"
           >
-            <div
-              className="glass-panel p-6 w-full min-h-[260px] flex flex-col justify-center items-center text-center transition-all duration-300"
-              style={{
-                borderColor: showDetails ? sectionColor.border : undefined,
-                boxShadow: showDetails ? `0 0 30px ${sectionColor.bg}` : undefined,
-              }}
-            >
-              {/* Term */}
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white tracking-wide">
-                {currentTerm.term}
-              </h2>
-
-              {!showDetails ? (
-                <p className="text-gray-500 mt-6 animate-pulse text-sm">Tap to reveal details</p>
+            <div className="flex h-full min-h-[320px] flex-col justify-between gap-6 md:min-h-[360px]">
+              {!isFlipped ? (
+                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                  <span className="mb-4 rounded-full border border-gray-700 bg-gray-900/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    Front
+                  </span>
+                  <h2 className="max-w-full break-words text-4xl font-bold leading-tight text-white md:text-5xl">
+                    {currentTerm.word}
+                  </h2>
+                  <p className="mt-5 rounded-xl border border-blue-500/30 bg-blue-950/30 px-4 py-3 font-mono text-xl font-semibold tracking-wide text-blue-200 md:text-2xl">
+                    {currentTerm.pronunciation}
+                  </p>
+                  {stressParts.length > 0 && (
+                    <p className="mt-3 text-sm font-medium text-emerald-200">
+                      重音：{stressParts.join(', ')}
+                    </p>
+                  )}
+                  <p className="mt-8 text-sm text-gray-500">點擊卡片看中文與例句</p>
+                </div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full flex flex-col items-center gap-3"
-                >
-                  {(currentTerm.pronunciation || currentTerm.syllables || currentTerm.stress) && (
-                    <div className="w-full grid gap-2 rounded-xl border border-gray-700 bg-gray-900/70 p-3 text-left">
-                      {currentTerm.pronunciation && (
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-semibold text-gray-400 uppercase">{TERM_CARD_LABELS.syllables}</span>
-                          <span className="text-base font-mono text-blue-300 tracking-wider text-right">
-                            {currentTerm.syllables || currentTerm.pronunciation}
-                          </span>
-                        </div>
-                      )}
-                      {currentTerm.stress && (
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-semibold text-gray-400 uppercase">{TERM_CARD_LABELS.stress}</span>
-                          <span className="text-base font-bold text-emerald-300 text-right">{currentTerm.stress}</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Chinese translation */}
-                  <div
-                    className="font-medium text-xl px-4 text-center"
-                    style={{ color: sectionColor.text }}
-                  >
-                    <span className="mr-2 text-sm text-gray-400">{TERM_CARD_LABELS.meaning}</span>
-                    {currentTerm.translation}
+                <div className="flex flex-1 flex-col justify-center gap-4">
+                  <span className="w-fit rounded-full border border-gray-700 bg-gray-900/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    Back
+                  </span>
+                  <div>
+                    <p className="mb-1 text-sm font-semibold text-gray-400">中文解釋</p>
+                    <p className="text-2xl font-bold leading-snug text-blue-100">{currentTerm.meaning}</p>
                   </div>
-
-                  {/* Practice sentence */}
-                  {currentTerm.practice_sentence && (
-                    <div
-                      className="text-left w-full mt-2 p-4 rounded-xl border-l-4"
-                      style={{
-                        backgroundColor: 'rgba(17, 24, 39, 0.8)',
-                        borderLeftColor: sectionColor.dot,
-                      }}
-                    >
-                      <p className="text-sm text-gray-400 mb-1 flex items-center gap-1">
-                        <BookOpen size={14}/> {currentTerm.source === 'speech-script' ? TERM_CARD_LABELS.scriptLine : TERM_CARD_LABELS.practicePhrase}
-                      </p>
-                      <p className="text-md text-gray-200 leading-relaxed italic">
-                        "{currentTerm.practice_sentence}"
-                      </p>
-                      {currentTerm.practiceCue && (
-                        <p className="mt-2 text-xs text-blue-200">{currentTerm.practiceCue}</p>
-                      )}
-
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleTTS(currentTerm.practice_sentence); }}
-                        className="mt-3 flex items-center gap-1 text-sm px-3 py-1.5 rounded-full w-fit transition-all hover:scale-105"
-                        style={{
-                          backgroundColor: sectionColor.bg,
-                          color: sectionColor.text,
-                          border: `1px solid ${sectionColor.border}`,
-                        }}
-                      >
-                        <PlayCircle size={16} /> Play Phrase
-                      </button>
-                    </div>
-                  )}
-
-                  {currentTerm.learningSteps?.length > 0 && (
-                    <div className="w-full rounded-xl border border-blue-500/30 bg-blue-950/20 p-3 text-left">
-                      <p className="text-sm text-blue-200 font-semibold mb-2">{TERM_CARD_LABELS.method}</p>
-                      <ol className="list-decimal list-inside text-sm text-gray-300 space-y-1">
-                        {currentTerm.learningSteps.map((step) => (
-                          <li key={step}>{step}</li>
-                        ))}
-                      </ol>
-                    </div>
-                  )}
-
-                  {/* Slide reference tag */}
-                  {currentTerm.slide && (
-                    <span className="text-xs text-gray-600 mt-1">
-                      Slide {currentTerm.slide}
+                  <div className="rounded-xl border-l-4 border-blue-400 bg-gray-950/60 p-4">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-400">
+                      <BookOpen size={16} />
+                      英文例句
+                    </p>
+                    <p className="text-lg leading-relaxed text-white">{currentTerm.example}</p>
+                    <p className="mt-3 text-base leading-relaxed text-gray-300">{currentTerm.translation}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs font-medium">
+                    <span className="rounded-full bg-gray-800 px-3 py-1 text-gray-300">
+                      {currentTerm.category}
                     </span>
-                  )}
-                </motion.div>
+                    <span className="rounded-full bg-gray-800 px-3 py-1 text-gray-300">
+                      Difficulty {currentTerm.difficulty}
+                    </span>
+                  </div>
+                </div>
               )}
             </div>
-
-            {/* Floating TTS button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleTTS(currentTerm.term);
-              }}
-              className="absolute -top-3 -right-2 rounded-full p-3.5 shadow-lg transition-transform hover:scale-110 border"
-              style={{
-                backgroundColor: sectionColor.dot,
-                borderColor: sectionColor.text,
-                boxShadow: `0 0 20px ${sectionColor.bg}`,
-              }}
-            >
-              <PlayCircle size={24} className="text-white" />
-            </button>
-          </motion.div>
+          </motion.button>
         </AnimatePresence>
+
+        {speechError && <p className="mt-3 text-sm text-red-200">{speechError}</p>}
+
+        <button
+          type="button"
+          onClick={playPronunciation}
+          disabled={isSpeaking}
+          className="glass-button primary mt-4 w-full justify-center py-3.5 text-base"
+        >
+          {isSpeaking ? <Volume2 size={20} /> : <PlayCircle size={20} />}
+          {isSpeaking ? '播放中...' : '播放發音'}
+        </button>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="mt-4 w-full flex gap-3 pb-6">
-        <button
-          onClick={handlePrev}
-          disabled={isPlayingAll}
-          className="glass-button flex-1 justify-center text-base py-3.5"
-        >
-          <ChevronLeft size={18} /> Prev
+      <nav className="grid grid-cols-3 gap-2 pb-6 pt-4">
+        <button type="button" onClick={handlePrev} className="glass-button justify-center py-3">
+          <ChevronLeft size={18} />
+          上一張
         </button>
-        <button
-          onClick={handleReset}
-          disabled={isPlayingAll}
-          className="glass-button justify-center px-4 py-3.5"
-          title="Reset to first"
-        >
-          <RotateCcw size={18} />
+        <button type="button" onClick={handleRandom} className="glass-button justify-center py-3">
+          <Shuffle size={18} />
+          隨機練習
         </button>
-        <button
-          onClick={handleNext}
-          disabled={isPlayingAll}
-          className="glass-button primary flex-[2] justify-center text-base py-3.5"
-        >
-          Next <ChevronRight size={18} />
+        <button type="button" onClick={handleNext} className="glass-button primary justify-center py-3">
+          下一張
+          <ChevronRight size={18} />
         </button>
-      </div>
+      </nav>
+
+      <button
+        type="button"
+        onClick={() => {
+          cancelSpeech();
+          speechSessionRef.current += 1;
+          setIsSpeaking(false);
+          setSpeechError('');
+          setIsFlipped(false);
+          setCurrentIndex(0);
+        }}
+        className="mb-4 inline-flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-300"
+      >
+        <RotateCcw size={16} />
+        回到第一張
+      </button>
     </motion.div>
   );
 }
