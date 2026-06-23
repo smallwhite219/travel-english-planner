@@ -1,5 +1,27 @@
 # travel-english-planner Phase Log
 
+## 2026-06-23 Terms Adjustable Speech Rates
+
+- model / agent: GPT-5 Codex
+- goal: Add adjustable normal and slow speech rates to Terms flashcard playback.
+- task track: Fast Track Terms playback UI refinement; no word list, deck, PDF, workflow, Pages mode, or deployment setting change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TermsDrill.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Added mobile-friendly sliders for normal and slow Terms speech rates.
+  - Set defaults to normal `0.65` and slow `0.55`.
+  - Used the adjustable normal rate for both the first and final full-word playback.
+  - Kept slow playback on the TTS-safe full word instead of split syllables, so words like `reflection` do not degrade into isolated `tion`.
+  - Added validation guards for `reflection`, no hyphenated TTS strings, adjustable rates, and removal of the old fixed final `0.78` rate.
+- verification:
+  - `git diff --check` passed.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and Terms rate/TTS guards.
+  - `node node_modules\vite\bin\vite.js build` passed.
+- blockers / risks:
+  - Actual speech speed and voice quality still vary by browser and installed `en-US` voice.
+
 ## 2026-06-23 Terms TTS-Safe Pronunciation Data
 
 - model / agent: GPT-5 Codex

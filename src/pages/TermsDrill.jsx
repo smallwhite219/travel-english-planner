@@ -15,6 +15,8 @@ import { cancelSpeech, speakText } from '../utils/tts';
 
 const TERMS_SPEECH_LANG = 'en-US';
 const TERMS_SPEECH_OPTIONS = { lang: TERMS_SPEECH_LANG, strictLang: true };
+const DEFAULT_NORMAL_RATE = 0.65;
+const DEFAULT_SLOW_RATE = 0.55;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -38,6 +40,8 @@ export default function TermsDrill() {
   const [direction, setDirection] = useState(1);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechError, setSpeechError] = useState('');
+  const [normalRate, setNormalRate] = useState(DEFAULT_NORMAL_RATE);
+  const [slowRate, setSlowRate] = useState(DEFAULT_SLOW_RATE);
   const speechSessionRef = useRef(0);
 
   const currentTerm = termsFlashcards[currentIndex];
@@ -75,7 +79,7 @@ export default function TermsDrill() {
     setSpeechError('');
 
     try {
-      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.65 });
+      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: normalRate });
 
       for (let round = 0; round < 3; round += 1) {
         if (speechSessionRef.current !== sessionId) {
@@ -83,7 +87,7 @@ export default function TermsDrill() {
         }
 
         await wait(180);
-        await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.55 });
+        await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: slowRate });
       }
 
       if (speechSessionRef.current !== sessionId) {
@@ -91,7 +95,7 @@ export default function TermsDrill() {
       }
 
       await wait(220);
-      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: 0.78 });
+      await speakText(ttsText, { ...TERMS_SPEECH_OPTIONS, rate: normalRate });
     } catch {
       setSpeechError('這個瀏覽器目前無法使用 Web Speech API 播放發音。');
     } finally {
@@ -99,7 +103,7 @@ export default function TermsDrill() {
         setIsSpeaking(false);
       }
     }
-  }, [currentTerm, ttsText]);
+  }, [normalRate, slowRate, ttsText]);
 
   if (!currentTerm) {
     return null;
@@ -136,6 +140,57 @@ export default function TermsDrill() {
           transition={{ duration: 0.25 }}
         />
       </div>
+
+      <section className="glass-panel mb-4 p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-white">語速設定</p>
+            <p className="text-xs text-gray-400">一般播放一次，慢速重複三次，最後再用一般速度播放。</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setNormalRate(DEFAULT_NORMAL_RATE);
+              setSlowRate(DEFAULT_SLOW_RATE);
+            }}
+            className="rounded-full border border-gray-700 px-3 py-1 text-xs text-gray-300 hover:border-blue-400 hover:text-blue-100"
+          >
+            重設
+          </button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block rounded-xl border border-gray-800 bg-gray-950/50 p-3">
+            <span className="mb-2 flex items-center justify-between text-sm font-medium text-gray-200">
+              一般
+              <span className="font-mono text-blue-200">{normalRate.toFixed(2)}</span>
+            </span>
+            <input
+              type="range"
+              min="0.45"
+              max="1"
+              step="0.05"
+              value={normalRate}
+              onChange={(event) => setNormalRate(Number(event.target.value))}
+              className="w-full accent-blue-400"
+            />
+          </label>
+          <label className="block rounded-xl border border-gray-800 bg-gray-950/50 p-3">
+            <span className="mb-2 flex items-center justify-between text-sm font-medium text-gray-200">
+              慢速
+              <span className="font-mono text-blue-200">{slowRate.toFixed(2)}</span>
+            </span>
+            <input
+              type="range"
+              min="0.35"
+              max="0.9"
+              step="0.05"
+              value={slowRate}
+              onChange={(event) => setSlowRate(Number(event.target.value))}
+              className="w-full accent-blue-400"
+            />
+          </label>
+        </div>
+      </section>
 
       <div className="flex flex-1 flex-col justify-center">
         <AnimatePresence mode="wait" custom={direction}>

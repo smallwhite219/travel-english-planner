@@ -101,6 +101,20 @@ assert.ok(
   'Terms flashcards must include high-frequency pronunciation cards',
 );
 assert.ok(
+  termsFlashcards.some(
+    (term) =>
+      term.word === 'reflection' &&
+      term.displayPronunciation === 're-FLEC-tion' &&
+      term.stress === 'FLEC' &&
+      term.tts === 'reflection',
+  ),
+  'Terms flashcards must keep reflection display syllables separate from TTS playback',
+);
+assert.ok(
+  termsFlashcards.every((term) => !term.tts.includes('-')),
+  'Terms TTS strings must not contain split-pronunciation hyphens',
+);
+assert.ok(
   termsFlashcards.some((term) => term.word === 'elementary' && term.translation.includes('\u570b\u5c0f\u6578\u5b78')),
   'Terms flashcards must include the second batch cards with Chinese translations',
 );
@@ -112,6 +126,11 @@ assert.match(termsDrillSource, /ttsText/, 'Terms playback must use the TTS-safe 
 assert.doesNotMatch(termsDrillSource, /getSpeechSyllableText/, 'Terms playback must not read split pronunciation strings');
 assert.match(termsDrillSource, /TERMS_SPEECH_LANG = 'en-US'/, 'Terms pronunciation must be fixed to en-US');
 assert.match(termsDrillSource, /strictLang: true/, 'Terms pronunciation must not fall back to other English accents');
+assert.match(termsDrillSource, /DEFAULT_NORMAL_RATE = 0\.65/, 'Terms normal playback rate must default to 0.65');
+assert.match(termsDrillSource, /DEFAULT_SLOW_RATE = 0\.55/, 'Terms slow playback rate must default to 0.55');
+assert.match(termsDrillSource, /setNormalRate/, 'Terms page must let users adjust normal playback rate');
+assert.match(termsDrillSource, /setSlowRate/, 'Terms page must let users adjust slow playback rate');
+assert.doesNotMatch(termsDrillSource, /rate: 0\.78/, 'Terms final playback must use the adjustable normal rate');
 
 sprintWords.forEach((word) => {
   assert.ok(word.slow?.trim(), `sprint word ${word.id} syllables are required`);
