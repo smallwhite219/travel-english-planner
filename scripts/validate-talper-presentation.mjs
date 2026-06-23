@@ -11,6 +11,10 @@ import {
   slowWordPracticeWords,
 } from '../src/data/slow-word-practice.js';
 import { sprintWords } from '../src/data/tbics-pronunciation-sprint.js';
+import {
+  getSpeechStressEntry,
+  speechPronunciationTerms,
+} from '../src/data/speech-pronunciation.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const deckPdfPath = new URL(
@@ -18,6 +22,7 @@ const deckPdfPath = new URL(
   import.meta.url,
 );
 const presentCoachSource = readFileSync(new URL('../src/pages/PresentCoach.jsx', import.meta.url), 'utf8');
+const termsDrillSource = readFileSync(new URL('../src/pages/TermsDrill.jsx', import.meta.url), 'utf8');
 
 assert.equal(talperPresentationMeta.deckTitle, 'TBICS2026_TALPer_SRL4L_v14_20260617');
 assert.equal(talperPresentationMeta.speaker, 'zong-en bai');
@@ -65,13 +70,27 @@ const introduceWord = sprintWords.find((word) => word.id === 'introduce');
 assert.ok(companionWord, 'sprint word companion format must exist');
 assert.equal(companionWord.slow, 'com-PAN-ion');
 assert.equal(companionWord.stress, 'PAN');
-assert.equal(companionWord.meaningZh, '夥伴');
+assert.equal(companionWord.meaningZh, '\u5925\u4f34');
 assert.equal(companionWord.example, 'TALPer is a companion.');
 assert.ok(introduceWord, 'sprint word introduce format must exist');
 assert.equal(introduceWord.slow, 'in-tro-DUCE');
 assert.equal(introduceWord.stress, 'DUCE');
-assert.equal(introduceWord.meaningZh, '介紹（發表用語 🔑）');
+assert.equal(introduceWord.meaningZh, '\u4ecb\u7d39\uff08\u767c\u8868\u7528\u8a9e \ud83d\udd11\uff09');
 assert.equal(introduceWord.example, 'Let me introduce TALPer.');
+
+assert.ok(getSpeechStressEntry('companion'), 'speech stress lookup must annotate companion');
+assert.equal(getSpeechStressEntry('introduce')?.stress, 'DUCE');
+assert.ok(
+  speechPronunciationTerms.some((word) => word.term === 'companion' && word.section === 'Latest Speech Core Words'),
+  'Terms must include latest speech companion word',
+);
+assert.ok(
+  speechPronunciationTerms.some((word) => word.term === 'introduce' && word.practice_sentence.includes('introduce')),
+  'Terms must include latest speech introduce word with script context',
+);
+assert.match(presentCoachSource, /script-word-stress/, 'Speech script must render stress markers');
+assert.match(termsDrillSource, /Speech Script Focus/, 'Terms page must expose latest speech script focus filter');
+assert.match(termsDrillSource, /learningSteps/, 'Terms cards must expose learning-method steps');
 
 sprintWords.forEach((word) => {
   assert.ok(word.slow?.trim(), `sprint word ${word.id} syllables are required`);

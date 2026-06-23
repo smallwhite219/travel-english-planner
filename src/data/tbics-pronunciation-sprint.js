@@ -318,7 +318,7 @@ export const sprintWordGroups = [
         slow: 'CO / hens / D',
         stress: 'CO',
         correctCue: "CO-hens D",
-        meaningZh: 'Cohen\'s d（效果量）',
+        meaningZh: "Cohen's d\uff08\u6548\u679c\u91cf\uff09",
         avoid: [],
         example: "Cohen's d equals one point eight three.",
       },

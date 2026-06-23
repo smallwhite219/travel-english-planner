@@ -16,6 +16,7 @@ import {
   talperPresentationMeta,
   talperPresentationSlides,
 } from '../data/talper-presentation';
+import { getSpeechStressEntry } from '../data/speech-pronunciation';
 import talperDeckPdf from '../assets/talper-presentation/TBICS2026_TALPer_SRL4L_15min.pdf';
 import {
   cancelSpeech,
@@ -353,17 +354,26 @@ export default function PresentCoach() {
       }
 
       const isActiveWord = lastSpokenWord.toLowerCase() === token.toLowerCase();
+      const stressEntry = getSpeechStressEntry(token);
+      const stressLabel = stressEntry
+        ? `${token}: ${stressEntry.pronunciation}; stress ${stressEntry.stress}`
+        : `Pronounce ${token}`;
 
       return (
         <button
           key={`${token}-${index}`}
-          className={`script-word ${isActiveWord ? 'active' : ''}`}
+          className={`script-word ${isActiveWord ? 'active' : ''} ${stressEntry ? 'stress-marked' : ''}`}
           type="button"
           onClick={() => speakWord(token)}
-          aria-label={`Pronounce ${token}`}
-          title={`Pronounce ${token}`}
+          aria-label={stressLabel}
+          title={stressLabel}
         >
-          {token}
+          <span className="script-word-text">{token}</span>
+          {stressEntry && (
+            <span className="script-word-stress" aria-hidden="true">
+              {stressEntry.stress}
+            </span>
+          )}
         </button>
       );
     });

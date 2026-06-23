@@ -4,10 +4,16 @@ import { PlayCircle, ChevronRight, ChevronLeft, BookOpen, Filter, Shuffle, Rotat
 import { technicalTerms } from '../data/technical-terms';
 import { vocabularyTerms } from '../data/vocabulary-terms';
 import { conferenceListeningItems } from '../data/conference-listening';
+import { speechPronunciationTerms } from '../data/speech-pronunciation';
 import { cancelSpeech, speakText } from '../utils/tts';
 
 // Merge both data sources into a unified format
 const buildUnifiedTerms = () => {
+  const speechItems = speechPronunciationTerms.map((term) => ({
+    ...term,
+    source: 'speech-script',
+  }));
+
   // Vocabulary terms from docx — already have section/slide info
   const vocabItems = vocabularyTerms.map((v, i) => ({
     id: `vocab-${i}`,
@@ -46,12 +52,16 @@ const buildUnifiedTerms = () => {
     itemType: item.type,
   }));
 
-  return [...conferenceItems, ...vocabItems, ...techItems];
+  return [...speechItems, ...conferenceItems, ...vocabItems, ...techItems];
 };
 
 const ALL_TERMS = buildUnifiedTerms();
 
 const TERM_FILTER_GROUPS = [
+  {
+    name: 'Speech Script Focus',
+    sections: ['Latest Speech Core Words'],
+  },
   {
     name: 'Core 15-min',
     sections: [
@@ -140,6 +150,8 @@ const ALL_SECTIONS = [
 
 // Section colors for visual distinction
 const SECTION_COLORS = {
+  'Latest Speech Core Words': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
+  'Speech Script Focus': { bg: 'rgba(37, 99, 235, 0.18)', border: 'rgba(96, 165, 250, 0.46)', text: '#bfdbfe', dot: '#60a5fa' },
   'Introduction': { bg: 'rgba(99, 102, 241, 0.15)', border: 'rgba(99, 102, 241, 0.4)', text: '#a5b4fc', dot: '#818cf8' },
   'Background': { bg: 'rgba(139, 92, 246, 0.15)', border: 'rgba(139, 92, 246, 0.4)', text: '#c4b5fd', dot: '#a78bfa' },
   'System Design': { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.4)', text: '#93c5fd', dot: '#60a5fa' },
@@ -167,10 +179,19 @@ const SECTION_COLORS = {
 
 const DEFAULT_COLOR = { bg: 'rgba(100, 116, 139, 0.15)', border: 'rgba(100, 116, 139, 0.4)', text: '#94a3b8', dot: '#64748b' };
 
+const TERM_CARD_LABELS = {
+  syllables: '\u97f3\u7bc0',
+  stress: '\u91cd\u97f3',
+  meaning: '\u4e2d\u6587',
+  scriptLine: '\u8b1b\u7a3f\u4f8b\u53e5',
+  practicePhrase: 'Practice Phrase',
+  method: '\u7df4\u7fd2\u65b9\u6cd5',
+};
+
 export default function TermsDrill() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
-  const [activeSection, setActiveSection] = useState('All');
+  const [activeSection, setActiveSection] = useState('Speech Script Focus');
   const [isShuffled, setIsShuffled] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
@@ -185,7 +206,7 @@ export default function TermsDrill() {
     let terms = activeSection === 'All'
       ? ALL_TERMS
       : ALL_TERMS.filter(t => isTermInFilterGroup(t, activeSection));
-    
+
     if (isShuffled) {
       terms = [...terms].sort(() => Math.random() - 0.5);
     }
@@ -315,7 +336,7 @@ export default function TermsDrill() {
   if (!currentTerm) return null;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -329,15 +350,15 @@ export default function TermsDrill() {
               <GraduationCap size={28} className="text-blue-400" />
               Vocabulary Drill
             </h1>
-            <p className="page-subtitle">Master your presentation vocabulary</p>
+            <p className="page-subtitle">Practice the latest speech script words by sound, stress, and script context</p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={handleShuffle}
               disabled={isPlayingAll}
               className={`p-2.5 rounded-xl border transition-all ${
-                isShuffled 
-                  ? 'bg-purple-900/50 border-purple-500/50 text-purple-300' 
+                isShuffled
+                  ? 'bg-purple-900/50 border-purple-500/50 text-purple-300'
                   : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:text-white'
               }`}
               title={isShuffled ? 'Shuffled' : 'Shuffle'}
@@ -449,7 +470,7 @@ export default function TermsDrill() {
       {/* Progress Bar */}
       <div className="mb-4 px-1">
         <div className="flex items-center justify-between mb-1.5">
-          <span 
+          <span
             className="text-xs font-medium px-2.5 py-0.5 rounded-full border"
             style={{
               backgroundColor: sectionColor.bg,
@@ -465,7 +486,7 @@ export default function TermsDrill() {
           </span>
         </div>
         <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-          <motion.div 
+          <motion.div
             className="h-full rounded-full"
             style={{ backgroundColor: sectionColor.dot }}
             animate={{ width: `${((currentIndex + 1) / filteredTerms.length) * 100}%` }}
@@ -477,7 +498,7 @@ export default function TermsDrill() {
       {/* Card Area */}
       <div className="flex flex-col items-center py-2">
         <AnimatePresence mode="wait" custom={direction}>
-          <motion.div 
+          <motion.div
             key={currentTerm.id + currentIndex}
             custom={direction}
             initial={{ x: direction * 80, opacity: 0, scale: 0.95 }}
@@ -487,7 +508,7 @@ export default function TermsDrill() {
             className="w-full relative cursor-pointer"
             onClick={() => setShowDetails(!showDetails)}
           >
-            <div 
+            <div
               className="glass-panel p-6 w-full min-h-[260px] flex flex-col justify-center items-center text-center transition-all duration-300"
               style={{
                 borderColor: showDetails ? sectionColor.border : undefined,
@@ -502,32 +523,43 @@ export default function TermsDrill() {
               {!showDetails ? (
                 <p className="text-gray-500 mt-6 animate-pulse text-sm">Tap to reveal details</p>
               ) : (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}
                   className="w-full flex flex-col items-center gap-3"
                 >
-                  {/* Pronunciation (for technical terms) */}
-                  {currentTerm.pronunciation && (
-                    <div className="bg-gray-800 rounded-lg px-5 py-1.5 border border-gray-600">
-                      <span className="text-lg font-mono text-blue-300 tracking-wider">
-                        {currentTerm.pronunciation}
-                      </span>
+                  {(currentTerm.pronunciation || currentTerm.syllables || currentTerm.stress) && (
+                    <div className="w-full grid gap-2 rounded-xl border border-gray-700 bg-gray-900/70 p-3 text-left">
+                      {currentTerm.pronunciation && (
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs font-semibold text-gray-400 uppercase">{TERM_CARD_LABELS.syllables}</span>
+                          <span className="text-base font-mono text-blue-300 tracking-wider text-right">
+                            {currentTerm.syllables || currentTerm.pronunciation}
+                          </span>
+                        </div>
+                      )}
+                      {currentTerm.stress && (
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs font-semibold text-gray-400 uppercase">{TERM_CARD_LABELS.stress}</span>
+                          <span className="text-base font-bold text-emerald-300 text-right">{currentTerm.stress}</span>
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {/* Chinese translation */}
-                  <div 
+                  <div
                     className="font-medium text-xl px-4 text-center"
                     style={{ color: sectionColor.text }}
                   >
+                    <span className="mr-2 text-sm text-gray-400">{TERM_CARD_LABELS.meaning}</span>
                     {currentTerm.translation}
                   </div>
 
                   {/* Practice sentence */}
                   {currentTerm.practice_sentence && (
-                    <div 
+                    <div
                       className="text-left w-full mt-2 p-4 rounded-xl border-l-4"
                       style={{
                         backgroundColor: 'rgba(17, 24, 39, 0.8)',
@@ -535,12 +567,16 @@ export default function TermsDrill() {
                       }}
                     >
                       <p className="text-sm text-gray-400 mb-1 flex items-center gap-1">
-                        <BookOpen size={14}/> Practice Phrase
+                        <BookOpen size={14}/> {currentTerm.source === 'speech-script' ? TERM_CARD_LABELS.scriptLine : TERM_CARD_LABELS.practicePhrase}
                       </p>
                       <p className="text-md text-gray-200 leading-relaxed italic">
                         "{currentTerm.practice_sentence}"
                       </p>
-                      <button 
+                      {currentTerm.practiceCue && (
+                        <p className="mt-2 text-xs text-blue-200">{currentTerm.practiceCue}</p>
+                      )}
+
+                      <button
                         onClick={(e) => { e.stopPropagation(); handleTTS(currentTerm.practice_sentence); }}
                         className="mt-3 flex items-center gap-1 text-sm px-3 py-1.5 rounded-full w-fit transition-all hover:scale-105"
                         style={{
@@ -551,6 +587,17 @@ export default function TermsDrill() {
                       >
                         <PlayCircle size={16} /> Play Phrase
                       </button>
+                    </div>
+                  )}
+
+                  {currentTerm.learningSteps?.length > 0 && (
+                    <div className="w-full rounded-xl border border-blue-500/30 bg-blue-950/20 p-3 text-left">
+                      <p className="text-sm text-blue-200 font-semibold mb-2">{TERM_CARD_LABELS.method}</p>
+                      <ol className="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                        {currentTerm.learningSteps.map((step) => (
+                          <li key={step}>{step}</li>
+                        ))}
+                      </ol>
                     </div>
                   )}
 
@@ -565,7 +612,7 @@ export default function TermsDrill() {
             </div>
 
             {/* Floating TTS button */}
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleTTS(currentTerm.term);
@@ -585,14 +632,14 @@ export default function TermsDrill() {
 
       {/* Navigation Buttons */}
       <div className="mt-4 w-full flex gap-3 pb-6">
-        <button 
+        <button
           onClick={handlePrev}
           disabled={isPlayingAll}
           className="glass-button flex-1 justify-center text-base py-3.5"
         >
           <ChevronLeft size={18} /> Prev
         </button>
-        <button 
+        <button
           onClick={handleReset}
           disabled={isPlayingAll}
           className="glass-button justify-center px-4 py-3.5"
@@ -600,7 +647,7 @@ export default function TermsDrill() {
         >
           <RotateCcw size={18} />
         </button>
-        <button 
+        <button
           onClick={handleNext}
           disabled={isPlayingAll}
           className="glass-button primary flex-[2] justify-center text-base py-3.5"

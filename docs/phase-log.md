@@ -985,3 +985,26 @@
   - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
 - blockers / risks:
   - Browser TTS pronunciation still depends on the installed English voice.
+
+## 2026-06-23 Speech Stress and Terms Script Focus
+
+- model / agent: GPT-5 Codex
+- goal: Mark stress guidance in Speech speaker-note words and align Terms cards with the latest TALPer speech script and pronunciation-learning flow.
+- task track: Precise Track frontend/data pronunciation workflow update; no push, deploy, backend, secrets access, external AI dispatch, Pages mode, workflow, PDF, PPTX, or TTS engine change.
+- files modified:
+  - `D:\\vibeCode\\projects\\travel-english-planner\\src\\data\\tbics-pronunciation-sprint.js`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\src\\data\\speech-pronunciation.js`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\src\\pages\\PresentCoach.jsx`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\src\\pages\\TermsDrill.jsx`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\src\\index.css`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\scripts\\validate-talper-presentation.mjs`
+  - `D:\\vibeCode\\projects\\travel-english-planner\\docs\\phase-log.md`
+- key decisions:
+  - Speech page marks stress only for words that have explicit pronunciation guidance, keeping the full speaker notes readable.
+  - Terms now defaults to a Speech Script Focus group derived from the latest TALPer script and the pronunciation sprint word list.
+  - Terms cards show syllables, stress, Chinese meaning, the current script sentence, and a short listen-read / stress / shadow / record method.
+- verification:
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and checked Speech stress / Terms script-focus guards.
+  - `node node_modules\vite\bin\vite.js build` passed with the existing chunk-size warning only.
+- blockers / risks:
+  - Stress guidance remains a teaching approximation; browser TTS pronunciation still depends on the installed English voice.
