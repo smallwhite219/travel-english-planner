@@ -8,12 +8,17 @@ const getSpeechSynthesis = () => {
 
 const isEnglishVoice = (voice) => voice.lang?.toLowerCase().startsWith('en');
 
-const pickDefaultVoice = (voices, lang) => {
+const pickDefaultVoice = (voices, lang, strictLang = false) => {
   const languagePrefix = lang.split('-')[0];
+  const exactVoice =
+    voices.find((voice) => voice.lang === lang && voice.name.includes('Google')) ||
+    voices.find((voice) => voice.lang === lang);
+
+  if (strictLang || exactVoice) {
+    return exactVoice;
+  }
 
   return (
-    voices.find((voice) => voice.lang === lang && voice.name.includes('Google')) ||
-    voices.find((voice) => voice.lang === lang) ||
     voices.find((voice) => voice.lang?.startsWith(languagePrefix))
   );
 };
@@ -63,6 +68,7 @@ export const speakText = (text, options = {}) => {
     const rate = normalizedOptions.rate ?? 0.9;
     const lang = normalizedOptions.lang ?? 'en-US';
     const voiceURI = normalizedOptions.voiceURI;
+    const strictLang = normalizedOptions.strictLang ?? false;
 
     // If speaking, cancel
     if (speechSynthesis.speaking) {
@@ -76,7 +82,7 @@ export const speakText = (text, options = {}) => {
     const voices = speechSynthesis.getVoices();
     const preferredVoice =
       voices.find((voice) => voice.voiceURI === voiceURI && isEnglishVoice(voice)) ||
-      pickDefaultVoice(voices, lang);
+      pickDefaultVoice(voices, lang, strictLang);
     
     if (preferredVoice) {
       utterance.voice = preferredVoice;

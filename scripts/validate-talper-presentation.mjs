@@ -103,6 +103,8 @@ assert.match(termsDrillSource, /Terms Flashcards/, 'Terms page must render the f
 assert.match(termsDrillSource, /setIsFlipped/, 'Terms cards must flip between front and back');
 assert.match(termsDrillSource, /getRandomIndex/, 'Terms page must expose random practice');
 assert.match(termsDrillSource, /getSpeechSyllableText/, 'Terms playback must include syllable practice');
+assert.match(termsDrillSource, /TERMS_SPEECH_LANG = 'en-US'/, 'Terms pronunciation must be fixed to en-US');
+assert.match(termsDrillSource, /strictLang: true/, 'Terms pronunciation must not fall back to other English accents');
 
 sprintWords.forEach((word) => {
   assert.ok(word.slow?.trim(), `sprint word ${word.id} syllables are required`);

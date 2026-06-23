@@ -1,5 +1,26 @@
 # travel-english-planner Phase Log
 
+## 2026-06-23 Terms en-US Pronunciation Lock
+
+- model / agent: GPT-5 Codex
+- goal: Fix Terms flashcard pronunciation playback to American English.
+- task track: Fast Track TTS behavior refinement; no word list, deck, PDF, workflow, Pages mode, or deployment setting change.
+- files modified:
+  - `D:\vibeCode\projects\travel-english-planner\src\pages\TermsDrill.jsx`
+  - `D:\vibeCode\projects\travel-english-planner\src\utils\tts.js`
+  - `D:\vibeCode\projects\travel-english-planner\scripts\validate-talper-presentation.mjs`
+  - `D:\vibeCode\projects\travel-english-planner\docs\phase-log.md`
+- key decisions:
+  - Used the Web Speech API language tag `en-US` for the user's requested `en_us` pronunciation target.
+  - Added a strict language option so Terms playback does not fall back to another English accent such as `en-GB`.
+  - Kept the existing Terms playback sequence: normal word, syllable practice three times, normal word again.
+- verification:
+  - `git diff --check` passed.
+  - `node scripts\validate-talper-presentation.mjs` passed: validated 16 TALPer slides and Terms en-US guards.
+  - `node node_modules\vite\bin\vite.js build` passed.
+- blockers / risks:
+  - Actual voice availability still depends on the browser and installed operating-system voices; if no exact `en-US` voice exists, the utterance still requests `en-US` without selecting a different English voice.
+
 ## 2026-06-23 Terms Flashcard Content Refresh
 
 - model / agent: GPT-5 Codex

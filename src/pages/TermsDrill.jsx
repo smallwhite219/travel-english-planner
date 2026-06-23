@@ -13,6 +13,9 @@ import {
 import { termsFlashcards } from '../data/terms-flashcards';
 import { cancelSpeech, speakText } from '../utils/tts';
 
+const TERMS_SPEECH_LANG = 'en-US';
+const TERMS_SPEECH_OPTIONS = { lang: TERMS_SPEECH_LANG, strictLang: true };
+
 const splitPronunciation = (pronunciation = '') =>
   pronunciation
     .replace(/\s+/g, ' ')
@@ -88,7 +91,7 @@ export default function TermsDrill() {
     setSpeechError('');
 
     try {
-      await speakText(currentTerm.word, { rate: 0.65, lang: 'en-US' });
+      await speakText(currentTerm.word, { ...TERMS_SPEECH_OPTIONS, rate: 0.65 });
 
       const syllableText = getSpeechSyllableText(currentTerm.pronunciation);
 
@@ -98,7 +101,7 @@ export default function TermsDrill() {
         }
 
         await wait(180);
-        await speakText(syllableText, { rate: 0.55, lang: 'en-US' });
+        await speakText(syllableText, { ...TERMS_SPEECH_OPTIONS, rate: 0.55 });
       }
 
       if (speechSessionRef.current !== sessionId) {
@@ -106,7 +109,7 @@ export default function TermsDrill() {
       }
 
       await wait(220);
-      await speakText(currentTerm.word, { rate: 0.78, lang: 'en-US' });
+      await speakText(currentTerm.word, { ...TERMS_SPEECH_OPTIONS, rate: 0.78 });
     } catch {
       setSpeechError('這個瀏覽器目前無法使用 Web Speech API 播放發音。');
     } finally {
